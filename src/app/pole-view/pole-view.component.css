@@ -1,0 +1,122 @@
+/* Styles de la carte */
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 10px 0;
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Titre principal */
+.card h2 {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: #2c3e50;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Grille pour disposition en deux colonnes */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Bloc d'informations */
+.data-block {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Titres des sections */
+.data-block h3 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #34495e;
+    margin-bottom: 10px;
+    border-bottom: 2px solid green;
+    padding-bottom: 5px;
+}
+
+/* Contenu des sections */
+.data-block p {
+    font-size: 16px;
+    color: #555;
+    margin: 5px 0;
+}
+
+/* Mise en gras des variables affichées */
+.data-block p span {
+    font-weight: bold;
+}
+
+.data-block-2 span {
+    white-space: pre-line; /* Permet d'afficher les sauts de ligne présents dans la string */
+    display: block; /* Assure que chaque ligne est un bloc séparé */
+    line-height: 1.6; /* Augmente l'espacement entre les lignes */
+}
+
+/* Progress bars */
+app-progress-bar {
+    display: block;
+    margin-top: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
+  }
+  
+  .loader {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+  }
+  
+  .loader-text {
+    font-size: 1.2rem;
+    color: #555;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

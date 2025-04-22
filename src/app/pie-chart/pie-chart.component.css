@@ -1,0 +1,35 @@
+.legend {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .color-box {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    border-radius: 3px;
+  }
+
+  /* Conteneur du graphique */
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px; /* Taille maximale */
+    margin: 0 auto;
+    padding: 10px;
+  }
+  
+  /* Canvas responsive */
+  canvas {
+    max-width: 100%;
+    height: auto !important;
+    aspect-ratio: 1; /* Garder un carré */
+  }

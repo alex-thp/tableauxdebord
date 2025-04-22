@@ -1,0 +1,13 @@
+<div *ngIf="!isLoading && data !== null && data.accompagnement">
+  <div class="flex-container">
+    <div class="level-1">
+      <div class="level-2">
+        <app-card [data]="data.accompagnement"></app-card>
+        <app-card [data]="data.benevole"></app-card>
+      </div>
+    </div>
+    <div class="level-1">
+      <app-card [data]="data.vetement"></app-card>
+    </div>
+  </div>
+</div>

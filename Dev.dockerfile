@@ -3,7 +3,7 @@ FROM node:18
 WORKDIR /app
 
 # Copier les fichiers de dépendances et installer les modules
-COPY package.json ./
+COPY package.json package-lock.json ./
 RUN npm install -g @angular/cli
 RUN npm install
 
@@ -13,5 +13,8 @@ COPY . .
 # Exposer le port Angular (par défaut 4200)
 EXPOSE 4200
 
-# Lancer le serveur de développement Angular sur toutes les interfaces réseau
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200", "--watch", "--disable-host-check"]
+# Activer le polling pour détecter les changements de fichiers dans Docker
+ENV CHOKIDAR_USEPOLLING=true
+
+# Lancer le serveur Angular avec watch activé
+CMD ["ng", "serve", "--host", "0.0.0.0", "--poll", "2000"]

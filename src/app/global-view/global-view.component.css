@@ -1,0 +1,55 @@
+/* Conteneur principal des cartes */
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centre le contenu */
+  gap: 20px;
+  width: 100%;
+  max-width: 1000px;
+  margin: auto; /* Centrage */
+}
+
+/* Première ligne : Deux cartes alignées */
+.level-1 {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Ajustement des cartes */
+.level-2 {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Style des cartes */
+app-card {
+  flex: 1;
+  max-width: 48%; /* Pour éviter d’occuper toute la ligne */
+  min-width: 300px; /* Taille minimale pour ne pas être trop petit */
+}
+
+/* Seconde ligne : Une seule carte centrée */
+.level-1:last-child {
+  justify-content: center;
+}
+
+/* Responsive : Passer en colonne sur mobile */
+@media (max-width: 768px) {
+  .level-1 {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .level-2 {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  app-card {
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,127 @@
+<div *ngIf="data === undefined || !data.label" class="loader-container">
+    <div class="loader"></div>
+    <div class="loader-text">Chargement...</div>
+</div>
+
+<div class="card" *ngIf="data !== undefined && data.label === 'Pôle Accompagnement'">
+    <div (click)="$event.stopPropagation(); toggleBack()">
+        <ng-icon name="featherArrowLeft"></ng-icon>
+    </div>
+    <h2>{{ data.label }}</h2>
+    <app-date-search></app-date-search>
+        <div class="data-block">
+            <h3 class="main">Passages en atelier</h3>
+            <p>Total des passages: <span>{{ (data.nb_passage_cdp_fixe || 0) + (data.nb_passage_cdp_mobile || 0) }}</span></p>
+            <p>Passages en fixe: <span>{{ data.nb_passage_cdp_fixe || 0 }}</span></p>
+            <p>Passages en mobile: <span>{{ data.nb_passage_cdp_mobile || 0 }}</span></p>
+        </div>
+        <div class="info-grid">
+        <div class="data-block" *ngIf="data.nb_absents !== undefined">
+            <h3 class="green-underline">Présence</h3>
+            <app-progress-bar [realise]="(data.nb_passage_cdp_fixe || 0) + (data.nb_passage_cdp_mobile || 0)" [attendu]="((data.nb_passage_cdp_fixe || 0) + (data.nb_passage_cdp_mobile || 0)) + (data.nb_absents || 0)"></app-progress-bar>
+        </div>
+    
+        <div class="data-block" *ngIf="data.nb_qpv_fixe !== undefined && data.nb_qpv_mobile !== undefined">
+            <h3 class="green-underline">Taux QPV</h3>
+            <app-progress-bar [realise]="data.nb_qpv_fixe + data.nb_qpv_mobile" [attendu]="(data.nb_passage_cdp_fixe || 0) + (data.nb_passage_cdp_mobile || 0)"></app-progress-bar>
+        </div>
+    
+        <div class="data-block" *ngIf="data.nb_qpv_fixe !== undefined">
+            <h3 class="green-underline">QPV Fixe</h3>
+            <app-progress-bar [realise]="data.nb_qpv_fixe" [attendu]="data.nb_passage_cdp_fixe || 1"></app-progress-bar>
+        </div>
+    
+        <div class="data-block" *ngIf="data.nb_qpv_mobile !== undefined">
+            <h3 class="green-underline">QPV Mobile</h3>
+            <app-progress-bar [realise]="data.nb_qpv_mobile" [attendu]="data.nb_passage_cdp_mobile || 1"></app-progress-bar>
+        </div>
+    
+        <div class="data-block" *ngIf="data.nb_sortie_positive !== undefined">
+            <h3 class="green-underline">Sorties Positives</h3>
+            <app-progress-bar [realise]="data.nb_sortie_positive" [attendu]="(data.nb_suivis || 0)"></app-progress-bar>
+        </div>
+    
+        <div class="data-block">
+            <h3 class="green-underline">Satisfaction</h3>
+            <p>Note de satisfaction: <span>{{ data.note_satisfaction || 'N/A' }} / 10</span></p>
+        </div>
+    
+        <div class="data-block">
+            <h3 class="green-underline">Prescriptions</h3>
+            <p>Prescriptions fixes: <span>{{ data.nb_prescr_fixe || 0 }}</span></p>
+            <p>Prescriptions mobiles: <span>{{ data.nb_prescr_mobile || 0 }}</span></p>
+            <p>Prescriptions sans indication: <span>{{ data.nb_prescr || 0 }}</span></p>
+            <p>Total prescriptions: <span>{{(data.nb_prescr || 0) + (data.nb_prescr_fixe || 0) + (data.nb_prescr_mobile || 0)}}</span></p>
+            <p>Prescriptions fixes en attente: <span>{{ data.nb_prescr_fixe_attente || 0 }}</span></p>
+            <p>Prescriptions mobiles en attente: <span>{{ data.nb_prescr_mobile_attente || 0 }}</span></p>
+            <p>Total en attente: <span>{{ data.nb_prescr_attente || 0 }}</span></p>
+        </div>
+        <div class="data-block">
+        <div class="data-block-2">
+            <h3 class="green-underline">Partenariats</h3>
+            <p><span>{{ data.string_asso_part_prescr }}</span></p>
+            <!--<app-progress-bar *ngIf="data.nb_asso_part_prescr !== undefined && data.nb_asso_part !== undefined" [realise]="data.nb_asso_part_prescr" [attendu]="data.nb_asso_part || 1"></app-progress-bar> !-->
+        </div>
+        </div>
+        <div class="data-block">
+            <h3 class="green-underline">Candidats At-Co</h3>
+            <p>Candidats ATCO: <span>{{ data.nb_cand_at_co || 0 }}</span></p>
+            <p>Candidats CDP + ATCO: <span>{{ data.nb_cand_cdp_et_atco || 0 }}</span></p>
+            <app-progress-bar *ngIf="data.nb_cand_at_co !== undefined && data.nb_cand_cdp_et_atco !== undefined" [realise]="data.nb_cand_cdp_et_atco" [attendu]="data.nb_cand_at_co || 1"></app-progress-bar>
+        </div>
+    
+        <div class="data-block">
+            <h3 class="green-underline">Candidats Bien-être</h3>
+            <p>Candidats Bien-être: <span>{{ data.nb_cand_bien_etre || 0 }}</span></p>
+            <p>Candidats CDP + Bien-être: <span>{{ data.nb_cand_cdp_et_bien_etre || 0 }}</span></p>
+            <app-progress-bar *ngIf="data.nb_cand_bien_etre !== undefined && data.nb_cand_cdp_et_bien_etre !== undefined" [realise]="data.nb_cand_cdp_et_bien_etre" [attendu]="data.nb_cand_bien_etre || 1"></app-progress-bar>
+        </div>
+    </div>
+</div>
+
+<div class="card" *ngIf="data !== undefined && data.label === 'Pôle Bénévole'">
+    <div (click)="$event.stopPropagation(); toggleBack()">
+        <ng-icon name="featherArrowLeft"></ng-icon>
+    </div>
+    <h2>{{ data.label }}</h2>
+    <div class="info-grid">    
+        <div class="data-block">
+            <h3 class="main">Session d'acceuil</h3>
+            <p>Nombre d'actions: <span>{{ (data.nb_session_acc || 0) }}</span></p>
+            <p>Nouveaux bénévoles: <span>{{ data.nv_benevole || 0 }}</span></p>
+            <p>Taux de transformation: <span>{{ (data.benev_en_atelier || 0) / (data.nv_benevole || 0) * 100 || 0 }}</span></p>
+        </div>
+        <div class="data-block" *ngIf="data.nb_action_benev !== undefined && data.nb_actions_93_95 !== undefined">
+            <h3 class="green-underline">Actions bénévole</h3>
+            <p>Nombre d'actions: <span>{{ (data.nb_action_benev || 0) }}</span></p>
+            <p>Nombre d'actions dans le 93 & 95: <span>{{ (data.nb_actions_93_95 || 0) }}</span></p>
+        </div>
+        <div class="data-block" *ngIf="data.nb_sensi !== undefined && data.nb_present_sensi !== undefined">
+            <h3 class="green-underline">Sensi / Formation</h3>
+            <p>Nombre d'actions: <span>{{ (data.nb_sensi || 0) }}</span></p>
+            <p>Nombre de présents: <span>{{ (data.nb_present_sensi || 0) }}</span></p>
+        </div>
+        <div class="data-block" *ngIf="values !== undefined && labels !== undefined">
+            <h3 class="green-underline">Répartition par sujet</h3>
+            <app-pie-chart [data]="values" [labels]="labels" [colors]="colors"></app-pie-chart>
+        </div>
+    </div>
+</div>
+
+<div class="card" *ngIf="data !== undefined && data.label === 'Pôle Vêtement'">
+    <div (click)="$event.stopPropagation(); toggleBack()">
+        <ng-icon name="featherArrowLeft"></ng-icon>
+    </div>
+    <h2>{{ data.label }}</h2>
+    <div class="info-grid">    
+        <div class="data-block">
+            <h3 class="main">Actions</h3>
+            <p>Nombre de collectes: <span>{{ (data.nb_collecte || 0) }}</span></p>
+            <p>Nombre de tris: <span>{{ data.nb_tri || 0 }}</span></p>
+            <p>Nombre de collabs mobilisés: <span>{{ (data.nb_collabs || 0)}}</span></p>
+        </div>
+        <div class="data-block" *ngIf="values !== undefined && labels !== undefined">
+            <h3 class="green-underline">Répartition par nombre d'ateliers</h3>
+            <app-pie-chart [data]="values" [labels]="labels" [colors]="colors"></app-pie-chart>
+        </div>
+</div>

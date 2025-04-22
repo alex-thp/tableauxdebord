@@ -1,0 +1,58 @@
+<div class="card" (click)="$event.stopPropagation(); toggleFullScreen()">
+  <ng-icon name="featherArrowRight"></ng-icon>
+
+    <div *ngIf="data.label === 'Pôle Accompagnement' && data !== null && data !== undefined">
+    <h2>{{ data.label }}</h2>
+    <div class="box">
+    <div class="left-section">
+      <p>{{ data.left.label }}</p>
+      <p *ngIf="data.left.nb_candidat !== null">Nb Candidats: {{ data.left.nb_candidat }}</p>
+      <p *ngIf="data.left.nb_suivi !== null">Suivi: {{ data.left.nb_suivi }}</p>
+      <p *ngIf="data.left.sortie_positive !== null">Sortie Positive: {{ data.left.sortie_positive }}</p>
+    </div>
+    
+    <div class="right-section">
+      <p>{{ data.right.label }}</p>
+      <p *ngIf="data.right.nb_candidat !== null">Nb Candidats: {{ data.right.nb_candidat }}</p>
+      <p *ngIf="data.right.remplissage !== null">Remplissage: {{ data.right.remplissage }}%</p>
+      <p *ngIf="data.right.structure_prescr !== null">Nb struct. prescr.: {{ data.right.structure_prescr }}</p>
+    </div></div>
+  </div>
+  <div *ngIf="data.label === 'Pôle Bénévole' && data !== null && data !== undefined">
+    <h2>{{ data.label }}</h2>
+    <div class="box">
+    <div class="left-section">
+      <p>{{ data.left.label }}</p>
+      <p *ngIf="data.left.nb_benevole !== null">Nb bénévoles (non BE): {{ data.left.nb_benevole }}</p>
+      <p *ngIf="data.left.nv_benevole !== null">Nv bénévoles (non BE): {{ data.left.nv_benevole }}</p>
+      <p *ngIf="data.left.nb_action !== null">Nb actions: {{ data.left.nb_action }}</p>
+    </div>
+    <div class="right-section">
+      <p>{{ data.right.label }}</p>
+      <p *ngIf="data.right.nb_benevole !== null">Nb bénévoles: {{ data.right.nb_benevole }}</p>
+      <p *ngIf="data.right.nv_benevole !== null">Nb nouveaux bénévoles: {{ data.right.nv_benevole }}</p>
+      <p *ngIf="data.right.remplissage !== null">Remplissage: {{ data.right.remplissage }}%</p>
+    </div></div>
+  </div>
+  <div *ngIf="data.label === 'Pôle Vêtement' && data !== null && data !== undefined">
+    <h2>{{ data.label }}</h2>
+    <div class="box">
+    <div class="left-section">
+      <p>{{ data.left.label }}</p>
+      <p *ngIf="data.left.nb_collecte !== null">Nb collecte: {{ data.left.nb_collecte }}</p>
+      <p *ngIf="data.left.nb_tri !== null">Nb tris: {{ data.left.nb_tri }}</p>
+      <p *ngIf="data.left.nb_fresque !== null">Nb animation fresque: {{ data.left.nb_fresque }}</p>
+      <p *ngIf="data.left.nb_collab !== null">Nb collabs unique: {{ data.left.nb_collab }}</p>
+    </div>
+    <div class="right-section">
+      <p>{{ data.right.label }}</p>
+      <p *ngIf="data.right.nb_atelier_collab !== null">Nb atelier collab: {{ data.right.nb_atelier_collab }}</p>
+      <p *ngIf="data.right.nb_collab !== null">Nb collabs unique: {{ data.right.nb_collab }}</p>
+      <p *ngIf="data.right.nb_premier_atelier !== null">Nb premier atelier collab: {{ data.right.nb_premier_atelier }}</p>
+    </div></div>
+  </div>
+
+  <ng-template #loading>
+    <p>Chargement...</p>
+  </ng-template>
+</div>

@@ -1,0 +1,33 @@
+form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  input[type="date"] {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px; /* Arrondi léger */
+    font-size: 1rem;
+    font-family: inherit;
+    background-color: #fff;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  button {
+    padding: 0.5rem 1rem;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 6px; /* Même arrondi pour l’uniformité */
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
