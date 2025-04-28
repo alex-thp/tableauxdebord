@@ -1,0 +1,28 @@
+
+<div *ngIf="!isLoading && data !== null && data.accompagnement">
+  <div class="flex-container">
+    <div class="level-1">
+      <div class="level-2">
+        <app-card [data]="data.accompagnement"></app-card>
+        <app-card [data]="data.benevole"></app-card>
+      </div>
+    </div>
+    <div class="level-1">
+      <app-card [data]="data.vetement"></app-card>
+    </div>
+  </div>
+</div>
+<div class="majDatabase" *ngIf="currentMaging===false">
+  <button class="update-button" (click)="updateDataBase()">
+    Maj de la base de donnée
+  </button>
+</div>
+<div class="loader-container" *ngIf="currentMaging===true">
+  <div class="loader">
+    <div class="loader-circle"></div>
+    <div class="loader-circle"></div>
+    <div class="loader-circle"></div>
+    <div class="loader-circle"></div>
+  </div>
+  <p class="loader-text">Maj en cours...</p>
+</div>

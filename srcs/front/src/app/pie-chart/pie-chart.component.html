@@ -1,0 +1,13 @@
+<div class="chart-container">
+    <canvas #canvas 
+      [width]="getCanvasSize()" 
+      [height]="getCanvasSize()"
+      style="width: 100%; height: auto">
+    </canvas>
+  </div>
+<div class="legend">
+  <div *ngFor="let label of labels; let i = index" class="legend-item">
+    <span class="color-box" [style.backgroundColor]="colors[i]"></span>
+    {{ label }} ({{ data[i] }})
+  </div>
+</div>

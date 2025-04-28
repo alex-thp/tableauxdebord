@@ -1,0 +1,71 @@
+/* Styles de la carte */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 450px;
+  width: 100%;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+/* Effet au survol */
+.card:hover {
+  transform: scale(1.02);
+}
+
+/* Titre principal (data.label) */
+.card h2 {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  color: #2c3e50;
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+/* Conteneur de la box (séparation des sections) */
+.box {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Sections de gauche et de droite */
+.left-section,
+.right-section {
+  flex: 1;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Titres des mini-sections (data.left.label et data.right.label) */
+.left-section p:first-child,
+.right-section p:first-child {
+  font-size: 18px;
+  font-weight: bold;
+  color: #34495e;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 5px;
+  text-align: center;
+}
+
+/* Contenu des sections */
+.left-section p,
+.right-section p {
+  font-size: 14px;
+  color: #555;
+  margin: 5px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .box {
+    flex-direction: column;
+  }
+}
