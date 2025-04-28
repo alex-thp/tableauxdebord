@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./srcs/frontend
+      dockerfile: Dev.dockerfile
+    ports:
+      - "80:80"
+      - "4200:4200"
+    volumes:
+      - ./srcs/frontend:/app  # Lier le dossier local avec le conteneur
+      - /app/node_modules  # Empêcher la duplication des node_modules dans le conteneur
+    networks:
+      - app-network
+    depends_on:
+      - backend
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Active la détection des fichiers
+    command: ["ng", "serve", "--host", "0.0.0.0", "--poll", "2000"]
+
+  backend:
+    build:
+      context: ./srcs/backend
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true  # 🔥 Active la détection des fichiers
+      - WATCHPACK_POLLING=true     # 🔥 Utile pour Webpack aussi
+    volumes:
+      - ./srcs/backend:/app
+      - /app/node_modules  # Évite les conflits avec node_modules en local
+    command: ["npm", "run", "start:dev"]
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
