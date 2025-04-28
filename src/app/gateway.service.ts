@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -15,8 +15,21 @@ export class GatewayService {
     return this.http.get(`${this.baseUrl}`);
   }
 
-  getViewData(mode: number): Observable<any> {    
-    return this.http.get(`${this.baseUrl}/view/${mode}`);
+  getViewData(mode: number, date_debut: Date | null, date_fin: Date | null): Observable<any> {
+    let params = new HttpParams().set('mode', mode.toString());
+  
+    // Ajoute seulement les paramètres non-nuls
+    if (date_debut) {
+      params = params.set('date_debut', date_debut.toISOString());
+    }
+    if (date_fin) {
+      params = params.set('date_fin', date_fin.toISOString());
+    }
+    return this.http.get(`${this.baseUrl}/view`, { params });
+  }
+
+  updateDataBase(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/updateDataBase`);
   }
 
   getChartData(mode: number): Observable<any> {    
@@ -27,7 +40,6 @@ export class GatewayService {
     return this.http.get(`${this.baseUrl}/sortie`);
   }
 
-  // Exemple de méthode POST
   postData(endpoint: string, data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/${endpoint}`, data);
   }

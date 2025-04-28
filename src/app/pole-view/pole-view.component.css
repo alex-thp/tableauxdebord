@@ -72,6 +72,13 @@
     line-height: 1.6; /* Augmente l'espacement entre les lignes */
 }
 
+.partenariats {
+    font-weight: bold;
+    font-size: 12px;
+    color: #555;
+    margin: 5px 0;
+}
+
 /* Progress bars */
 app-progress-bar {
     display: block;

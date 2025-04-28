@@ -1,12 +1,19 @@
-<form [formGroup]="dateForm" (ngSubmit)="onSubmit()" class="date-form">
-    Rechercher par période :
-    <label>
-      <input type="date" formControlName="startDate" />
-    </label>
+<form #dateForm="ngForm" (ngSubmit)="onSubmit()" class="horizontal-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="startDate">Date de début :</label>
+        <input type="date" id="startDate" name="startDate" 
+               [(ngModel)]="startDate" required>
+      </div>
   
-    <label>
-      <input type="date" formControlName="endDate" />
-    </label>
+      <div class="form-group">
+        <label for="endDate">Date de fin :</label>
+        <input type="date" id="endDate" name="endDate"
+               [(ngModel)]="endDate" required>
+      </div>
   
-    <button type="submit">Rechercher</button>
+      <button type="submit" class="submit-button">
+        Valider
+      </button>
+    </div>
   </form>

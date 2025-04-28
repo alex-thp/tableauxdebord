@@ -13,6 +13,8 @@ export class GraphCandidatsComponent implements AfterViewInit, OnInit {
   @Input() data: any;
   isBrowser: boolean;
   labels: string[] = [];
+  date_debut: Date | null = null;
+  date_fin: Date | null = null;
 
   constructor(private gatewayService: GatewayService, @Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -21,7 +23,7 @@ export class GraphCandidatsComponent implements AfterViewInit, OnInit {
   ngOnInit() {
     if (!this.isBrowser) return; // Évite d'exécuter du code côté serveur
 
-    this.gatewayService.getViewData(1).subscribe({
+    this.gatewayService.getViewData(1, this.date_debut, this.date_fin).subscribe({
       next: (response) => {
         this.data = [
           response.nb_homme_cdp, 

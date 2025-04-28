@@ -2,20 +2,21 @@
     <div class="loader"></div>
     <div class="loader-text">Chargement...</div>
 </div>
-
 <div class="card" *ngIf="data !== undefined && data.label === 'Pôle Accompagnement'">
     <div (click)="$event.stopPropagation(); toggleBack()">
         <ng-icon name="featherArrowLeft"></ng-icon>
     </div>
     <h2>{{ data.label }}</h2>
-    <app-date-search></app-date-search>
-        <div class="data-block">
-            <h3 class="main">Passages en atelier</h3>
-            <p>Total des passages: <span>{{ (data.nb_passage_cdp_fixe || 0) + (data.nb_passage_cdp_mobile || 0) }}</span></p>
-            <p>Passages en fixe: <span>{{ data.nb_passage_cdp_fixe || 0 }}</span></p>
-            <p>Passages en mobile: <span>{{ data.nb_passage_cdp_mobile || 0 }}</span></p>
-        </div>
         <div class="info-grid">
+            <div class="data-block">
+                <app-date-search (datesSubmitted)="handleDates($event)" [startDate]="this.date_debut" [endDate]="this.date_fin"></app-date-search>
+            </div>
+            <div class="data-block">
+                <h3 class="main">Passages en atelier</h3>
+                <p>Total des passages: <span>{{ (data.nb_passage_cdp_fixe || 0) + (data.nb_passage_cdp_mobile || 0) }}</span></p>
+                <p>Passages en fixe: <span>{{ data.nb_passage_cdp_fixe || 0 }}</span></p>
+                <p>Passages en mobile: <span>{{ data.nb_passage_cdp_mobile || 0 }}</span></p>
+            </div>
         <div class="data-block" *ngIf="data.nb_absents !== undefined">
             <h3 class="green-underline">Présence</h3>
             <app-progress-bar [realise]="(data.nb_passage_cdp_fixe || 0) + (data.nb_passage_cdp_mobile || 0)" [attendu]="((data.nb_passage_cdp_fixe || 0) + (data.nb_passage_cdp_mobile || 0)) + (data.nb_absents || 0)"></app-progress-bar>
@@ -59,7 +60,7 @@
         <div class="data-block">
         <div class="data-block-2">
             <h3 class="green-underline">Partenariats</h3>
-            <p><span>{{ data.string_asso_part_prescr }}</span></p>
+            <div class="partenariats"><span>{{ data.string_asso_part_prescr }}</span></div>
             <!--<app-progress-bar *ngIf="data.nb_asso_part_prescr !== undefined && data.nb_asso_part !== undefined" [realise]="data.nb_asso_part_prescr" [attendu]="data.nb_asso_part || 1"></app-progress-bar> !-->
         </div>
         </div>
@@ -84,17 +85,20 @@
         <ng-icon name="featherArrowLeft"></ng-icon>
     </div>
     <h2>{{ data.label }}</h2>
-    <div class="info-grid">    
+    <div class="info-grid">
+        <div class="data-block">
+            <app-date-search (datesSubmitted)="handleDates($event)" [startDate]="this.date_debut" [endDate]="this.date_fin"></app-date-search>
+        </div>    
         <div class="data-block">
             <h3 class="main">Session d'acceuil</h3>
             <p>Nombre d'actions: <span>{{ (data.nb_session_acc || 0) }}</span></p>
             <p>Nouveaux bénévoles: <span>{{ data.nv_benevole || 0 }}</span></p>
-            <p>Taux de transformation: <span>{{ (data.benev_en_atelier || 0) / (data.nv_benevole || 0) * 100 || 0 }}</span></p>
+            <p>Taux de transformation: <span>{{ ((data.benev_en_atelier || 0) / (data.nv_benevole || 0) * 100 || 0).toFixed(2) }}%</span></p>
         </div>
         <div class="data-block" *ngIf="data.nb_action_benev !== undefined && data.nb_actions_93_95 !== undefined">
             <h3 class="green-underline">Actions bénévole</h3>
-            <p>Nombre d'actions: <span>{{ (data.nb_action_benev || 0) }}</span></p>
-            <p>Nombre d'actions dans le 93 & 95: <span>{{ (data.nb_actions_93_95 || 0) }}</span></p>
+            <p>Nombre de présence en atelier: <span>{{ (data.nb_action_benev || 0) }}</span></p>
+            <p>Nombre de présence dans le 93 & 95: <span>{{ (data.nb_actions_93_95 || 0) }}</span></p>
         </div>
         <div class="data-block" *ngIf="data.nb_sensi !== undefined && data.nb_present_sensi !== undefined">
             <h3 class="green-underline">Sensi / Formation</h3>
@@ -113,11 +117,15 @@
         <ng-icon name="featherArrowLeft"></ng-icon>
     </div>
     <h2>{{ data.label }}</h2>
-    <div class="info-grid">    
+    <div class="info-grid">
+        <div class="data-block">
+            <app-date-search (datesSubmitted)="handleDates($event)" [startDate]="this.date_debut" [endDate]="this.date_fin"></app-date-search>
+        </div>
         <div class="data-block">
             <h3 class="main">Actions</h3>
             <p>Nombre de collectes: <span>{{ (data.nb_collecte || 0) }}</span></p>
             <p>Nombre de tris: <span>{{ data.nb_tri || 0 }}</span></p>
+            <p>Nombre de présentation de fresque: <span>{{ data.nb_fresque || 0 }}</span></p>
             <p>Nombre de collabs mobilisés: <span>{{ (data.nb_collabs || 0)}}</span></p>
         </div>
         <div class="data-block" *ngIf="values !== undefined && labels !== undefined">

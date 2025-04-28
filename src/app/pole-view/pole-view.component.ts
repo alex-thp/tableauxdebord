@@ -8,12 +8,11 @@ import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { PieChartComponent } from '../pie-chart/pie-chart.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { DateSearchComponent } from '../date-search/date-search.component';
-import { ReactiveFormsModule } from '@angular/forms'
 
 
 @Component({
   selector: 'app-pole-view',
-  imports: [CommonModule, ProgressBarComponent, PieChartComponent, NgIcon, DateSearchComponent, ReactiveFormsModule],
+  imports: [CommonModule, ProgressBarComponent, PieChartComponent, NgIcon, DateSearchComponent],
   templateUrl: './pole-view.component.html',
   styleUrl: './pole-view.component.css',
   viewProviders: [provideIcons(featherIcons)],
@@ -25,6 +24,10 @@ export class PoleViewComponent implements OnInit, OnChanges {
   labels?: any;
   values?: any;
   colors?: any;
+  currentYear = new Date().getFullYear();
+  date_debut: string = this.formatDate(new Date(this.currentYear, 0, 1));
+  date_fin: string = this.formatDate(new Date(this.currentYear, 11, 31));
+;
 
   constructor(
     private route: ActivatedRoute, 
@@ -39,6 +42,13 @@ export class PoleViewComponent implements OnInit, OnChanges {
     }
   }
 
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
+  }
+
   generateColors(n: number): string[] {
     const colors = [];
     for (let i = 0; i < n; i++) {
@@ -51,14 +61,15 @@ export class PoleViewComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.i = this.route.snapshot.paramMap.get('i');
     console.log(this.i)
-    this.gatewayService.getViewData(Number(this.i)).subscribe({
+    this.gatewayService.getViewData(Number(this.i), new Date(this.date_debut), new Date(this.date_fin)).subscribe({
       next: (response) => {
         console.log('Données reçues (requête HTTP) :', response);
         this.data = response;
+        console.log(this.data.array_one);
         console.log('Data mise à jour:', this.data);
-        if (this.data.array_one !== undefined) {
-          this.labels = this.data.array_one.map((item: { type: any; }) => item.type);
-          this.values = this.data.array_one.map((item: { count: any; }) => item.count);
+        if (this.data.array_one !== undefined && Array.isArray(this.data.array_one)) {
+          this.labels = this.data.array_one.map((item: { type: string }) => item.type);
+          this.values = this.data.array_one.map((item: { count: number }) => item.count);
           this.colors = this.generateColors(this.data.array_one.length);
         }
   
@@ -74,10 +85,21 @@ export class PoleViewComponent implements OnInit, OnChanges {
   toggleBack(): void {
     console.log(this.i)
     this.router.navigate(['/home']).then(nav => {
-      console.log(nav); // true if navigation is successful
     }, err => {
-      console.log(err) // when there's an error
+      console.log(err)
     });
   }
 
+  handleDates(dates: { start: string, end: string }): void {
+    this.date_debut = dates.start;
+    this.date_fin = dates.end;
+
+    this.refreshData();
+  }
+  private refreshData(): void {
+    const startDate = this.date_debut ? new Date(this.date_debut) : new Date(this.currentYear, 0, 1);
+    const endDate = this.date_fin ? new Date(this.date_fin) : new Date(this.currentYear, 11, 31);
+    this.data.label = "";
+    this.ngOnInit();
+  }
 }
