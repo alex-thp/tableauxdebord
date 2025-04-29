@@ -231,7 +231,7 @@ export class StatsAccompagnementService {
         },
         {
           $group: {
-            _id: "$candidat_record_id", // remplace par le bon identifiant si besoin
+            _id: "$candidat_record_id",
             latest_suivi: { $first: "$$ROOT" }
           }
         },
@@ -435,7 +435,6 @@ export class StatsAccompagnementService {
 
     async get_resultats_structures(cdpenrcand, date_debut, date_fin) {
       const resultats_structures = await cdpenrcand.aggregate([
-        // Les étapes initiales restent identiques
         {
           $match: {
             date_atelier: { $gte: date_debut, $lt: date_fin },
@@ -533,7 +532,7 @@ export class StatsAccompagnementService {
         },
         {
             $group: {
-                _id: null, // Ne groupe pas par un champ spécifique, sinon tu peux ajouter un champ ici
+                _id: null, // Ne groupe pas par un champ spécifique
                 total_candidats: { $sum: 1 }, // Nombre total de candidats
                 candidats_avec_cdp: {
                     $sum: {

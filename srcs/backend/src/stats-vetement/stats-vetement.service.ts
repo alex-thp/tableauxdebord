@@ -188,7 +188,7 @@ export class StatsVetementService {
       const raw = await cdp_enr_benev.aggregate([
         {
           $lookup: {
-            from: 'cdps', // ATTENTION : nom de la collection MongoDB ("cdps", pas "Cdp")
+            from: 'cdps',
             localField: 'cdp_record_id',
             foreignField: 'record_id',
             as: 'cdp'
@@ -204,7 +204,7 @@ export class StatsVetementService {
           $match: {
             "cdp.date": { $gte: date_debut, $lt: date_fin },
             statut: { $in: ["Présent", "Positionné"] },
-            est_be: "Oui" // uniquement ceux marqués BE
+            est_be: "Oui" // uniquement les BE
           }
         },
         {

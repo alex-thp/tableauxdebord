@@ -249,8 +249,6 @@ export class StatsBenevoleService {
     return result;
   }
 
-  //      array_one: [{type: "Moins de trente ans", count: 3}, {type: "QPV", count: 6}, {type: "PPSMJ", count: 9}, {type: "RQTH", count: 3}],
-
   async get_nb_session_acc(evenement_benev, date_debut, date_fin) {
     const nb_session_acc = await evenement_benev.aggregate([
       {
@@ -372,10 +370,10 @@ export class StatsBenevoleService {
         },
       },
   
-      // Groupement par bénévole (on déduplique ici)
+      // Groupement par bénévole
       {
         $group: {
-          _id: '$benevole_record_id', // Attention ici : on utilise bien le record_id pour joindre après
+          _id: '$benevole_record_id',
         },
       },
   
