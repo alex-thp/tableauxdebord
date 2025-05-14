@@ -553,7 +553,8 @@ export class StatsAccompagnementService {
       const nb_cand_bien_etre = await bienetreenrcand.aggregate([
         {
           $match: {
-            date_atelier: { $gte: date_debut, $lt: date_fin }
+            date_atelier: { $gte: date_debut, $lt: date_fin },
+            statut: "Présent"
           }
         },
         {
