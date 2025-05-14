@@ -23,6 +23,6 @@ async function bootstrap() {
 cron.schedule('59 23 * * *', async function() {
   await updateBaseService.retrieveBase();
 });
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
 bootstrap();

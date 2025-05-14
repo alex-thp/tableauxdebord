@@ -22,12 +22,12 @@ services:
       dockerfile: ./Dockerfile
     environment:
       - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true  # 🔥 Active la détection des fichiers
-      - WATCHPACK_POLLING=true     # 🔥 Utile pour Webpack aussi
+      #- CHOKIDAR_USEPOLLING=true  # 🔥 Active la détection des fichiers
+      #- WATCHPACK_POLLING=true     # 🔥 Utile pour Webpack aussi
     volumes:
       - ./srcs/backend:/app
       - /app/node_modules  # Évite les conflits avec node_modules en local
-    command: ["npm", "run", "start:dev"]
+    command: ["npm", "run", "start"]
     networks:
       - app-network
 
