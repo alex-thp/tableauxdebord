@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class GatewayService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://backend:3000';
+  private baseUrl = '/api';
   private response : any = "";
   constructor() { }
 
