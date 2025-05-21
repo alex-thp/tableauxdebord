@@ -1,36 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-
-export interface User {
-  id: number;
-  email: string;
-  passwordHash: string;
-}
+import { User } from '../users/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
-  // Simule une "base de données" avec un utilisateur
-  private users: User[] = [
-    {
-      id: 1,
-      email: 'user@example.com',
-      passwordHash: bcrypt.hashSync('password123', 10),
-    },
-  ];
-
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
 
   async validateUser(email: string, password: string): Promise<Omit<User, 'passwordHash'> | null> {
-    const user = this.users.find(u => u.email === email);
-    console.log('User found:', user);
-    console.log('Password hash:', user?.passwordHash);
-    console.log('Password:', password);
-    console.log('Bcrypt hash:', bcrypt.hashSync(password, 10));
-    if (user && (await bcrypt.compare(password, user.passwordHash))) {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      return null;
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+
+    if (isPasswordValid) {
       const { passwordHash, ...result } = user;
       return result;
     }
+
     return null;
   }
 
@@ -40,4 +37,21 @@ export class AuthService {
       access_token: this.jwtService.sign(payload),
     };
   }
+
+  async register(dto: CreateUserDto): Promise<Omit<User, 'passwordHash'>> {
+  const existingUser = await this.userRepository.findOne({ where: { email: dto.email } });
+  if (existingUser) {
+    throw new Error('User already exists');
+  }
+
+  const passwordHash = await bcrypt.hash(dto.password, 10);
+  const newUser = this.userRepository.create({
+    email: dto.email,
+    passwordHash: passwordHash,
+  });
+
+  const savedUser = await this.userRepository.save(newUser);
+  const { passwordHash: _, ...userWithoutPassword } = savedUser;
+  return userWithoutPassword;
+}
 }
