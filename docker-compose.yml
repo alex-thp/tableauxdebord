@@ -4,7 +4,7 @@ services:
   frontend:
     build:
       context: ./srcs/frontend
-      dockerfile: Dockerfile
+      dockerfile: Dev.dockerfile
     volumes:
       - ./srcs/frontend:/app  # Lier le dossier local avec le conteneur
       - /app/node_modules  # Empêcher la duplication des node_modules dans le conteneur
@@ -22,8 +22,8 @@ services:
       dockerfile: ./Dockerfile
     environment:
       - NODE_ENV=development
-      #- CHOKIDAR_USEPOLLING=true  # 🔥 Active la détection des fichiers
-      #- WATCHPACK_POLLING=true     # 🔥 Utile pour Webpack aussi
+    #  - CHOKIDAR_USEPOLLING=true  # 🔥 Active la détection des fichiers
+    #  - WATCHPACK_POLLING=true     # 🔥 Utile pour Webpack aussi
     volumes:
       - ./srcs/backend:/app
       - /app/node_modules  # Évite les conflits avec node_modules en local

@@ -3,14 +3,29 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { GraphCandidatsComponent } from './graph-candidats/graph-candidats.component';
-import { HttpClientModule, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DateSearchComponent } from './date-search/date-search.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { LoginComponent } from './login/login.component';
+import { AuthInterceptor } from './auth.interceptor';
 
 
 @NgModule({
-  declarations: [AppComponent, GraphCandidatsComponent, DateSearchComponent],
-  imports: [BrowserModule, AppRoutingModule],
-  providers: [provideHttpClient(withInterceptorsFromDi())],
+declarations: [
+    AppComponent,
+    GraphCandidatsComponent,
+    DateSearchComponent,
+    LoginComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    ReactiveFormsModule
+  ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

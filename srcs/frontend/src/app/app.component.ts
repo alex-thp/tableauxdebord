@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
@@ -11,7 +12,7 @@ export class AppComponent implements OnInit {
   constructor(
 		public route: ActivatedRoute,
 		public router: Router,
-  ){}
+    ){}
 
   ngOnInit(): void {
     console.log('AppComponent initialisé');

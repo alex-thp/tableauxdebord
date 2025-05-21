@@ -4,7 +4,7 @@ ENV TZ=Europe/Paris
 
 RUN apk add --update tzdata
 COPY . .
-RUN npm install -g npm
+RUN npm install npm
 
 WORKDIR /usr/src/app
 

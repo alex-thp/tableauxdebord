@@ -6,12 +6,11 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class GatewayService {
-  private http = inject(HttpClient);
   private baseUrl = '/api';
-  private response : any = "";
-  constructor() { }
 
-  getData(): Observable<any> {    
+  constructor(private http: HttpClient) {}
+
+  getData(): Observable<any> {
     return this.http.get(`${this.baseUrl}`);
   }
 

@@ -8,9 +8,10 @@ import { StatsAccompagnementService } from './stats-accompagnement/stats-accompa
 import { StatsBenevoleService } from './stats-benevole/stats-benevole.service';
 import { StatsVetementService } from './stats-vetement/stats-vetement.service';
 import { ParseDatePipe } from './pipes/parse-date.pipe';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [],
+  imports: [AuthModule],
   controllers: [AppController],
   providers: [AppService, ParseDatePipe, AirtableService, UpdateBaseService, MongoDbService, StatsAccompagnementService, StatsBenevoleService, StatsVetementService],
   exports: [ParseDatePipe],

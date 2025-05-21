@@ -4,17 +4,20 @@ import { GlobalViewComponent } from './global-view/global-view.component';
 import { CardComponent } from './card/card.component';
 import { GraphCandidatsComponent } from './graph-candidats/graph-candidats.component';
 import { PoleViewComponent } from './pole-view/pole-view.component';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './auth/auth.guard';
 
 export const appRouteList: Routes = [
-    { path: 'home', component: GlobalViewComponent },
-    { path: 'view/:i', component: PoleViewComponent},
-    { path: 'search', component: CardComponent },
-    { path: 'graph', component: GraphCandidatsComponent },
-    { path: '**', redirectTo: 'home' }
+    { path: 'login', component: LoginComponent },
+    { path: 'home', component: GlobalViewComponent, canActivate: [AuthGuard] },
+    { path: 'view/:i', component: PoleViewComponent, canActivate: [AuthGuard] },
+    { path: 'search', component: CardComponent, canActivate: [AuthGuard] },
+    { path: 'graph', component: GraphCandidatsComponent, canActivate: [AuthGuard] },
+    { path: '**', redirectTo: 'login' }
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(appRouteList)], // ✅ Vérifie que `forRoot` est bien utilisé
-    exports: [RouterModule] // ✅ Vérifie que `RouterModule` est bien exporté
+    imports: [RouterModule.forRoot(appRouteList)],
+    exports: [RouterModule]
 })
 export class AppRoutingModule { }
