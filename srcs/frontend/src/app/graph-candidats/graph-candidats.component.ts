@@ -5,7 +5,8 @@ import { isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-graph-candidats',
   templateUrl: './graph-candidats.component.html',
-  styleUrls: ['./graph-candidats.component.css']
+  styleUrls: ['./graph-candidats.component.css'],
+  standalone: true,
 })
 export class GraphCandidatsComponent implements AfterViewInit, OnInit {
   @ViewChild('chartCanvas', { static: false }) chartCanvas!: ElementRef;

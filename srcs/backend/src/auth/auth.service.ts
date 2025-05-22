@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../users/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { Role } from 'src/roles/role.entity';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +13,8 @@ export class AuthService {
     private jwtService: JwtService,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Role)
+    private roleRepository: Repository<Role>,
   ) {}
 
   async validateUser(email: string, password: string): Promise<Omit<User, 'passwordHash'> | null> {
@@ -38,20 +41,27 @@ export class AuthService {
     };
   }
 
-  async register(dto: CreateUserDto): Promise<Omit<User, 'passwordHash'>> {
-  const existingUser = await this.userRepository.findOne({ where: { email: dto.email } });
-  if (existingUser) {
-    throw new Error('User already exists');
+async register(dto: { email: string; password: string }): Promise<Omit<User, 'passwordHash'>> {
+    const existingUser = await this.userRepository.findOne({ where: { email: dto.email } });
+    if (existingUser) {
+      throw new Error('User already exists');
+    }
+
+    // Cherche le rôle de base "user"
+    const userRole = await this.roleRepository.findOne({ where: { name: 'user' } });
+    if (!userRole) {
+      throw new Error('Default role "user" not found');
+    }
+
+    const passwordHash = await bcrypt.hash(dto.password, 10);
+    const newUser = this.userRepository.create({
+      email: dto.email,
+      passwordHash: passwordHash,
+      roles: [userRole],
+    });
+
+    const savedUser = await this.userRepository.save(newUser);
+    const { passwordHash: _, ...userWithoutPassword } = savedUser;
+    return userWithoutPassword;
   }
-
-  const passwordHash = await bcrypt.hash(dto.password, 10);
-  const newUser = this.userRepository.create({
-    email: dto.email,
-    passwordHash: passwordHash,
-  });
-
-  const savedUser = await this.userRepository.save(newUser);
-  const { passwordHash: _, ...userWithoutPassword } = savedUser;
-  return userWithoutPassword;
-}
 }

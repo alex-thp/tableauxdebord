@@ -5,7 +5,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-pie-chart',
   templateUrl: './pie-chart.component.html',
   styleUrls: ['./pie-chart.component.css'],
-  imports: [CommonModule]
+  imports: [CommonModule],
+  standalone: true,
 })
 export class PieChartComponent implements AfterViewInit, OnChanges {
   @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;

@@ -3,7 +3,8 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 @Component({
   selector: 'app-progress-bar',
   templateUrl: './progress-bar.component.html',
-  styleUrls: ['./progress-bar.component.css']
+  styleUrls: ['./progress-bar.component.css'],
+  standalone: true,
 })
 export class ProgressBarComponent implements OnChanges {
   @Input() realise!: number;

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,6 @@ export class AuthService {
       .pipe(
         tap(res => {
           localStorage.setItem('jwt_token', res.access_token);
-          console.log('Token JWT : ' + localStorage.getItem('jwt_token'));
           this.router.navigate(['home']);
         })
       );
@@ -32,5 +32,15 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return !!this.getToken();
+  }
+
+  signUp(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/signup`, { email, password }).pipe(
+        tap(res => {
+          console.log(res);
+          this.router.navigate(['home']);
+        })
+      );
+
   }
 }

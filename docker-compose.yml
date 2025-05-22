@@ -1,6 +1,45 @@
 version: '3.8'
 
 services:
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - app-network
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+  db:
+    image: postgres:16
+    container_name: db
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./initdb/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+
+  db_backup:
+    image: postgres:16
+    depends_on:
+      - db
+    volumes:
+      - ./backups:/backups  # Où les sauvegardes seront stockées en local
+      - ./scripts/backup.sh:/backup.sh
+    environment:
+      PGPASSWORD: mypassword
+    entrypoint: ["bash", "-c", "chmod +x /backup.sh && while true; do /backup.sh; sleep 43200; done"]  # Sauvegarde toutes les demis journées
+    networks:
+      - app-network
   frontend:
     build:
       context: ./srcs/frontend
@@ -45,3 +84,7 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  db_data:
+  pgadmin_data:

@@ -16,6 +16,7 @@ import { DateSearchComponent } from '../date-search/date-search.component';
   templateUrl: './pole-view.component.html',
   styleUrl: './pole-view.component.css',
   viewProviders: [provideIcons(featherIcons)],
+  standalone: true,
 })
 export class PoleViewComponent implements OnInit, OnChanges {
 

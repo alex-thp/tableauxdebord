@@ -5,7 +5,9 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/users/user.entity';
+import { User } from '../users/user.entity';
+import { Role } from '../roles/role.entity';
+import { Permission } from 'src/permissions/permission.entity';
 
 @Module({
   imports: [
@@ -14,7 +16,7 @@ import { User } from 'src/users/user.entity';
       secret: 'SECRET_KEY_EXEMPLE',   // TODO : Changer en variable d'env plus tard
       signOptions: { expiresIn: '8h' },
     }),
-    TypeOrmModule.forFeature([User]),
+  TypeOrmModule.forFeature([User, Role, Permission]),
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

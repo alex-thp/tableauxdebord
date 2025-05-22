@@ -11,6 +11,9 @@ import { ParseDatePipe } from './pipes/parse-date.pipe';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
+import { Role } from './roles/role.entity';
+import { Permission } from './permissions/permission.entity';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -22,10 +25,10 @@ import { User } from './users/user.entity';
       username: 'myuser',
       password: 'mypassword',
       database: 'mydatabase',
-      entities: [User],
+      entities: [User, Role, Permission],
       synchronize: true, // à mettre à false en prod
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Role, Permission]),
   ],
   controllers: [AppController],
   providers: [
@@ -36,8 +39,20 @@ import { User } from './users/user.entity';
     MongoDbService,
     StatsAccompagnementService,
     StatsBenevoleService,
-    StatsVetementService
+    StatsVetementService,
   ],
   exports: [ParseDatePipe],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+
+  async onModuleInit() {
+    const roleRepository = this.dataSource.getRepository(Role);
+    const roleExists = await roleRepository.findOne({ where: { name: 'user' } });
+    if (!roleExists) {
+      const defaultRole = roleRepository.create({ name: 'user' });
+      await roleRepository.save(defaultRole);
+      console.log('Rôle "user" créé.');
+    }
+  }
+}
