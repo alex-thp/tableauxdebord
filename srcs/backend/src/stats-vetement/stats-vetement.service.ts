@@ -72,7 +72,7 @@ export class StatsVetementService {
     }
 
     async get_nb_benevole_unique_ancien(cdpenrbenev, startOfWeek, endOfWeek) {
-      const nbBenevolesUniquesAncien_semaine = await cdpenrbenev.aggregate([
+      let nbBenevolesUniquesAncien_semaine = await cdpenrbenev.aggregate([
         {
           $match: {
             benevole_id: { $ne: null },
@@ -103,7 +103,7 @@ export class StatsVetementService {
     }
 
     async get_nb_benevole_unique_semaine(cdpenrbenev, startOfWeek, endOfWeek) {
-      const nbBenevolesUniques_semaine = await cdpenrbenev.aggregate([
+      let nbBenevolesUniques_semaine = await cdpenrbenev.aggregate([
         {
           $match: {
             benevole_id: { $ne: null },
@@ -144,7 +144,7 @@ export class StatsVetementService {
 
         let today = new Date();
         let startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
-        let endOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6));    
+        let endOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6));
 
         let result = {label: "Pôle Vêtement",
             left: {
@@ -171,7 +171,7 @@ export class StatsVetementService {
 
         const nbBenevolesUniquesAncien_semaine = await this.get_nb_benevole_unique_ancien(cdpenrbenev, startOfWeek, endOfWeek);
 
-        const nbBenevolesUniques_semaine = await this.get_nb_benevole_unique_semaine(cdpenrbenev, startOfWeek, endOfWeek);
+        const nbBenevolesUniques_semaine = await this.get_nb_benevoles_unique(cdpenrbenev, startOfWeek, endOfWeek);
 
         result.left.nb_collecte = tmp_nb_collecte[0]?.count || 0;
         result.left.nb_tri = tmp_nb_tri[0]?.count || 0;

@@ -14,6 +14,7 @@ import { User } from './users/user.entity';
 import { Role } from './roles/role.entity';
 import { Permission } from './permissions/permission.entity';
 import { DataSource } from 'typeorm';
+import { MajQpvService } from './maj-qpv/maj-qpv.service';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { DataSource } from 'typeorm';
     StatsAccompagnementService,
     StatsBenevoleService,
     StatsVetementService,
+    MajQpvService,
   ],
   exports: [ParseDatePipe],
 })
