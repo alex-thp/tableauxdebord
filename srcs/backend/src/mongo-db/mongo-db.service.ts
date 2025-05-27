@@ -31,7 +31,7 @@ import EvenementBenevXBenev from 'src/models/evenement_benev_x_benev.model';
 export class MongoDbService {
 
   uri = process.env.MONGODB_URL as string;
-  client = new MongoClient(this.uri);
+  client: MongoClient = new MongoClient(this.uri);
   BATCH_SIZE = 2000;
 
   async insertInBatches<T>(collection: mongoose.Model<T>, data: T[] = []) {

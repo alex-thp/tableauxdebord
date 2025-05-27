@@ -10,11 +10,14 @@ import { StatsVetementService } from './stats-vetement/stats-vetement.service';
 import { ParseDatePipe } from './pipes/parse-date.pipe';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/user.entity';
+import { User } from './user/user.entity';
 import { Role } from './roles/role.entity';
 import { Permission } from './permissions/permission.entity';
 import { DataSource } from 'typeorm';
 import { MajQpvService } from './maj-qpv/maj-qpv.service';
+import { UserService } from './user/user.service';
+import { UserModule } from './user/user.module';
+import { AdminController } from './controllers/admin.controller';
 
 @Module({
   imports: [
@@ -30,8 +33,9 @@ import { MajQpvService } from './maj-qpv/maj-qpv.service';
       synchronize: true, // à mettre à false en prod
     }),
     TypeOrmModule.forFeature([User, Role, Permission]),
+    UserModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, AdminController],
   providers: [
     AppService,
     ParseDatePipe,
@@ -42,6 +46,7 @@ import { MajQpvService } from './maj-qpv/maj-qpv.service';
     StatsBenevoleService,
     StatsVetementService,
     MajQpvService,
+
   ],
   exports: [ParseDatePipe],
 })
@@ -55,6 +60,9 @@ export class AppModule {
       const defaultRole = roleRepository.create({ name: 'user' });
       await roleRepository.save(defaultRole);
       console.log('Rôle "user" créé.');
+      const adminRole = roleRepository.create({ name: 'admin' });
+      await roleRepository.save(adminRole);
+      console.log('Rôle "admin" créé.');
     }
   }
 }

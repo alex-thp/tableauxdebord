@@ -5,12 +5,14 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../users/user.entity';
+import { User } from '../user/user.entity';
 import { Role } from '../roles/role.entity';
 import { Permission } from 'src/permissions/permission.entity';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
+    UserModule,
     PassportModule,
     JwtModule.register({
       secret: 'SECRET_KEY_EXEMPLE',   // TODO : Changer en variable d'env plus tard

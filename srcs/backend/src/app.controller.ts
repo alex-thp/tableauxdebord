@@ -2,6 +2,7 @@ import { Controller, Get, Param, ParseDatePipe, Query, UseGuards } from '@nestjs
 import { AppService } from './app.service';
 import { UpdateBaseService } from './update-base/update-base.service';
 import { AuthGuard } from '@nestjs/passport';
+import { RolesAndPermissionsGuard } from './guards/roles-and-permissions.guard';
 
 
 @Controller()

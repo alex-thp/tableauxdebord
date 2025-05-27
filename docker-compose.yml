@@ -58,15 +58,16 @@ services:
   backend:
     build:
       context: ./srcs/backend
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dev.dockerfile
     environment:
+      - CHOKIDAR_USEPOLLING=true
       - NODE_ENV=development
-    #  - CHOKIDAR_USEPOLLING=true  # 🔥 Active la détection des fichiers
-    #  - WATCHPACK_POLLING=true     # 🔥 Utile pour Webpack aussi
+      - WATCHPACK_POLLING=true
     volumes:
-      - ./srcs/backend:/app
-      - /app/node_modules  # Évite les conflits avec node_modules en local
-    command: ["npm", "run", "start"]
+      - ./srcs/backend:/usr/src/app
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    command: ["npm", "run", "start:dev"]
     networks:
       - app-network
 

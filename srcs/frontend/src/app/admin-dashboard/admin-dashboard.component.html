@@ -1,0 +1,15 @@
+<div class="dashboard">
+  <h2>Dashboard Admin</h2>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!error">
+    <p>{{ message }}</p>
+
+    <ul>
+      <li *ngFor="let item of secureData">
+        Élément sécurisé : {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>

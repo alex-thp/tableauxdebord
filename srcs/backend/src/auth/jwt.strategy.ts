@@ -11,9 +11,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: 'SECRET_KEY_EXEMPLE', //TODO : Remplacer par une clé secrète sécurisée
     });
   }
-
-  async validate(payload: any) {
-    // payload.sub contient l'id utilisateur
-    return { userId: payload.sub, email: payload.email };
-  }
+async validate(payload: any) {
+  return {
+    userId: payload.sub,
+    email: payload.email,
+    roles: payload.roles,
+    permissions: payload.permissions,
+  };
+}
 }

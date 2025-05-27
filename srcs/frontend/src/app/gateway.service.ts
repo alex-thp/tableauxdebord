@@ -42,4 +42,13 @@ export class GatewayService {
   postData(endpoint: string, data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/${endpoint}`, data);
   }
+
+  getAdminDashboardData(): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.get(`${this.baseUrl}/admin/dashboard`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 }
