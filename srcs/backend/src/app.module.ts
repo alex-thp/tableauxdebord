@@ -18,6 +18,7 @@ import { MajQpvService } from './maj-qpv/maj-qpv.service';
 import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { AdminController } from './controllers/admin.controller';
+import { UserController } from './user/user.controller';
 
 @Module({
   imports: [
@@ -30,12 +31,12 @@ import { AdminController } from './controllers/admin.controller';
       password: 'mypassword',
       database: 'mydatabase',
       entities: [User, Role, Permission],
-      synchronize: true, // à mettre à false en prod
+      synchronize: true, //TODO : à mettre à false en prod
     }),
     TypeOrmModule.forFeature([User, Role, Permission]),
     UserModule,
   ],
-  controllers: [AppController, AdminController],
+  controllers: [AppController, AdminController, UserController],
   providers: [
     AppService,
     ParseDatePipe,
@@ -62,7 +63,20 @@ export class AppModule {
       console.log('Rôle "user" créé.');
       const adminRole = roleRepository.create({ name: 'admin' });
       await roleRepository.save(adminRole);
+      const managerRole = roleRepository.create({ name: 'manager' });
+      await roleRepository.save(managerRole);
       console.log('Rôle "admin" créé.');
     }
+    const userRepository = this.dataSource.getRepository(User);
+    const userExists = await userRepository.findOne({ where: { email: 'alexandre@lacravatesolidaire.org' } });
+    if (!userExists) {
+      const defaultUser = userRepository.create({
+        email: 'alexandre@lacravatesolidaire.org',
+        passwordHash: process.env.MDP_ADMIN,
+        roles: [(await roleRepository.findOne({ where: { name: 'admin' } }))!],
+      });
+      await userRepository.save(defaultUser);
+
+  }
   }
 }

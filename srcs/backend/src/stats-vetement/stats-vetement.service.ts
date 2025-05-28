@@ -236,9 +236,48 @@ export class StatsVetementService {
           }
         }
       ]).toArray();
-      console.log(raw);
       return raw;
     }
+
+      async get_nb_atelier_moyen(cdp_enr_benev, date_debut, date_fin) {
+      const raw = await cdp_enr_benev.aggregate([
+        {
+          $lookup: {
+            from: 'cdps',
+            localField: 'cdp_record_id',
+            foreignField: 'record_id',
+            as: 'cdp'
+          }
+        },
+        {
+          $unwind: {
+            path: "$cdp",
+            preserveNullAndEmptyArrays: false // on garde seulement ceux qui ont un cdp lié
+          }
+        },
+        {
+          $match: {
+            "cdp.date": { $gte: date_debut, $lt: date_fin },
+            statut: { $in: ["Présent"] },
+            est_be: "Oui" // uniquement les BC
+          }
+        },
+        {
+          $group: {
+            _id: "$benevole_id", // Groupement par bénévole
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $group: {
+          _id: null,
+          averageCount: { $avg: "$count" }  // Moyenne des counts (nb de cdp_enr_benev par bénévole)
+          }
+        }
+      ]).toArray();
+      console.log(raw);
+        return raw.length > 0 ? parseFloat(raw[0].averageCount.toFixed(2)) : 0;
+      }
 
     async getViewData(date_debut, date_fin) {
       const connection = this.mongodb.client.db('test');
@@ -266,6 +305,7 @@ export class StatsVetementService {
       nb_collabs: 0,
       array_one: [],
       nb_fresque: 0,
+      nb_atelier_moyen_par_be: 0,
     }
       const nb_venues_ateliers = await this.get_nb_repartition(cdpenrbenev, date_debut, date_fin);
       const nb_collecte = await this.get_tmp_nb_collecte(evenement_pc, date_debut, date_fin);
@@ -277,6 +317,7 @@ export class StatsVetementService {
       result.nb_tri = nb_tri[0]?.count || 0;
       result.nb_fresque = nb_fresque[0]?.count || 0;
       result.nb_collabs = nb_benevoles[0]?.benevolesUniques || 0;
+      result.nb_atelier_moyen_par_be = await this.get_nb_atelier_moyen(cdpenrbenev, date_debut, date_fin);
       return result;
     }
 }

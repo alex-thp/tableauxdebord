@@ -1,9 +1,10 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from 'src/roles/role.entity';
 
 @Injectable()
 export class UserService {
@@ -11,6 +12,8 @@ export class UserService {
     private jwtService: JwtService,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Role)
+    private roleRepository: Repository<Role>,
   ) {}
 
   async validateUser(email: string, password: string): Promise<Omit<User, 'passwordHash'> | null> {
@@ -49,12 +52,30 @@ export class UserService {
   });
 }
 
-async findByEmailWithRolesAndPermissions(email: string): Promise<User | null> {
-  return this.userRepository
-    .createQueryBuilder('user')
-    .leftJoinAndSelect('user.roles', 'role')
-    .leftJoinAndSelect('role.permissions', 'permission')
-    .where('user.email = :email', { email })
-    .getOne();
+  async findByEmailWithRolesAndPermissions(email: string): Promise<User | null> {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roles', 'role')
+      .leftJoinAndSelect('role.permissions', 'permission')
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
+  async findAllWithRolesAndPermissions(): Promise<User[]> {
+    return await this.userRepository.find({
+      relations: ['roles', 'roles.permissions'],
+    });
+  }
+
+async updateUserRole(userId: number, roleId: number): Promise<User> {
+  const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['roles'] });
+  if (!user) throw new NotFoundException('Utilisateur introuvable');
+
+  const role = await this.roleRepository.findOne({ where: { id: roleId }, relations: ['permissions'] });
+  if (!role) throw new NotFoundException('Rôle introuvable');
+
+  user.roles = [role];
+  return this.userRepository.save(user);
 }
+
 }

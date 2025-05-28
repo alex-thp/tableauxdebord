@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { lookup } from 'dns';
-import { stat } from 'fs';
 import { MongoDbService } from 'src/mongo-db/mongo-db.service';
 
 @Injectable()
@@ -51,13 +49,16 @@ export class StatsAccompagnementService {
             {
               $match: {
                 date_suivi: { $gte: date_debut, $lt: date_fin },
-                situation_pro: { $in: ["CDI", "CDD (- de 6 mois)", 
-                    "CDD (6 mois ou +)", 
-                    "En formation", 
-                    "En stage", 
-                    "Auto-entrepreneur / Entrepreneur/ Création entreprise", 
-                    "En alternance / En contrat d'apprentissage", 
-                    "Intérim"] }
+                situation_pro: { $in: [
+                  "CDI",
+                  "CDD (- de 6 mois)", 
+                  "CDD (6 mois ou +)", 
+                  "En formation", 
+                  "En stage", 
+                  "Auto-entrepreneur / Entrepreneur/ Création entreprise", 
+                  "En alternance / En contrat d'apprentissage", 
+                  "Intérim"
+                ] }
               }
             },
             {
@@ -523,31 +524,71 @@ export class StatsAccompagnementService {
       return resultats_structures;
     }
 
-    async get_nb_cand_at_co(atcoenrcand, date_debut, date_fin) {
-      const nb_cand_at_co = await atcoenrcand.aggregate([
-        {
-            $match: {
-                date_atelier: { $gte: date_debut, $lt: date_fin },
-            }
-        },
-        {
+    async get_nb_cand_unique_at_co(atcoenrcand, date_debut, date_fin) {
+  const nb_cand_at_co = await atcoenrcand.aggregate([
+    {
+      $match: {
+        date_atelier: { $gte: date_debut, $lt: date_fin },
+      },
+    },
+          {
             $group: {
-                _id: null, // Ne groupe pas par un champ spécifique
-                total_candidats: { $sum: 1 }, // Nombre total de candidats
-                candidats_avec_cdp: {
-                    $sum: {
-                        $cond: {
-                            if: { $ne: ["$a_deja_fait_cdp", ""] }, // Vérifie si a_deja_fait_cdp n'est pas vide
-                            then: 1,
-                            else: 0
-                        }
-                    }
-                }
+              _id: "$candidat_record_id"
             }
-        }
-    ]).toArray();
-    return nb_cand_at_co;
+          },
+          {
+            $count: "count"
+          }
+  ]).toArray();
+
+  console.log("Nombre de candidats à l'atelier CO :", nb_cand_at_co[0].count);
+  return nb_cand_at_co[0];
+}
+
+async get_nb_cand_at_co(atcoenrcand, date_debut, date_fin) {
+  const nb_cand_at_co = await atcoenrcand.aggregate([
+    {
+      $match: {
+        date_atelier: { $gte: date_debut, $lt: date_fin },
+      },
+    },
+    {
+      $facet: {
+        // Total brut (chaque ligne = une participation)
+        total_candidats: [
+          { $count: "count" }
+        ],
+
+        // Candidats uniques ayant un CDP
+        candidats_avec_cdp: [
+          {
+            $match: {
+              a_deja_fait_cdp: { $ne: "" }
+            }
+          },
+          {
+            $group: {
+              _id: "$candidat_record_id"
+            }
+          },
+          {
+            $count: "count"
+          }
+        ],
+      }
+    },
+    {
+      $project: {
+        total_candidats: { $ifNull: [{ $arrayElemAt: ["$total_candidats.count", 0] }, 0] },
+        candidats_avec_cdp: { $ifNull: [{ $arrayElemAt: ["$candidats_avec_cdp.count", 0] }, 0] },
+      }
     }
+  ]).toArray();
+
+  console.log("Nombre de candidats à l'atelier CO :", nb_cand_at_co[0]);
+  return nb_cand_at_co[0];
+}
+
 
     async get_nb_cand_bien_etre(bienetreenrcand, date_debut, date_fin) {
       const nb_cand_bien_etre = await bienetreenrcand.aggregate([
@@ -656,6 +697,7 @@ export class StatsAccompagnementService {
             nb_prescr: 0,
             nb_prescr_attente: 0,
             string_asso_part_prescr: "",
+            nb_cand_atco_unique: 0,
           };
 
         const nb_passage_cdp = await this.get_nb_passage_cdp(cdpenrcand, date_debut, date_fin);
@@ -710,6 +752,7 @@ export class StatsAccompagnementService {
         }).join('\n\n');  // Ajout de sauts de ligne entre les statuts*/
 
         const nb_cand_at_co = await this.get_nb_cand_at_co(atcoenrcand, date_debut, date_fin);
+        const nb_candi_unique_at_co = await this.get_nb_cand_unique_at_co(atcoenrcand, date_debut, date_fin);
 
         const nb_cand_bien_etre = await this.get_nb_cand_bien_etre(bienetreenrcand, date_debut, date_fin);
             
@@ -728,10 +771,12 @@ export class StatsAccompagnementService {
         result.nb_prescr = (resultFormatted['Inconnu']?.['Présent'] || 0) + (resultFormatted['Inconnu']?.['A Positionner'] || 0) + (resultFormatted["Inconnu"]?.["Absent"]|| 0) + (resultFormatted["Inconnu"]?.["Positionné"]|| 0);
         result.nb_prescr_attente = total_prescr_attente;
         result.string_asso_part_prescr = resultat_structure_string//assoPartString;
-        result.nb_cand_at_co = nb_cand_at_co[0]?.total_candidats || 0;
-        result.nb_cand_cdp_et_atco = nb_cand_at_co[0]?.candidats_avec_cdp || 0;
+        result.nb_cand_at_co = nb_cand_at_co?.total_candidats || 0;
+        result.nb_cand_cdp_et_atco = nb_cand_at_co?.candidats_avec_cdp || 0;
+        result.nb_cand_atco_unique = nb_candi_unique_at_co?.count || 0;
         result.nb_cand_bien_etre = nb_cand_bien_etre[0]?.total || 0;
         result.nb_cand_cdp_et_bien_etre = nb_cand_bien_etre[0]?.cdp_et_bien_etre || 0;
+
         return result;
     }
 }

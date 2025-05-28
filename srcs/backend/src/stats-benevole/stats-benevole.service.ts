@@ -127,6 +127,102 @@ export class StatsBenevoleService {
       return nbBenevolesUniquesAncien_semaine;
     }
 
+  async get_nb_atelier_moyen(cdp_enr_benev, date_debut, date_fin) {
+      const raw = await cdp_enr_benev.aggregate([
+        {
+          $lookup: {
+            from: 'cdps',
+            localField: 'cdp_record_id',
+            foreignField: 'record_id',
+            as: 'cdp'
+          }
+        },
+        {
+          $unwind: {
+            path: "$cdp",
+            preserveNullAndEmptyArrays: false // on garde seulement ceux qui ont un cdp lié
+          }
+        },
+        {
+          $match: {
+            "cdp.date": { $gte: date_debut, $lt: date_fin },
+            statut: { $in: ["Présent"] },
+            est_be: { $ne: "Oui"} // uniquement les BC
+          }
+        },
+        {
+          $group: {
+            _id: "$benevole_id", // Groupement par bénévole
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $group: {
+          _id: null,
+          averageCount: { $avg: "$count" }  // Moyenne des counts (nb de cdp_enr_benev par bénévole)
+          }
+        }
+      ]).toArray();
+      console.log(raw);
+        return raw.length > 0 ? parseFloat(raw[0].averageCount.toFixed(2)) : 0;
+      }
+
+      async get_nb_repartition(cdp_enr_benev, date_debut, date_fin) {
+      const raw = await cdp_enr_benev.aggregate([
+        {
+          $lookup: {
+            from: 'cdps',
+            localField: 'cdp_record_id',
+            foreignField: 'record_id',
+            as: 'cdp'
+          }
+        },
+        {
+          $unwind: {
+            path: "$cdp",
+            preserveNullAndEmptyArrays: false // on garde seulement ceux qui ont un cdp lié
+          }
+        },
+        {
+          $match: {
+            "cdp.date": { $gte: date_debut, $lt: date_fin },
+            statut: { $in: ["Présent", "Positionné"] },
+            est_be: { $ne: "Oui"} // uniquement les BC
+          }
+        },
+        {
+          $group: {
+            _id: "$benevole_id", // Groupement par bénévole
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $group: {
+            _id: {
+              $switch: {
+                branches: [
+                  { case: { $lte: ["$count", 1] }, then: "1" },
+                  { case: { $eq: ["$count", 2] }, then: "2" },
+                  { case: { $gte: ["$count", 3] }, then: "3+" }
+                ],
+                default: "Autre"
+              }
+            },
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $project: {
+            type: "$_id",
+            count: 1,
+            _id: 0
+          }
+        }
+      ]).toArray();
+      console.log(raw);
+      return raw;
+    }
+
     async get_nb_cdp_semaine(cdp, startOfWeek, endOfWeek) {
       const nbcdp_semaine = await cdp.aggregate([
         {
@@ -494,6 +590,8 @@ export class StatsBenevoleService {
       nb_present_sensi: 0,
       nb_action_benev: 0,
       nb_actions_93_95: 0,
+      array_two: [],
+      nb_atelier_moyen_par_benevole: 0,
     };
 
     const nb_session_acc = await this.get_nb_session_acc(evenement_benev, date_debut, date_fin);
@@ -502,6 +600,8 @@ export class StatsBenevoleService {
     const nb_present_sensi = await this.get_nb_present_sensi(evenement_benev, date_debut, date_fin);
     const nb_presence_atelier_benev = await this.get_nb_presence_atelier_benev(cdpenrbenev, date_debut, date_fin);
     const nb_presence_atelier_benev_93_95 = await this.get_nb_presence_atelier_benev_93_95(cdpenrbenev, date_debut, date_fin);
+    const nb_repartition = await this.get_nb_repartition(cdpenrbenev, date_debut, date_fin);
+    const nb_ateliers_moyen = await this.get_nb_atelier_moyen(cdpenrbenev, date_debut, date_fin);
 
     result.nb_session_acc = nb_session_acc[0]?.count || 0;
     result.nv_benevole = nb_benev_session_accueil?.total || 0;
@@ -511,6 +611,9 @@ export class StatsBenevoleService {
     result.nb_present_sensi = nb_present_sensi[0]?.count || 0;
     result.nb_action_benev = nb_presence_atelier_benev[0]?.count || 0;
     result.nb_actions_93_95 = nb_presence_atelier_benev_93_95[0]?.count || 0;
+    result.array_two = nb_repartition;
+    result.nb_atelier_moyen_par_benevole = nb_ateliers_moyen;
+    
     return result;
   }
 }
