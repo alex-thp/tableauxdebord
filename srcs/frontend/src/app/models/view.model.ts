@@ -26,6 +26,7 @@ export interface ViewData {
     benev_en_atelier?: number,
     nb_sensi?: number,
     array_one?:any, //un tableau d'objets de label/valeur
+    array_two?:any,
     nb_present_sensi?: number,
     nb_action_benev?: number,
     nb_actions_93_95?: number,
@@ -35,4 +36,7 @@ export interface ViewData {
     nb_collabs?: number,
     arr_repart_collab?: any,
     string_asso_part_prescr?: string,
+    nb_atelier_moyen_par_benevole?: number, //bénévole classique
+    nb_atelier_moyen_par_be?: number, //bénévole entreprise
+    nb_cand_atco_unique?: number,
 }

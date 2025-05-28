@@ -6,10 +6,6 @@
   <div *ngIf="!error">
     <p>{{ message }}</p>
 
-    <ul>
-      <li *ngFor="let item of secureData">
-        Élément sécurisé : {{ item }}
-      </li>
-    </ul>
+    <app-user-role-management></app-user-role-management>
   </div>
 </div>

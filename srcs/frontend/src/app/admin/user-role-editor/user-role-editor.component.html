@@ -1,0 +1,15 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div>
+    <label>Email :</label>
+    <input formControlName="email" />
+  </div>
+
+  <div>
+    <label>Rôle :</label>
+    <select formControlName="role">
+      <option *ngFor="let r of availableRoles" [value]="r.name">{{ r.name }}</option>
+    </select>
+  </div>
+
+  <button type="submit" [disabled]="form.invalid">Mettre à jour</button>
+</form>

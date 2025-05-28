@@ -15,6 +15,7 @@ export const appRouteList: Routes = [
     { path: 'search', component: CardComponent, canActivate: [AuthGuard] },
     { path: 'graph', component: GraphCandidatsComponent, canActivate: [AuthGuard] },
     { path: 'admin', component: AdminDashboardComponent, canActivate: [AuthGuard] },
+    //{ path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
     { path: '**', redirectTo: 'login' }
 ];
 

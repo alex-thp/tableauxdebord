@@ -66,9 +66,10 @@
         </div>
         <div class="data-block">
             <h3 class="green-underline">Candidats At-Co</h3>
-            <p>Candidats ATCO: <span>{{ data.nb_cand_at_co || 0 }}</span></p>
+            <p>Candidats uniques ATCO: <span>{{ data.nb_cand_atco_unique || 0 }}</span></p>
+            <p>Passages ATCO: <span>{{ data.nb_cand_at_co || 0 }}</span></p>
             <p>Candidats CDP + ATCO: <span>{{ data.nb_cand_cdp_et_atco || 0 }}</span></p>
-            <app-progress-bar *ngIf="data.nb_cand_at_co !== undefined && data.nb_cand_cdp_et_atco !== undefined" [realise]="data.nb_cand_cdp_et_atco" [attendu]="data.nb_cand_at_co || 1"></app-progress-bar>
+            <app-progress-bar *ngIf="data.nb_cand_at_co !== undefined && data.nb_cand_cdp_et_atco !== undefined" [realise]="data.nb_cand_cdp_et_atco" [attendu]="data.nb_cand_atco_unique || 1"></app-progress-bar>
         </div>
     
         <div class="data-block">
@@ -99,6 +100,11 @@
             <h3 class="green-underline">Actions bénévole</h3>
             <p>Nombre de présence en atelier: <span>{{ (data.nb_action_benev || 0) }}</span></p>
             <p>Nombre de présence dans le 93 & 95: <span>{{ (data.nb_actions_93_95 || 0) }}</span></p>
+            <p>Nombre d'atelier moyen par bénévole: <span>{{ (data.nb_atelier_moyen_par_benevole || 0) }}</span></p>
+        </div>
+        <div class="data-block" *ngIf="values !== undefined && labels !== undefined">
+            <h3 class="green-underline">Répartition par nombre d'ateliers</h3>
+            <app-pie-chart [data]="values_two" [labels]="labels_two" [colors]="colors_two"></app-pie-chart>
         </div>
         <div class="data-block" *ngIf="data.nb_sensi !== undefined && data.nb_present_sensi !== undefined">
             <h3 class="green-underline">Sensi / Formation</h3>
@@ -127,6 +133,7 @@
             <p>Nombre de tris: <span>{{ data.nb_tri || 0 }}</span></p>
             <p>Nombre de présentation de fresque: <span>{{ data.nb_fresque || 0 }}</span></p>
             <p>Nombre de collabs mobilisés: <span>{{ (data.nb_collabs || 0)}}</span></p>
+            <p>Nombre d'ateliers moyen par collab: <span>{{ (data.nb_atelier_moyen_par_be || 0)}}</span></p>
         </div>
         <div class="data-block" *ngIf="values !== undefined && labels !== undefined">
             <h3 class="green-underline">Répartition par nombre d'ateliers</h3>

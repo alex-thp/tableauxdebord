@@ -1,0 +1,25 @@
+<table>
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Rôles</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of users">
+      <td>{{ user.email }}</td>
+      <td>{{ user.roleNames }}</td>
+      <td><button (click)="editUser(user)">Modifier</button></td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="edit">
+  <app-user-role-editor
+    [email]="selectedUser.email"
+    [role]="selectedUser.roleNames.split(', ')[0]"
+    [availableRoles]="availableRoles"
+    (save)="onRoleUpdate($event)">
+  </app-user-role-editor>
+</div>

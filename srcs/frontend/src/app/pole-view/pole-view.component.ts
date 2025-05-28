@@ -25,6 +25,9 @@ export class PoleViewComponent implements OnInit, OnChanges {
   labels?: any;
   values?: any;
   colors?: any;
+  labels_two?: any;
+  values_two?: any;
+  colors_two?: any;
   currentYear = new Date().getFullYear();
   date_debut: string = this.formatDate(new Date(this.currentYear, 0, 1));
   date_fin: string = this.formatDate(new Date(this.currentYear, 11, 31));
@@ -72,6 +75,11 @@ export class PoleViewComponent implements OnInit, OnChanges {
           this.labels = this.data.array_one.map((item: { type: string }) => item.type);
           this.values = this.data.array_one.map((item: { count: number }) => item.count);
           this.colors = this.generateColors(this.data.array_one.length);
+        }
+        if (this.data.array_two !== undefined && Array.isArray(this.data.array_two)) {
+          this.labels_two = this.data.array_two.map((item: { type: string }) => item.type);
+          this.values_two = this.data.array_two.map((item: { count: number }) => item.count);
+          this.colors_two = this.generateColors(this.data.array_two.length);
         }
   
         // Force Angular à détecter les changements après la mise à jour de `data`

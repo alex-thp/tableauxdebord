@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { GatewayService } from '../gateway.service';
+import { AdminComponent } from '../admin/admin.component';
+import { UserRoleManagementComponent } from '../admin/user-role-management/user-role-management.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css'],
-  imports: [CommonModule],
+  imports: [CommonModule, UserRoleManagementComponent],
   standalone: true
 })
 export class AdminDashboardComponent implements OnInit {
