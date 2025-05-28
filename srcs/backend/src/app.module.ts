@@ -68,7 +68,7 @@ export class AppModule {
       console.log('Rôle "admin" créé.');
     }
     const userRepository = this.dataSource.getRepository(User);
-    const userExists = await userRepository.findOne({ where: { email: 'alexandre@lacravatesolidaire.org' } });
+    const userExists = await userRepository.findOne({ where: { email: process.env.EMAIL_ADMIN } });
     if (!userExists) {
       const defaultUser = userRepository.create({
         email: 'alexandre@lacravatesolidaire.org',
