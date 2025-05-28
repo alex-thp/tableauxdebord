@@ -7,9 +7,9 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DateSearchComponent } from './date-search/date-search.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './connection/login/login.component';
 import { AuthInterceptor } from './auth.interceptor';
-import { SignupComponent } from './signup/signup.component';
+import { ConnectionComponent } from './connection/connection.component';
 
 
 @NgModule({
@@ -18,7 +18,7 @@ declarations: [
     GraphCandidatsComponent,
     DateSearchComponent,
     LoginComponent,
-    SignupComponent
+    ConnectionComponent
   ],
   imports: [
     BrowserModule,

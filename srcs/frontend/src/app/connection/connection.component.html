@@ -1,0 +1,11 @@
+<div class="auth-container">
+  <div class="tabs">
+    <button [class.active]="activeTab === 'login'" (click)="selectTab('login')">Connexion</button>
+    <button [class.active]="activeTab === 'signup'" (click)="selectTab('signup')">Inscription</button>
+  </div>
+
+  <div class="tab-content">
+    <app-login *ngIf="activeTab === 'login'"></app-login>
+    <app-signup *ngIf="activeTab === 'signup'"></app-signup>
+  </div>
+</div>

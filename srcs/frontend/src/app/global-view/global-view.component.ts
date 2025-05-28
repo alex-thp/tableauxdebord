@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { GatewayService } from '../gateway.service';
 import { CardComponent } from '../card/card.component';
 import { ActivatedRoute } from '@angular/router';
+import { DeconnectionComponent } from '../connection/deconnection/deconnection.component';
 
 @Component({
   selector: 'app-global-view',
   standalone: true,
-  imports: [CommonModule, CardComponent],
+  imports: [CommonModule, CardComponent, DeconnectionComponent],
   templateUrl: './global-view.component.html',
   styleUrls: ['./global-view.component.css']
 })

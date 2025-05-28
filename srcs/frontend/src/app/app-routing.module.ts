@@ -4,12 +4,12 @@ import { GlobalViewComponent } from './global-view/global-view.component';
 import { CardComponent } from './card/card.component';
 import { GraphCandidatsComponent } from './graph-candidats/graph-candidats.component';
 import { PoleViewComponent } from './pole-view/pole-view.component';
-import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth/auth.guard';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { ConnectionComponent } from './connection/connection.component';
 
 export const appRouteList: Routes = [
-    { path: 'login', component: LoginComponent },
+    { path: 'login', component: ConnectionComponent },
     { path: 'home', component: GlobalViewComponent, canActivate: [AuthGuard] },
     { path: 'view/:i', component: PoleViewComponent, canActivate: [AuthGuard] },
     { path: 'search', component: CardComponent, canActivate: [AuthGuard] },
