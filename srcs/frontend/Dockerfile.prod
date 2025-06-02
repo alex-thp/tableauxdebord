@@ -1,0 +1,21 @@
+# Étape 1 - Build Angular app
+FROM node:18 AS builder
+
+WORKDIR /app
+
+# Installer les dépendances
+COPY package*.json ./
+RUN npm install
+
+# Copier le reste du code et builder l'app en prod
+COPY . .
+RUN npm run build:ssr
+
+# Étape 2 - Serveur Nginx
+FROM nginx:alpine
+
+# Copier le build Angular (statique uniquement)
+COPY --from=builder /app/dist/tableau-de-bord/browser /usr/share/nginx/html
+
+# Copier la config Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf

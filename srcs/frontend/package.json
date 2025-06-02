@@ -2,12 +2,13 @@
   "name": "tableau-de-bord",
   "version": "0.0.0",
   "scripts": {
+    "build:ssr": "ng build",
+    "serve:ssr:tableauDeBord": "node dist/tableau-de-bord/server/server.mjs",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:tableauDeBord": "node dist/tableau-de-bord/server/server.mjs"
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {
