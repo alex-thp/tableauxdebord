@@ -2,15 +2,20 @@ FROM node:20-alpine
 
 ENV TZ=Europe/Paris
 
-RUN apk add --update tzdata
-COPY . .
-RUN npm install npm
+# Ajout des dépendances système
+RUN apk add --no-cache tzdata bash
 
+# Crée le dossier de travail
 WORKDIR /usr/src/app
 
-COPY entrypoint.sh /entrypoint.sh
+# Copie uniquement les fichiers package.json pour optimiser le cache Docker
+COPY package*.json ./
 
-RUN chmod +x /entrypoint.sh
+# Installe les dépendances
 RUN npm install
 
-CMD [ "/entrypoint.sh" ]
+# Copie le reste du code
+COPY . .
+
+CMD ["npm", "run", "start:dev"]
+

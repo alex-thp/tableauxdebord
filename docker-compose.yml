@@ -43,7 +43,7 @@ services:
   frontend:
     build:
       context: ./srcs/frontend
-      dockerfile: Dev.dockerfile
+      dockerfile: ./Dev.dockerfile
     volumes:
       - ./srcs/frontend:/app  # Lier le dossier local avec le conteneur
       - /app/node_modules  # Empêcher la duplication des node_modules dans le conteneur
