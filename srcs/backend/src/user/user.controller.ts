@@ -6,7 +6,6 @@ import { RolesAndPermissionsGuard } from 'src/guards/roles-and-permissions.guard
 import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('user')
-@UseGuards(AuthGuard('jwt'), RolesAndPermissionsGuard)
 export class UserController {
     constructor(private readonly userService: UserService) {}
     @Get('with-roles')

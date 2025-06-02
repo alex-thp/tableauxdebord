@@ -2,19 +2,17 @@ FROM node:20-alpine
 
 ENV TZ=Europe/Paris
 
-# Ajout des dépendances système
 RUN apk add --no-cache tzdata bash
+RUN npm install -g @nestjs/cli
 
-# Crée le dossier de travail
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copie uniquement les fichiers package.json pour optimiser le cache Docker
 COPY package*.json ./
-
-# Installe les dépendances
 RUN npm install
 
-# Copie le reste du code
 COPY . .
+RUN npm install
+
+EXPOSE 3000
 
 CMD ["npm", "run", "start:dev"]
