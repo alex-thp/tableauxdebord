@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MongoDbService } from 'src/mongo-db/mongo-db.service';
+import { MongoDbService } from '../mongo-db/mongo-db.service';
 
 @Injectable()
 export class StatsAccompagnementService {

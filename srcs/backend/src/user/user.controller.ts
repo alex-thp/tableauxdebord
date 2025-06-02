@@ -2,8 +2,8 @@ import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, UseGuards } from
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesAndPermissionsGuard } from 'src/guards/roles-and-permissions.guard';
-import { Roles } from 'src/decorators/roles.decorator';
+import { RolesAndPermissionsGuard } from '../guards/roles-and-permissions.guard';
+import { Roles } from '../decorators/roles.decorator';
 
 @Controller('user')
 export class UserController {

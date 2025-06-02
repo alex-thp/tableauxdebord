@@ -4,7 +4,7 @@ import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from 'src/roles/role.entity';
+import { Role } from '../roles/role.entity';
 
 @Injectable()
 export class UserService {

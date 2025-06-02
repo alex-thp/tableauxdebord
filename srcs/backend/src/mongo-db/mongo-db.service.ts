@@ -24,8 +24,8 @@ import {
   Structure,
   EvenementPc,
   EvenementBenev,
+  EvenementBenevXBenev,
 } from "../models";
-import EvenementBenevXBenev from 'src/models/evenement_benev_x_benev.model';
 
 @Injectable()
 export class MongoDbService {

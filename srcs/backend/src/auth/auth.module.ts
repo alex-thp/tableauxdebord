@@ -7,8 +7,8 @@ import { JwtStrategy } from './jwt.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 import { Role } from '../roles/role.entity';
-import { Permission } from 'src/permissions/permission.entity';
-import { UserModule } from 'src/user/user.module';
+import { Permission } from '../permissions/permission.entity';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [

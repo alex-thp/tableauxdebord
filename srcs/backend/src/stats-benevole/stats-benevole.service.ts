@@ -4,7 +4,7 @@ import e from 'express';
 import { stat } from 'fs';
 import { get } from 'mongoose';
 import { EvenementBenev } from 'src/models';
-import { MongoDbService } from 'src/mongo-db/mongo-db.service';
+import { MongoDbService } from '../mongo-db/mongo-db.service';
 
 @Injectable()
 export class StatsBenevoleService {

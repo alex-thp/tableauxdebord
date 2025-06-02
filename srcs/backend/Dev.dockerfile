@@ -2,18 +2,15 @@ FROM node:20-alpine
 
 ENV TZ=Europe/Paris
 
-RUN apk add --no-cache tzdata bash
-RUN npm install -g @nestjs/cli
+RUN apk add --no-cache bash
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY package.json .
-COPY package-lock.json .
-RUN npm install -y
-
-COPY . .
+COPY package*.json ./
+RUN npm install -g @nestjs/cli ts-node-dev
 RUN npm install
 
+# Ne copie PAS tout ici (le code viendra du volume monté)
 EXPOSE 3000
 
-CMD ["npm", "run", "start:dev"]
+CMD ["ts-node-dev", "--respawn", "--poll", "--transpile-only", "src/main.ts"]

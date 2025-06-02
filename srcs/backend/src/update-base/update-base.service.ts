@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { AirtableService } from 'src/airtable/airtable.service';
-import { MongoDbService } from 'src/mongo-db/mongo-db.service';
+import { AirtableService } from '../airtable/airtable.service';
+import { MongoDbService } from '../mongo-db/mongo-db.service';
 
 @Injectable()
 export class UpdateBaseService {

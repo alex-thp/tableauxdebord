@@ -20,6 +20,7 @@ import CdpEnrCandXCdpEnrBenev from "./cdp_enr_cand_x_cdp_enr_benev.model";
 import Structure from "./structure.model";
 import EvenementPc from "./evenement_pc.model";
 import EvenementBenev from "./evenement_benev.model";
+import EvenementBenevXBenev from "./evenement_benev_x_benev.model";
 
 export {
   SousDossierFiXStructureBeneficiaire,
@@ -44,4 +45,5 @@ export {
   Structure,
   EvenementPc,
   EvenementBenev,
+  EvenementBenevXBenev,
 }
