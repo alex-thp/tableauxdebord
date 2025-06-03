@@ -4,11 +4,12 @@ import { GatewayService } from '../gateway.service';
 import { CardComponent } from '../card/card.component';
 import { ActivatedRoute } from '@angular/router';
 import { DeconnectionComponent } from '../connection/deconnection/deconnection.component';
+import { PoleDevComponent } from '../pole-dev/pole-dev.component';
 
 @Component({
   selector: 'app-global-view',
   standalone: true,
-  imports: [CommonModule, CardComponent, DeconnectionComponent],
+  imports: [CommonModule, CardComponent, DeconnectionComponent, PoleDevComponent],
   templateUrl: './global-view.component.html',
   styleUrls: ['./global-view.component.css']
 })
@@ -54,6 +55,7 @@ export class GlobalViewComponent implements OnInit {
       },
       complete: () => {
         this.currentMaging = false;
+        location.reload();
       }
     });
   }

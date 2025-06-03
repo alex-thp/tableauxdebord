@@ -26,6 +26,7 @@ export class SignupComponent {
     if (this.signupForm.valid) {
       const { email, password } = this.signupForm.value;
       this.authService.signUp(email, password).subscribe({
+        next: () => alert('Vous pouvez à présent vous connecter avec ces identifiants'),
         error: () => alert('Identifiants invalides'),
       });
     }

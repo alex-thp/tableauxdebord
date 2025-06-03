@@ -7,6 +7,7 @@ import { PoleViewComponent } from './pole-view/pole-view.component';
 import { AuthGuard } from './auth/auth.guard';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { ConnectionComponent } from './connection/connection.component';
+import { MainDevViewComponent } from './pole-dev/main-dev-view/main-dev-view.component';
 
 export const appRouteList: Routes = [
     { path: 'login', component: ConnectionComponent },
@@ -15,6 +16,7 @@ export const appRouteList: Routes = [
     { path: 'search', component: CardComponent, canActivate: [AuthGuard] },
     { path: 'graph', component: GraphCandidatsComponent, canActivate: [AuthGuard] },
     { path: 'admin', component: AdminDashboardComponent, canActivate: [AuthGuard] },
+    { path: 'dev', component: MainDevViewComponent, canActivate: [AuthGuard] },
     //{ path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
     { path: '**', redirectTo: 'login' }
 ];

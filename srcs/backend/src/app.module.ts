@@ -19,6 +19,8 @@ import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { AdminController } from './controllers/admin.controller';
 import { UserController } from './user/user.controller';
+import { DevController } from './dev/dev.controller';
+import { DevService } from './dev/dev.service';
 
 @Module({
   imports: [
@@ -36,7 +38,7 @@ import { UserController } from './user/user.controller';
     TypeOrmModule.forFeature([User, Role, Permission]),
     UserModule,
   ],
-  controllers: [AppController, AdminController, UserController],
+  controllers: [AppController, AdminController, UserController, DevController],
   providers: [
     AppService,
     ParseDatePipe,
@@ -47,6 +49,7 @@ import { UserController } from './user/user.controller';
     StatsBenevoleService,
     StatsVetementService,
     MajQpvService,
+    DevService,
 
   ],
   exports: [ParseDatePipe],

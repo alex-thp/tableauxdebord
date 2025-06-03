@@ -8,13 +8,16 @@
       </div>
     </div>
     <div class="level-1">
-      <app-card [data]="data.vetement"></app-card>
+      <div class="level-2">
+        <app-card [data]="data.vetement"></app-card>
+        <app-pole-dev></app-pole-dev>
+      </div>
     </div>
   </div>
 </div>
 <div class="majDatabase" *ngIf="currentMaging===false">
   <button class="update-button" (click)="updateDataBase()">
-    Maj de la base de donnée
+    Maj de la base de donnée (actualisez la page ensuite)
   </button>
 </div>
 <div class="loader-container" *ngIf="currentMaging===true">

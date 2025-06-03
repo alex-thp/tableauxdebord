@@ -32,6 +32,12 @@ app-card {
   min-width: 300px; /* Taille minimale pour ne pas être trop petit */
 }
 
+app-pole-dev {
+  flex: 1;
+  max-width: 48%; /* Pour éviter d’occuper toute la ligne */
+  min-width: 300px; /* Taille minimale pour ne pas être trop petit */
+}
+
 /* Seconde ligne : Une seule carte centrée */
 .level-1:last-child {
   justify-content: center;
