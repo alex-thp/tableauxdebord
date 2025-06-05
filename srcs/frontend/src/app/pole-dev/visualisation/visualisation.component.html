@@ -1,0 +1,61 @@
+<div *ngIf="dataToDisplay.length > 0">
+  <button (click)="resetColumnVisibility()" class="reset-columns-button">
+    👁️ Réafficher toutes les colonnes
+  </button>
+  <table>
+    <thead>
+      <tr>
+        <th *ngFor="let col of columns" style="position: relative;" [hidden]="!visibleColumns[col]">
+          <div
+            (click)="toggleFilterDropdown(col)"
+            class="header-label"
+            tabindex="0"
+            role="button"
+            aria-haspopup="listbox"
+            [attr.aria-expanded]="filterDropdownOpenFor === col"
+          >
+            {{ col }}
+          </div>
+
+          <!-- Dropdown that appears when header is clicked -->
+          <div *ngIf="filterDropdownOpenFor === col" class="filter-dropdown" role="listbox">
+          <div
+          *ngFor="let val of getUniqueValuesForColumn(col)"
+          (click)="applyFilter(col, val)"
+          [ngClass]="{
+          'filter-option': true,
+          'active': Array.isArray(activeFilters[col]) && activeFilters[col].includes(val)
+          }"
+        >
+  {{ formatValue(val) }}
+</div>
+            <div
+              (click)="clearFilter(col); toggleFilterDropdown(null)"
+              class="filter-option clear-filter"
+              role="option"
+            >
+              (Aucun filtre)
+            </div>
+            <div
+              (click)="toggleColumnVisibility(col)"
+              class="filter-option hide-column"
+            >
+              👁️‍🗨️ Masquer cette colonne
+            </div>
+          </div>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let row of filteredData">
+        <td *ngFor="let col of columns" [hidden]="!visibleColumns[col]">
+          {{ formatValue(row[col]) }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="fixed-row-count">
+  Total affiché : {{ filteredData.length }} ligne{{ filteredData.length > 1 ? 's' : '' }}
+</div>
+</div>
