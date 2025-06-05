@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { DevGatewayService } from '../dev-gateway.service';
 import { CommonModule } from '@angular/common';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import * as featherIcons from '@ng-icons/feather-icons';
 
 @Component({
   selector: 'app-main-dev-view',
-  imports: [CommonModule],
+  imports: [CommonModule, NgIcon],
   templateUrl: './main-dev-view.component.html',
-  styleUrls: ['./main-dev-view.component.css']
+  styleUrls: ['./main-dev-view.component.css'],
+  viewProviders: [provideIcons(featherIcons)],
 })
 export class MainDevViewComponent {
 
@@ -19,10 +23,17 @@ export class MainDevViewComponent {
   Object = Object;
   Array = Array;
 
-  constructor(private devGatewayService: DevGatewayService) {}
+  constructor(private devGatewayService: DevGatewayService, private router: Router) {}
 
   ngOnInit() {
     this.searchData();
+  }
+
+    toggleBack(): void {
+    this.router.navigate(['/home']).then(nav => {
+    }, err => {
+      console.log(err)
+    });
   }
 
   searchData() {

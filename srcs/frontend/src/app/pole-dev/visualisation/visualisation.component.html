@@ -1,13 +1,3 @@
-<div (click)="$event.stopPropagation(); toggleBack()">
-    <ng-icon name="featherArrowLeft"></ng-icon>
-</div>
-
-<button (click)="searchData()">
-  <span class="material-icons">
-    Rechercher : Accompagnement - CDP Fixe - N'importe quel département de la région - Candidat - Tous profil - N'importe quel département de la région - Nb Présent
-  </span>
-</button>
-
 <div *ngIf="dataToDisplay.length > 0">
   <button (click)="resetColumnVisibility()" class="reset-columns-button">
     👁️ Réafficher toutes les colonnes

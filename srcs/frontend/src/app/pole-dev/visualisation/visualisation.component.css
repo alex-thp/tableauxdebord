@@ -1,0 +1,129 @@
+/* TABLEAU GÉNÉRAL */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+  background-color: #f4f4f4;
+  border-bottom: 2px solid #ccc;
+}
+
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  position: relative;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* ÉTIQUETTE DE COLONNE CLIQUABLE */
+.header-label {
+  display: inline-block;
+  width: 100%;
+  padding: 6px 8px;
+  background-color: transparent;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.header-label:hover {
+  background-color: #eaeaea;
+}
+
+/* MENU DÉROULANT */
+.filter-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 220px;
+  padding: 4px 0;
+}
+
+/* OPTIONS DE FILTRE */
+.filter-option {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.filter-option:hover {
+  background-color: #f0f0f0;
+}
+
+.filter-option.active {
+  background-color: #dceffd;
+  font-weight: bold;
+}
+
+/* LIEN POUR SUPPRIMER LE FILTRE */
+.clear-filter {
+  padding: 8px 12px;
+  font-style: italic;
+  color: #c0392b;
+  cursor: pointer;
+}
+
+.clear-filter:hover {
+  background-color: #ffeaea;
+}
+
+.filter-option.hide-column {
+  border-top: 1px solid #eee;
+  color: #555;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.filter-option.hide-column:hover {
+  background-color: #fdf3d7;
+  color: #c28a00;
+}
+
+.reset-columns-button {
+  margin: 10px 0;
+  background-color: #e7f3ff;
+  border: 1px solid #2196f3;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  color: #0b5394;
+  cursor: pointer;
+}
+
+.reset-columns-button:hover {
+  background-color: #d0e7fd;
+}
+
+.fixed-row-count {
+  position: fixed;
+  bottom: 10px;
+  right: 20px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  border-radius: 4px;
+}
