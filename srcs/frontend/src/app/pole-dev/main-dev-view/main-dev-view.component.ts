@@ -2,12 +2,20 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DevGatewayService } from '../dev-gateway.service';
 import { CommonModule } from '@angular/common';
+<<<<<<< Updated upstream
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import * as featherIcons from '@ng-icons/feather-icons';
 
 @Component({
   selector: 'app-main-dev-view',
   imports: [CommonModule, NgIcon],
+=======
+import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-main-dev-view',
+  imports: [CommonModule, ReactiveFormsModule],
+>>>>>>> Stashed changes
   templateUrl: './main-dev-view.component.html',
   styleUrls: ['./main-dev-view.component.css'],
   viewProviders: [provideIcons(featherIcons)],
@@ -22,13 +30,35 @@ export class MainDevViewComponent {
   visibleColumns: { [key: string]: boolean } = {};
   Object = Object;
   Array = Array;
+  formulaire: FormGroup;
+  criteresOptions: string[] = ['EPA', 'RSA', 'Femmes', 'Hommes'];
+  localitesOptions = ['75', '77', '91', '93', '94', '95'];
+  actionOptions = ['Accompagnement - CDP Fixe', 'Accompagnement - CDP Mobile', 'Accompagnement - CDP Fixe ou Mobile'];
+  sujetOptions = ['Candidat'];
+  sujetIndicateurOptions = ['Nb Présents'];
 
+<<<<<<< Updated upstream
   constructor(private devGatewayService: DevGatewayService, private router: Router) {}
+=======
+  constructor(private devGatewayService: DevGatewayService, private fb: FormBuilder) {
+    this.formulaire = this.fb.group({
+      action: '',
+      action_localite: [[]],
+      sujet: [''],
+      sujet_critere: [[]],
+      sujet_localite: [[]],
+      sujet_indicateur: [''],
+      date_debut: [null],
+      date_fin: [null]
+    });
+  }
+>>>>>>> Stashed changes
 
   ngOnInit() {
     this.searchData();
   }
 
+<<<<<<< Updated upstream
     toggleBack(): void {
     this.router.navigate(['/home']).then(nav => {
     }, err => {
@@ -36,17 +66,96 @@ export class MainDevViewComponent {
     });
   }
 
+=======
+  toggleSelection(controlName: string, value: string): void {
+    const ctrl = this.formulaire.get(controlName);
+    if (!ctrl) return;
+  
+    const currentValues: string[] = ctrl.value || [];
+    const index = currentValues.indexOf(value);
+  
+    if (index > -1) {
+      // Retirer la valeur
+      currentValues.splice(index, 1);
+    } else {
+      // Ajouter la valeur
+      currentValues.push(value);
+    }
+  
+    // Set avec nouvelle référence pour Angular
+    ctrl.setValue([...currentValues]);
+  }
+  
+  isSelected(controlName: string, value: string): boolean {
+    const ctrl = this.formulaire.get(controlName);
+    if (!ctrl) return false;
+    return (ctrl.value || []).includes(value);
+  }
+
+  onMultiSelectChange(event: Event, controlName: string): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedValues = Array.from(selectElement.selectedOptions).map(option => option.value);
+    this.formulaire.get(controlName)?.setValue(selectedValues);
+  }
+
+  // Pour gérer une sélection unique
+  selectSingle(controlName: string, value: string): void {
+    const ctrl = this.formulaire.get(controlName);
+    if (!ctrl) return;
+
+    const currentValue = ctrl.value;
+    if (currentValue === value) {
+      // Déselectionne si on reclique sur la même valeur (optionnel)
+      ctrl.setValue(null);
+    } else {
+      ctrl.setValue(value);
+    }
+}
+
+isSelectedSingle(controlName: string, value: string): boolean {
+  const ctrl = this.formulaire.get(controlName);
+  if (!ctrl) return false;
+  return ctrl.value === value;
+}
+
+  get action_localite() {
+    return this.formulaire.get('action_localite') as FormArray;
+  }
+
+  get sujet_localite() {
+    return this.formulaire.get('sujet_localite') as FormArray;
+  }
+
+  addActionLocalite() {
+    this.action_localite.push(this.fb.control('', Validators.required));
+  }
+
+  removeActionLocalite(index: number) {
+    this.action_localite.removeAt(index);
+  }
+
+  addSujetLocalite() {
+    this.sujet_localite.push(this.fb.control('', Validators.required));
+  }
+
+  removeSujetLocalite(index: number) {
+    this.sujet_localite.removeAt(index);
+  }
+
+  onSubmit() {
+    if (this.formulaire.valid) {
+      this.searchData();
+    } else {
+      console.warn('Formulaire invalide');
+    }
+  }
+  
+>>>>>>> Stashed changes
   searchData() {
     this.devGatewayService.getIndicateurValue(
-      'Accompagnement - CDP Fixe',
-      ["N'importe quel département de la région"],
-      'Candidat',
-      'Tous profil',
-      ["N'importe quel département de la région"],
-      'Nb Présent',
-      new Date(2025, 0, 1),
-      new Date(2025, 11, 31)
+      this.formulaire
     ).subscribe(data2 => {
+      console.log(data2)
       this.dataToDisplay = data2 || [];
       this.columns = this.dataToDisplay.length > 0 ? Object.keys(this.dataToDisplay[0]) : [];
       this.filteredData = [...this.dataToDisplay];

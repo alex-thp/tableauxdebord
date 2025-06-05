@@ -164,13 +164,21 @@ export class DevService {
             matching,
             evenement_pc,
         };
-
-        let data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP FIXE", database);
+        let data = "";
+        if (item.action == "Accompagnement - CDP Fixe")
+            data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP FIXE", database);
+        else if (item.action == "Accompagnement - CDP Mobile")
+            data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP MOBILE", database);
+        else if (item.action == "Accompagnement - CDP Fixe ou Mobile")
+            data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP FIXE, CDP MOBILE", database);
         return data;
     }
 
     async forge_request_nb_prescriptions_present_cdp(item, type_cdp, database) {
+        item.sujet_critere = this.normalizeToArray(item.sujet_critere);
         let customQuery = this.forge_request_sujet_critere(item.sujet_critere);
+        console.log(type_cdp)
+        console.log(typeof type_cdp)
         switch (type_cdp) {
             case "CDP FIXE, CDP MOBILE":
             customQuery = this.updateQuery(customQuery, "type_atelier", "CDP MOBILE", "$in", "CDP FIXE");

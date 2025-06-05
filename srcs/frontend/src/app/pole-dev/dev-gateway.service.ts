@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -19,6 +20,7 @@ export class DevGatewayService {
       return this.http.get(`${this.baseUrl}/indicateur`, { params });
     }
 
+<<<<<<< Updated upstream
     getIndicateurValue(
       action: string,
       action_localite: [string],
@@ -40,13 +42,30 @@ export class DevGatewayService {
         date_fin
       });
       let params = new HttpParams()
+=======
+  getIndicateurValue(formulaire: FormGroup): Observable<any> {
+    const {
+      action,
+      action_localite,
+      sujet,
+      sujet_critere,
+      sujet_localite,
+      sujet_indicateur,
+      date_debut,
+      date_fin
+    } = formulaire.value;
+  
+    let params = new HttpParams()
+>>>>>>> Stashed changes
       .set('action', action.toString())
-      .set('action_localite', action_localite.toString())
       .set('sujet', sujet.toString())
-      .set('sujet_critere', sujet_critere.toString())
-      .set('sujet_localite', sujet_localite.toString())
-      .set('sujet_indicateur', sujet_indicateur.toString());
+      .set('sujet_indicateur', sujet_indicateur.toString())
+        // Append les éléments un par un pour qu'ils soient reçus comme tableau côté backend
+      action_localite.forEach((loc: string) => {
+        params = params.append('action_localite', loc);
+      });
 
+<<<<<<< Updated upstream
       if (date_debut) {
         params = params.set('date_debut', date_debut.toString());
       }
@@ -55,5 +74,27 @@ export class DevGatewayService {
       }
       console.log('la fonction est bien déclenchée');
       return this.http.get(`${this.baseUrl}/indicateurValue`, { params });
+=======
+      sujet_critere.forEach((crit: string) => {
+        console.log(crit)
+        params = params.append('sujet_critere', crit);
+      });
+
+      sujet_localite.forEach((loc: string) => {
+        params = params.append('sujet_localite', loc);
+      });;
+  
+    if (date_debut) {
+      params = params.set('date_debut', new Date(date_debut).toISOString());
     }
+  
+    if (date_fin) {
+      params = params.set('date_fin', new Date(date_fin).toISOString());
+>>>>>>> Stashed changes
+    }
+  
+    console.log('la fonction est bien déclenchée');
+  
+    return this.http.get(`${this.baseUrl}/indicateurValue`, { params });
+  }
 }

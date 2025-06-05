@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <div (click)="$event.stopPropagation(); toggleBack()">
     <ng-icon name="featherArrowLeft"></ng-icon>
 </div>
@@ -7,6 +8,162 @@
     Rechercher : Accompagnement - CDP Fixe - N'importe quel département de la région - Candidat - Tous profil - N'importe quel département de la région - Nb Présent
   </span>
 </button>
+=======
+<form [formGroup]="formulaire" (ngSubmit)="onSubmit()" class="custom-form">
+
+  <div class="form-group">
+    <label>Action</label>
+    <div class="criteres-list">
+      <div
+        *ngFor="let act of actionOptions"
+        (click)="selectSingle('action', act)"
+        [class.selected]="isSelectedSingle('action', act)"
+        class="critere-item"
+      >
+        {{ act }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Action Localité</label>
+    <div class="criteres-list">
+      <div
+        *ngFor="let loc of localitesOptions"
+        (click)="toggleSelection('action_localite', loc)"
+        [class.selected]="isSelected('action_localite', loc)"
+        class="critere-item"
+      >
+        {{ loc }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Sujet</label>
+    <div class="criteres-list">
+      <div
+        *ngFor="let suj of sujetOptions"
+        (click)="selectSingle('sujet', suj)"
+        [class.selected]="isSelectedSingle('sujet', suj)"
+        class="critere-item"
+      >
+        {{ suj }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Sujet Critère</label>
+    <div class="criteres-list">
+      <div
+        *ngFor="let critere of criteresOptions"
+        (click)="toggleSelection('sujet_critere', critere)"
+        [class.selected]="isSelected('sujet_critere', critere)"
+        class="critere-item"
+      >
+        {{ critere }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Sujet Localité</label>
+    <div class="criteres-list">
+      <div
+        *ngFor="let loc of localitesOptions"
+        (click)="toggleSelection('sujet_localite', loc)"
+        [class.selected]="isSelected('sujet_localite', loc)"
+        class="critere-item"
+      >
+        {{ loc }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Sujet indicateur</label>
+    <div class="criteres-list">
+      <div
+        *ngFor="let sujindic of sujetIndicateurOptions"
+        (click)="selectSingle('sujet_indicateur', sujindic)"
+        [class.selected]="isSelectedSingle('sujet_indicateur', sujindic)"
+        class="critere-item"
+      >
+        {{ sujindic }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="date_debut">Date Début</label>
+    <input id="date_debut" type="date" formControlName="date_debut" />
+  </div>
+
+  <div class="form-group">
+    <label for="date_fin">Date Fin</label>
+    <input id="date_fin" type="date" formControlName="date_fin" />
+  </div>
+
+  <pre>{{ formulaire.value | json }}</pre>
+  <button type="submit" class="submit-button">Envoyer</button>
+</form>
+
+<div *ngIf="dataToDisplay && dataToDisplay.length > 0">
+  <button (click)="resetColumnVisibility()" class="reset-columns-button">
+    👁️ Réafficher toutes les colonnes
+  </button>
+  <table>
+    <thead>
+      <tr>
+        <th *ngFor="let col of columns" [hidden]="!visibleColumns[col]">
+          <div
+            (click)="toggleFilterDropdown(col)"
+            class="header-label"
+            tabindex="0"
+            role="button"
+            aria-haspopup="listbox"
+            [attr.aria-expanded]="filterDropdownOpenFor === col"
+          >
+            {{ col }}
+          </div>
+
+          <div *ngIf="filterDropdownOpenFor === col" class="filter-dropdown" role="listbox">
+            <div
+              *ngFor="let val of getUniqueValuesForColumn(col)"
+              (click)="applyFilter(col, val)"
+              [ngClass]="{
+                'filter-option': true,
+                'active': Array.isArray(activeFilters[col]) && activeFilters[col].includes(val)
+              }"
+            >
+              {{ formatValue(val) }}
+            </div>
+            <div (click)="clearFilter(col); toggleFilterDropdown(null)" class="filter-option clear-filter" role="option">
+              (Aucun filtre)
+            </div>
+            <div (click)="toggleColumnVisibility(col)" class="filter-option hide-column">
+              👁️‍🗨️ Masquer cette colonne
+            </div>
+          </div>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let row of filteredData">
+        <td *ngFor="let col of columns" [hidden]="!visibleColumns[col]">
+          {{ formatValue(row[col]) }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="fixed-row-count">
+    Total affiché : {{ filteredData.length }} ligne{{ filteredData.length > 1 ? 's' : '' }}
+  </div>
+</div>
+
+>>>>>>> Stashed changes
 
 <div *ngIf="dataToDisplay.length > 0">
   <button (click)="resetColumnVisibility()" class="reset-columns-button">
