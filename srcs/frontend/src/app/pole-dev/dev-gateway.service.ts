@@ -20,8 +20,7 @@ export class DevGatewayService {
       return this.http.get(`${this.baseUrl}/indicateur`, { params });
     }
 
-<<<<<<< Updated upstream
-    getIndicateurValue(
+    getVisualisationValue(
       action: string,
       action_localite: [string],
       sujet: string,
@@ -42,7 +41,23 @@ export class DevGatewayService {
         date_fin
       });
       let params = new HttpParams()
-=======
+      .set('action', action.toString())
+      .set('sujet', sujet.toString())
+      .set('sujet_indicateur', sujet_indicateur.toString())
+        // Append les éléments un par un pour qu'ils soient reçus comme tableau côté backend
+      action_localite.forEach((loc: string) => {
+        params = params.append('action_localite', loc);
+      });
+      if (date_debut) {
+        params = params.set('date_debut', date_debut.toString());
+      }
+      if (date_fin) {
+        params = params.set('date_fin', date_fin.toString());
+      }
+      console.log('la fonction est bien déclenchée');
+      return this.http.get(`${this.baseUrl}/indicateurValue`, { params });
+    }
+    
   getIndicateurValue(formulaire: FormGroup): Observable<any> {
     const {
       action,
@@ -56,7 +71,6 @@ export class DevGatewayService {
     } = formulaire.value;
   
     let params = new HttpParams()
->>>>>>> Stashed changes
       .set('action', action.toString())
       .set('sujet', sujet.toString())
       .set('sujet_indicateur', sujet_indicateur.toString())
@@ -65,16 +79,6 @@ export class DevGatewayService {
         params = params.append('action_localite', loc);
       });
 
-<<<<<<< Updated upstream
-      if (date_debut) {
-        params = params.set('date_debut', date_debut.toString());
-      }
-      if (date_fin) {
-        params = params.set('date_fin', date_fin.toString());
-      }
-      console.log('la fonction est bien déclenchée');
-      return this.http.get(`${this.baseUrl}/indicateurValue`, { params });
-=======
       sujet_critere.forEach((crit: string) => {
         console.log(crit)
         params = params.append('sujet_critere', crit);
@@ -90,7 +94,6 @@ export class DevGatewayService {
   
     if (date_fin) {
       params = params.set('date_fin', new Date(date_fin).toISOString());
->>>>>>> Stashed changes
     }
   
     console.log('la fonction est bien déclenchée');

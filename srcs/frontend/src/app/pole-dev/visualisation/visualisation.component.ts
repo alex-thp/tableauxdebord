@@ -54,7 +54,7 @@ export class VisualisationComponent {
 
 searchData() {
   console.log('Recherche avec les paramètres:', this.dataToSearch);
-    this.devGatewayService.getIndicateurValue(
+    this.devGatewayService.getVisualisationValue(
                               this.dataToSearch.action,
                               this.dataToSearch.action_localite,
                               this.dataToSearch.sujet,
@@ -74,7 +74,7 @@ searchData() {
 
 
   searchData2() {
-    this.devGatewayService.getIndicateurValue(
+    this.devGatewayService.getVisualisationValue(
       'Accompagnement - CDP Fixe',
       ["N'importe quel département de la région"],
       'Candidat',
