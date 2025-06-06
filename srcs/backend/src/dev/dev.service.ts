@@ -183,11 +183,11 @@ export class DevService {
             evenement_pc,
         };
         let data = "";
-        if (item.action == "Accompagnement - CDP Fixe")
+        if (item.action == "Accompagnement - CDP Fixe" || item.action == "Accompagnement - CDP Fixe (Global)")
             data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP FIXE", database);
-        else if (item.action == "Accompagnement - CDP Mobile")
+        else if (item.action == "Accompagnement - CDP Mobile" || item.action == "Accompagnement - CDP Mobile (Global)")
             data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP MOBILE", database);
-        else if (item.action == "Accompagnement - CDP Fixe ou Mobile")
+        else if (item.action == "Accompagnement - CDP Fixe ou Mobile" || item.action == "Accompagnement - CDP Fixe ou Mobile (Global)")
             data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP FIXE, CDP MOBILE", database);
         return data;
     }
