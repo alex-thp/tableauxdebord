@@ -168,7 +168,6 @@ searchData() {
     error: (err) => {
       console.error('Erreur lors de la récupération des données :', err);
       if (err.status === 403) {
-        // Afficher un message utilisateur par exemple
         alert("Accès interdit. Veuillez vérifier vos droits ou votre authentification.");
       }
     }
