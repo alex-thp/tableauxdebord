@@ -66,8 +66,8 @@ export class AppModule {
       console.log('Rôle "user" créé.');
       const adminRole = roleRepository.create({ name: 'admin' });
       await roleRepository.save(adminRole);
-      const managerRole = roleRepository.create({ name: 'manager' });
-      await roleRepository.save(managerRole);
+      const superAdminRole = roleRepository.create({ name: 'superAdmin' });
+      await roleRepository.save(superAdminRole);
       console.log('Rôle "admin" créé.');
     }
     const userRepository = this.dataSource.getRepository(User);
@@ -76,7 +76,7 @@ export class AppModule {
       const defaultUser = userRepository.create({
         email: 'alexandre@lacravatesolidaire.org',
         passwordHash: process.env.MDP_ADMIN,
-        roles: [(await roleRepository.findOne({ where: { name: 'admin' } }))!],
+        roles: [(await roleRepository.findOne({ where: { name: 'superAdmin' } }))!, (await roleRepository.findOne({ where: { name: 'admin' } }))!],
       });
       await userRepository.save(defaultUser);
 

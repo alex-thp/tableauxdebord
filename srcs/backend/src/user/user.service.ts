@@ -32,24 +32,23 @@ export class UserService {
     };
   }
 
-  async findUserWithRolesAndPermissions(userId: number) {
-  return this.userRepository.findOne({
+async findUserWithRolesAndPermissions(userId: number) {
+  const user = await this.userRepository.findOne({
     where: { id: userId },
     relations: ['roles', 'roles.permissions'],
-  }).then(user => {
-    if (!user) {
-      return null;
-    }
-    const permissionsSet = new Set<string>();
-    user.roles.forEach(role => {
-      role.permissions.forEach(permission => permissionsSet.add(permission.name));
-    });
-
-    return {
-      ...user,
-      permissions: Array.from(permissionsSet),
-    };
   });
+
+  if (!user) return null;
+
+  const permissions = new Set<string>();
+  user.roles.forEach(role =>
+    role.permissions.forEach(p => permissions.add(p.name))
+  );
+
+  return {
+    ...user,
+    permissions: Array.from(permissions),
+  };
 }
 
   async findByEmailWithRolesAndPermissions(email: string): Promise<User | null> {
@@ -75,6 +74,9 @@ async updateUserRole(userId: number, roleId: number): Promise<User> {
   if (!role) throw new NotFoundException('Rôle introuvable');
 
   user.roles = [role];
+    /*if (!user.roles.some(r => r.id === role.id)) {
+    user.roles.push(role);
+  }*/
   return this.userRepository.save(user);
 }
 

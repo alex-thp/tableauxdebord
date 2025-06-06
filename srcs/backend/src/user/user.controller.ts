@@ -19,7 +19,7 @@ export class UserController {
     }
 
     @Put(':id/roles')
-    @Roles('admin')
+    @Roles('superAdmin')
     updateUserRole(
     @Param('id', ParseIntPipe) userId: number,
     @Body() updateUserRoleDto: UpdateUserRoleDto

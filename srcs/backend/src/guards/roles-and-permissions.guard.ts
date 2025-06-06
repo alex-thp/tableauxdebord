@@ -28,16 +28,20 @@ export class RolesAndPermissionsGuard implements CanActivate {
         console.error('Utilisateur non authentifié');
         throw new ForbiddenException('Utilisateur non authentifié');
     }
-    const hasRole = !requiredRoles || requiredRoles.some(role => user.roles?.includes(role));
+    const hasRole = !requiredRoles || requiredRoles.some(role => user.roles?.includes(role) || user.roles?.includes('superAdmin'));
     const hasPermission = !requiredPermissions || requiredPermissions.some(permission =>
       user.permissions?.includes(permission),
     );
+
+    console.log('User roles:', user.roles);
+    console.log('Required roles:', requiredRoles);
 
     if (!hasRole || !hasPermission) {
         console.error('Accès refusé : rôle ou permission manquant(e)');
         console.error('Rôles requis:', requiredRoles);
         throw new ForbiddenException('Accès refusé : rôle ou permission manquant(e)');
     }
+
 
     return true;
   }
