@@ -1,3 +1,9 @@
+<div class="container">
+
+<div (click)="$event.stopPropagation(); toggleBack()">
+  <ng-icon name="featherArrowLeft"></ng-icon>
+</div>
+
 <form [formGroup]="formulaire" (ngSubmit)="onSubmit()" class="custom-form">
 
   <div class="form-group">
@@ -150,4 +156,5 @@
   <div class="fixed-row-count">
     Total affiché : {{ filteredData.length }} ligne{{ filteredData.length > 1 ? 's' : '' }}
   </div>
+</div>
 </div>

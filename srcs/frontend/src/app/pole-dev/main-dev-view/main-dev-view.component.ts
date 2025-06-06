@@ -15,6 +15,7 @@ import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } fr
 })
 export class MainDevViewComponent {
 
+  missRole: boolean = false;
   dataToDisplay: any[] = [];
   columns: string[] = [];
   filteredData: any[] = [];
@@ -154,18 +155,25 @@ isSelectedSingle(controlName: string, value: string): boolean {
     }
   }
   
-  searchData() {
-    this.devGatewayService.getIndicateurValue(
-      this.formulaire
-    ).subscribe(data2 => {
-      console.log(data2)
+searchData() {
+  this.devGatewayService.getIndicateurValue(this.formulaire).subscribe({
+    next: (data2) => {
+      console.log('Réponse :', data2);
       this.dataToDisplay = data2 || [];
       this.columns = this.dataToDisplay.length > 0 ? Object.keys(this.dataToDisplay[0]) : [];
       this.filteredData = [...this.dataToDisplay];
       this.visibleColumns = {};
       this.columns.forEach(col => this.visibleColumns[col] = true);
-    });
-  }
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des données :', err);
+      if (err.status === 403) {
+        // Afficher un message utilisateur par exemple
+        alert("Accès interdit. Veuillez vérifier vos droits ou votre authentification.");
+      }
+    }
+  });
+}
 
   resetColumnVisibility() {
     this.columns.forEach(col => this.visibleColumns[col] = true);
