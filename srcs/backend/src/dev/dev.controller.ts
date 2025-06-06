@@ -1,7 +1,11 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { DevService } from './dev.service';
+import { Roles } from '../decorators/roles.decorator';
+import { RolesAndPermissionsGuard } from '../guards/roles-and-permissions.guard';
 
+@UseGuards(AuthGuard('jwt'), RolesAndPermissionsGuard)
+@Roles('admin')
 @Controller('dev')
 export class DevController {
     constructor(private readonly devService: DevService) {}
@@ -17,7 +21,6 @@ export class DevController {
          * @param rapport_x_indicateur - The report identifier.
          * @returns A promise that resolves to a string representing the indicator value.
          */
-    @UseGuards(AuthGuard('jwt'))
     @Get('indicateur')
     async getRapportXIndicateur(
         @Query('rapport_x_indicateur') rapport_x_indicateur: string): Promise<any> {
@@ -64,6 +67,7 @@ export class DevController {
          * @returns A promise that resolves to a string representing the indicator value.
          */
       @UseGuards(AuthGuard('jwt'))
+      @Roles('admin')
       @Get('indicateurValue')
       async getData(
         @Query('action') action: string,
