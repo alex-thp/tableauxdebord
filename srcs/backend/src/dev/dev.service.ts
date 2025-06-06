@@ -189,7 +189,58 @@ export class DevService {
             data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP MOBILE", database);
         else if (item.action == "Accompagnement - CDP Fixe ou Mobile" || item.action == "Accompagnement - CDP Fixe ou Mobile (Global)")
             data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP FIXE, CDP MOBILE", database);
+        else if (item.action == "Accompagnement - Atelier Collectif" || item.action == "Accompagnement - Atelier Collectif (Global)")
+            data = await this.forge_request_nb_prescriptions_present_at_co(item, database);
         return data;
+    }
+
+    async forge_request_nb_prescriptions_present_at_co(item, database) {
+        let sujet_loc_check = 0;
+        let action_loc_check = 0;
+
+        let customQuery = this.forge_request_sujet_critere(item.sujet_critere);
+        customQuery = this.updateQuery(customQuery, "date_atelier", new Date(item.date_debut), "$gte-$lt", new Date(item.date_fin));
+
+        const sujetLocalite = item.sujet_localite; // Les termes du sujet à rechercher
+        const actionLocalite = item.action_localite; // Les termes de l'action à rechercher
+
+        for (const localite of item.sujet_localite) {
+            if (
+                localite != "n'importe quel département de la région" &&
+                localite != "N'importe quel département de la région" &&
+                localite != "France" &&
+                localite != ""
+            ) {
+                sujet_loc_check = 1;
+            }
+        }
+        for (const localite of item.action_localite) {
+            if (
+            localite != "n'importe quel département de la région" &&
+            localite != "N'importe quel département de la région" &&
+            localite != "France" &&
+            localite != ""
+            ) {
+                action_loc_check = 1;
+            }
+        }
+
+        if (sujet_loc_check == 1) {
+            customQuery = this.add_localite_to_query(customQuery, "candidat_residence", sujetLocalite);
+        }
+
+        if (action_loc_check == 1) {
+            customQuery = this.add_localite_to_query(customQuery, "atelier_lieu", actionLocalite);
+        }
+        let response = await database.atcoenrcand
+        .aggregate([
+            // Partie 1 : Filtrage des données selon customQuery
+            {
+                $match: customQuery, // Applique les critères personnalisés
+            },
+        ])
+        .toArray();
+        return response;
     }
 
     async forge_request_nb_prescriptions_present_cdp(item, type_cdp, database) {
