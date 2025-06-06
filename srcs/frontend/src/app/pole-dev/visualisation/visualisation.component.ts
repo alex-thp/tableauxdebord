@@ -68,7 +68,8 @@ searchData() {
                               this.dataToSearch.sujet_indicateur,
                               this.dataToSearch.date_debut,
                               this.dataToSearch.date_fin
-                            ).subscribe(data2 => {
+                            ).subscribe({
+    next: (data2) => {
       this.dataToDisplay = data2 || [];
       if (this.dataToDisplay.length === 0) {
         this.notFound = true;
@@ -77,7 +78,14 @@ searchData() {
       this.filteredData = [...this.dataToDisplay];
       this.visibleColumns = {};
       this.columns.forEach(col => this.visibleColumns[col] = true);
-    });
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des données :', err);
+      if (err.status === 403) {
+        alert("Accès interdit. Veuillez vérifier vos droits ou votre authentification.");
+      }
+    }
+  });
   }
 
 
