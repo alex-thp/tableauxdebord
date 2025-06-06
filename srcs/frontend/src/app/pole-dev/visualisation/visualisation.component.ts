@@ -32,6 +32,7 @@ export class VisualisationComponent {
   Object = Object;
   Array = Array;
   rapportXIndicateurId: string = "";
+  notFound: boolean = false;
 
   constructor(
     private devGatewayService: DevGatewayService,
@@ -69,6 +70,9 @@ searchData() {
                               this.dataToSearch.date_fin
                             ).subscribe(data2 => {
       this.dataToDisplay = data2 || [];
+      if (this.dataToDisplay.length === 0) {
+        this.notFound = true;
+      }
       this.columns = this.dataToDisplay.length > 0 ? Object.keys(this.dataToDisplay[0]) : [];
       this.filteredData = [...this.dataToDisplay];
       this.visibleColumns = {};

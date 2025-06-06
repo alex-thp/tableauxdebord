@@ -1,3 +1,8 @@
+<div *ngIf="notFound === true">
+  Résultat non trouvé. Veuillez vérifier les paramètres de votre requête.
+  Si le problème persiste, veuillez contacter l'administrateur.
+</div>
+
 <div *ngIf="dataToDisplay.length > 0">
   <button (click)="resetColumnVisibility()" class="reset-columns-button">
     👁️ Réafficher toutes les colonnes
