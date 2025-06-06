@@ -1,0 +1,32 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 96%;
+  text-align: center;
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+.container {
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 6rem;
+  margin: 0;
+  color: #dc3545;
+}
+
+p {
+  font-size: 1.5rem;
+  margin: 10px 0 20px;
+  color: #343a40;
+}
+
+img {
+  max-width: 60%;
+  height: auto;
+  margin-bottom: 20px;
+}

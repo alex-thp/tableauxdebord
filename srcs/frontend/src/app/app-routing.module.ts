@@ -9,8 +9,10 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 import { ConnectionComponent } from './connection/connection.component';
 import { MainDevViewComponent } from './pole-dev/main-dev-view/main-dev-view.component';
 import { VisualisationComponent } from './pole-dev/visualisation/visualisation.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 export const appRouteList: Routes = [
+    { path: '', component: GlobalViewComponent, canActivate: [AuthGuard] },
     { path: 'login', component: ConnectionComponent },
     { path: 'home', component: GlobalViewComponent, canActivate: [AuthGuard] },
     { path: 'view/:i', component: PoleViewComponent, canActivate: [AuthGuard] },
@@ -19,9 +21,10 @@ export const appRouteList: Routes = [
     { path: 'admin', component: AdminDashboardComponent, canActivate: [AuthGuard] },
     { path: 'dev', component: MainDevViewComponent, canActivate: [AuthGuard] },
     { path: 'visualisation/:rapport_x_indicateur', component: VisualisationComponent, canActivate: [AuthGuard] },
+    { path: 'not_found', component: NotFoundComponent },
     //{ path: 'visualisation', redirectTo: '/home', pathMatch: 'full' },
     //{ path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
-    { path: '**', redirectTo: 'login' }
+    { path: '**', redirectTo: 'not_found' }
 ];
 
 @NgModule({

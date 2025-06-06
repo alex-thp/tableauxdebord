@@ -30,7 +30,7 @@ export class DevGatewayService {
       date_debut: Date | null,
       date_fin: Date | null
     ): Observable<any> {
-      console.log('getIndicateurValue called with parameters:', {
+      console.log('getVisualisationValue called with parameters:', {
         action,
         action_localite,
         sujet,
@@ -60,8 +60,8 @@ export class DevGatewayService {
       if (date_fin) {
         params = params.set('date_fin', date_fin.toString());
       }
-      console.log('la fonction est bien déclenchée');
-      return this.http.get(`${this.baseUrl}/indicateurValue`, { params });
+      const reponse = this.http.get(`${this.baseUrl}/indicateurValue`, { params });
+      return reponse;
     }
     
   getIndicateurValue(formulaire: FormGroup): Observable<any> {

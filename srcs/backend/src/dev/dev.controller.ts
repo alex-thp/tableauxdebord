@@ -27,11 +27,11 @@ export class DevController {
         }
         const rapportxindicateur = await this.devService.getRapportXIndicateur(rapport_x_indicateur);
         if (!rapportxindicateur) {
-            throw new Error('No data found for the given rapport_x_indicateur');
+            return { message: 'No data found for the given rapport_x_indicateur'};
         }
         const indicateur = await this.devService.getIndicateur(rapportxindicateur.indicateur_id);
         if (!indicateur) {
-            throw new Error('No data found for the given indicateur');
+            return { message: 'No indicator found for the given rapport_x_indicateur' };
         }
         const data = {
             action: indicateur.action,

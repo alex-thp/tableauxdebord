@@ -43,8 +43,12 @@ export class VisualisationComponent {
       console.log('Récupération de l\'ID du rapport X Indicateur:', this.rapportXIndicateurId);
       this.devGatewayService.getRapportXIndicateur(this.rapportXIndicateurId)
         .subscribe(data => {
+          if (data.message) {
+            this.router.navigate(['/not_found']);
+          } else {
           this.dataToSearch = data || this.dataToSearch;
           this.searchData();
+        }
       });
     }); 
   }

@@ -24,9 +24,26 @@ export class MainDevViewComponent {
   Object = Object;
   Array = Array;
   formulaire: FormGroup;
-  criteresOptions: string[] = ['EPA', 'RSA', 'Femmes', 'Hommes'];
-  localitesOptions = ['75', '77', '91', '93', '94', '95'];
-  actionOptions = ['Accompagnement - CDP Fixe', 'Accompagnement - CDP Mobile', 'Accompagnement - CDP Fixe ou Mobile'];
+  criteresOptions: string[] = [
+    'EPA', 
+    'RSA', 
+    'Femmes', 
+    'Hommes'
+  ];
+  localitesOptions = [
+    '75', 
+    '77', 
+    '91', 
+    '93', 
+    '94', 
+    '95'
+  ];
+  actionOptions = [
+    'Accompagnement - CDP Fixe', 
+    'Accompagnement - CDP Mobile', 
+    'Accompagnement - CDP Fixe ou Mobile', 
+    'Accompagnement - Atelier Collectif'
+  ];
   sujetOptions = ['Candidat'];
   sujetIndicateurOptions = ['Nb Présents'];
 

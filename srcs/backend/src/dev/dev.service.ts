@@ -87,9 +87,11 @@ export class DevService {
 
 
     forge_request_sujet_critere(sujet_critere) {
+        console.log("sujet_critere", sujet_critere);
         let currentQuery = {};
         if (sujet_critere) {
             for (const s_critere of sujet_critere) {
+                console.log("s_critere", s_critere);
                 if (s_critere === "< 30 ans" || s_critere === " < 30 ans") {
                     currentQuery = this.updateQuery(currentQuery, "candidat_age", 12, "$gte-$lt", 31);
                 } else if (s_critere === "< 26 ans" || s_critere === " < 26 ans") {
@@ -183,6 +185,9 @@ export class DevService {
             evenement_pc,
         };
         let data = "";
+        item.sujet_critere = this.normalizeToArray(item.sujet_critere);
+        item.action_localite = this.normalizeToArray(item.action_localite);
+        item.sujet_localite = this.normalizeToArray(item.sujet_localite);
         if (item.action == "Accompagnement - CDP Fixe" || item.action == "Accompagnement - CDP Fixe (Global)")
             data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP FIXE", database);
         else if (item.action == "Accompagnement - CDP Mobile" || item.action == "Accompagnement - CDP Mobile (Global)")
@@ -191,19 +196,19 @@ export class DevService {
             data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP FIXE, CDP MOBILE", database);
         else if (item.action == "Accompagnement - Atelier Collectif" || item.action == "Accompagnement - Atelier Collectif (Global)")
             data = await this.forge_request_nb_prescriptions_present_at_co(item, database);
+        else if (item.action == "Accompagnement - Atelier Bien-être" || item.action == "Accompagnement - Atelier Bien-être (Global)")
+            data = await this.forge_request_nb_prescriptions_present_bien_etre(item, database);
         return data;
     }
 
-    async forge_request_nb_prescriptions_present_at_co(item, database) {
-        let sujet_loc_check = 0;
-        let action_loc_check = 0;
-
+    async forge_request_nb_prescriptions_present_bien_etre(item, database) {
         let customQuery = this.forge_request_sujet_critere(item.sujet_critere);
+        customQuery = this.updateQuery(customQuery, "statut", "Présent", "$eq");
         customQuery = this.updateQuery(customQuery, "date_atelier", new Date(item.date_debut), "$gte-$lt", new Date(item.date_fin));
-
-        const sujetLocalite = item.sujet_localite; // Les termes du sujet à rechercher
-        const actionLocalite = item.action_localite; // Les termes de l'action à rechercher
-
+        
+        let sujet_loc_check = 0; // Les termes du sujet à rechercher
+        let action_loc_check = 0; // Les termes de l'action à rechercher
+        
         for (const localite of item.sujet_localite) {
             if (
                 localite != "n'importe quel département de la région" &&
@@ -226,12 +231,64 @@ export class DevService {
         }
 
         if (sujet_loc_check == 1) {
+            customQuery = this.add_localite_to_query(customQuery, "candidat_residence", item.sujet_localite);
+        }
+
+        if (action_loc_check == 1) {
+            customQuery = this.add_localite_to_query(customQuery, "atelier_lieu", item.action_localite);
+        }
+
+        let data = await database.bienetreenrcand.aggregate([
+            // Partie 1 : Filtrage des données selon customQuery
+            {
+                $match: customQuery, // Applique les critères personnalisés
+            },
+        ]).toArray();
+        console.log("data", data);
+        return data;
+    }
+
+    async forge_request_nb_prescriptions_present_at_co(item, database) {
+        let sujet_loc_check = 0;
+        let action_loc_check = 0;
+
+        let customQuery = this.forge_request_sujet_critere(item.sujet_critere);
+        customQuery = this.updateQuery(customQuery, "date_atelier", new Date(item.date_debut), "$gte-$lt", new Date(item.date_fin));
+
+        const sujetLocalite = item.sujet_localite; // Les termes du sujet à rechercher
+        const actionLocalite = item.action_localite; // Les termes de l'action à rechercher
+        
+        for (const localite of item.sujet_localite) {
+            if (
+                localite != "n'importe quel département de la région" &&
+                localite != "N'importe quel département de la région" &&
+                localite != "France" &&
+                localite != ""
+            ) {
+                sujet_loc_check = 1;
+            }
+        }
+        for (const localite of item.action_localite) {
+            if (
+            localite != "n'importe quel département de la région" &&
+            localite != "N'importe quel département de la région" &&
+            localite != "France" &&
+            localite != ""
+            ) {
+                action_loc_check = 1;
+            }
+        }
+
+        if (sujet_loc_check == 1) {
+            console.log("sujetLocalite", sujetLocalite);
             customQuery = this.add_localite_to_query(customQuery, "candidat_residence", sujetLocalite);
         }
 
         if (action_loc_check == 1) {
+            console.log("actionLocalite", actionLocalite);
             customQuery = this.add_localite_to_query(customQuery, "atelier_lieu", actionLocalite);
         }
+
         let response = await database.atcoenrcand
         .aggregate([
             // Partie 1 : Filtrage des données selon customQuery
@@ -244,11 +301,7 @@ export class DevService {
     }
 
     async forge_request_nb_prescriptions_present_cdp(item, type_cdp, database) {
-        item.sujet_critere = this.normalizeToArray(item.sujet_critere);
-        console.log("ici : " + item.sujet_critere);
         let customQuery = this.forge_request_sujet_critere(item.sujet_critere);
-        console.log(type_cdp)
-        console.log(typeof type_cdp)
         switch (type_cdp) {
             case "CDP FIXE, CDP MOBILE":
             customQuery = this.updateQuery(customQuery, "type_atelier", "CDP MOBILE", "$in", "CDP FIXE");
@@ -262,31 +315,26 @@ export class DevService {
         }
         customQuery = this.updateQuery(customQuery, "date_atelier", item.date_debut, "$gte-$lt", item.date_fin);
         customQuery = this.updateQuery(customQuery, "statut", "Présent", "$eq");
-        const sujetLocalite: string[] = this.normalizeToArray(item.sujet_localite);
-        const actionLocalite: string[] = this.normalizeToArray(item.action_localite);
 
         let action_loc_check = 0;
         let sujet_loc_check = 0;
-        for (let localite of sujetLocalite) {
+        for (let localite of item.sujet_localite) {
             if (localite != "n'importe quel département de la région" && localite != "N'importe quel département de la région" && localite != "France" && localite != "") {
             sujet_loc_check = 1;
             }
         }
-        for (let localite of actionLocalite) {
+        for (let localite of item.action_localite) {
             if (localite != "n'importe quel département de la région" && localite != "N'importe quel département de la région" && localite != "France" && localite != "") {
             action_loc_check = 1;
             }
         }
         if (sujet_loc_check == 1) {
-            console.log("sujetLocalite", sujetLocalite);
-            customQuery = this.add_localite_to_query(customQuery, "candidat_residence", sujetLocalite);
+            customQuery = this.add_localite_to_query(customQuery, "candidat_residence", item.sujet_localite);
         }
 
         if (action_loc_check == 1) {
-            console.log("actionLocalite", actionLocalite);
-            customQuery = this.add_localite_to_query(customQuery, "atelier_lieu", actionLocalite);
+            customQuery = this.add_localite_to_query(customQuery, "atelier_lieu", item.action_localite);
         }
-        console.log("customQuery", customQuery);
         let response = await database.cdpenrcand
         .aggregate([
         // Partie 1 : Filtrage des données selon customQuery
