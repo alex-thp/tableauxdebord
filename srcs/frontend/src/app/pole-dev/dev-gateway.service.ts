@@ -24,7 +24,7 @@ export class DevGatewayService {
       action: string,
       action_localite: [string],
       sujet: string,
-      sujet_critere: string,
+      sujet_critere: [string],
       sujet_localite: [string],
       sujet_indicateur: string,
       date_debut: Date | null,
@@ -45,6 +45,12 @@ export class DevGatewayService {
       .set('sujet', sujet.toString())
       .set('sujet_indicateur', sujet_indicateur.toString())
         // Append les éléments un par un pour qu'ils soient reçus comme tableau côté backend
+      sujet_critere.forEach((crit: string) => {
+        params = params.append('sujet_critere', crit);
+      });
+      sujet_localite.forEach((loc: string) => {
+        params = params.append('sujet_localite', loc);
+      });
       action_localite.forEach((loc: string) => {
         params = params.append('action_localite', loc);
       });
@@ -80,7 +86,6 @@ export class DevGatewayService {
       });
 
       sujet_critere.forEach((crit: string) => {
-        console.log(crit)
         params = params.append('sujet_critere', crit);
       });
 

@@ -13,6 +13,24 @@ export class DevService {
         return { message: 'Indicateur Value' };
     }
 
+    async getRapportXIndicateur(rapport_x_indicateur) {
+        if (!rapport_x_indicateur) {
+            throw new Error('rapport_x_indicateur is required');
+        }
+        const db = this.client.db("test");
+        const rapportxindicateur = db.collection("rapportxindicateurs");
+        return await rapportxindicateur.findOne({ record_id: rapport_x_indicateur });
+    }
+
+    async getIndicateur(indicateur) {
+        if (!indicateur) {
+            throw new Error('indicateur is required');
+        }
+        const db = this.client.db("test");
+        const rapportxindicateur = db.collection("indicateurs");
+        return await rapportxindicateur.findOne({ record_id: indicateur });
+    }
+
     updateQuery(currentQuery, field, value, comparisonToken, value2?) {
         switch (comparisonToken) {
             case "$eq":
@@ -176,6 +194,7 @@ export class DevService {
 
     async forge_request_nb_prescriptions_present_cdp(item, type_cdp, database) {
         item.sujet_critere = this.normalizeToArray(item.sujet_critere);
+        console.log("ici : " + item.sujet_critere);
         let customQuery = this.forge_request_sujet_critere(item.sujet_critere);
         console.log(type_cdp)
         console.log(typeof type_cdp)
@@ -208,12 +227,15 @@ export class DevService {
             }
         }
         if (sujet_loc_check == 1) {
+            console.log("sujetLocalite", sujetLocalite);
             customQuery = this.add_localite_to_query(customQuery, "candidat_residence", sujetLocalite);
         }
 
         if (action_loc_check == 1) {
+            console.log("actionLocalite", actionLocalite);
             customQuery = this.add_localite_to_query(customQuery, "atelier_lieu", actionLocalite);
         }
+        console.log("customQuery", customQuery);
         let response = await database.cdpenrcand
         .aggregate([
         // Partie 1 : Filtrage des données selon customQuery

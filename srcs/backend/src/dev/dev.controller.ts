@@ -12,6 +12,45 @@ export class DevController {
         return { message: 'It works!' };
     }
 
+    /**
+         * Endpoint to get the value of an indicator based on a specific report.
+         * @param rapport_x_indicateur - The report identifier.
+         * @returns A promise that resolves to a string representing the indicator value.
+         */
+    @UseGuards(AuthGuard('jwt'))
+    @Get('indicateur')
+    async getRapportXIndicateur(
+        @Query('rapport_x_indicateur') rapport_x_indicateur: string): Promise<any> {
+        console.log('getIndicateur called with rapport_x_indicateur:', rapport_x_indicateur);
+        if (!rapport_x_indicateur) {
+            throw new Error('rapport_x_indicateur is required');
+        }
+        const rapportxindicateur = await this.devService.getRapportXIndicateur(rapport_x_indicateur);
+        if (!rapportxindicateur) {
+            throw new Error('No data found for the given rapport_x_indicateur');
+        }
+        const indicateur = await this.devService.getIndicateur(rapportxindicateur.indicateur_id);
+        if (!indicateur) {
+            throw new Error('No data found for the given indicateur');
+        }
+        const data = {
+            action: indicateur.action,
+            action_localite: indicateur.action_localite,
+            sujet: indicateur.sujet,
+            sujet_critere: indicateur.sujet_critere,
+            sujet_localite: indicateur.sujet_localite,
+            sujet_indicateur: indicateur.sujet_indicateur,
+            date_debut: rapportxindicateur.date_debut,
+            date_fin: rapportxindicateur.date_fin,
+            structure_beneficiaire: rapportxindicateur.structure_beneficiaire,
+            structure_financeur: rapportxindicateur.structure_financeur,
+        }
+
+        console.log('getIndicateur called with data:', data);
+
+        return data;
+    }
+
         /**
          * Endpoint to get the value of an indicator based on various parameters.
          * @param action - The action type.

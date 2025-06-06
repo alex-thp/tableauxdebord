@@ -2,20 +2,13 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DevGatewayService } from '../dev-gateway.service';
 import { CommonModule } from '@angular/common';
-<<<<<<< Updated upstream
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import * as featherIcons from '@ng-icons/feather-icons';
-
-@Component({
-  selector: 'app-main-dev-view',
-  imports: [CommonModule, NgIcon],
-=======
 import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-main-dev-view',
-  imports: [CommonModule, ReactiveFormsModule],
->>>>>>> Stashed changes
+  imports: [CommonModule, ReactiveFormsModule, NgIcon],
   templateUrl: './main-dev-view.component.html',
   styleUrls: ['./main-dev-view.component.css'],
   viewProviders: [provideIcons(featherIcons)],
@@ -37,10 +30,7 @@ export class MainDevViewComponent {
   sujetOptions = ['Candidat'];
   sujetIndicateurOptions = ['Nb Présents'];
 
-<<<<<<< Updated upstream
-  constructor(private devGatewayService: DevGatewayService, private router: Router) {}
-=======
-  constructor(private devGatewayService: DevGatewayService, private fb: FormBuilder) {
+  constructor(private devGatewayService: DevGatewayService, private fb: FormBuilder, private router: Router) {
     this.formulaire = this.fb.group({
       action: '',
       action_localite: [[]],
@@ -52,13 +42,11 @@ export class MainDevViewComponent {
       date_fin: [null]
     });
   }
->>>>>>> Stashed changes
 
   ngOnInit() {
     this.searchData();
   }
 
-<<<<<<< Updated upstream
     toggleBack(): void {
     this.router.navigate(['/home']).then(nav => {
     }, err => {
@@ -66,7 +54,6 @@ export class MainDevViewComponent {
     });
   }
 
-=======
   toggleSelection(controlName: string, value: string): void {
     const ctrl = this.formulaire.get(controlName);
     if (!ctrl) return;
@@ -150,7 +137,6 @@ isSelectedSingle(controlName: string, value: string): boolean {
     }
   }
   
->>>>>>> Stashed changes
   searchData() {
     this.devGatewayService.getIndicateurValue(
       this.formulaire

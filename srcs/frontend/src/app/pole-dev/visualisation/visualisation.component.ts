@@ -78,7 +78,7 @@ searchData() {
       'Accompagnement - CDP Fixe',
       ["N'importe quel département de la région"],
       'Candidat',
-      'Tous profil',
+      ['Tous profil'],
       ["N'importe quel département de la région"],
       'Nb Présent',
       new Date(2025, 0, 1),
