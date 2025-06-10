@@ -198,6 +198,83 @@ export class DevService {
             data = await this.forge_request_nb_prescriptions_present_at_co(item, database);
         else if (item.action == "Accompagnement - Atelier Bien-être" || item.action == "Accompagnement - Atelier Bien-être (Global)")
             data = await this.forge_request_nb_prescriptions_present_bien_etre(item, database);
+        else if (item.action == "Accompagnement - CDP + Atelier collectif" || item.action == "Accompagnement - CDP + Atelier Collectif (Global)")
+            data = await this.forge_request_nb_prescriptions_present_cdp_at_co(item, database);
+        return data;
+    }
+
+    async forge_request_nb_prescriptions_present_cdp_at_co(item, database) {
+        let customQuery = this.forge_request_sujet_critere(item.sujet_critere);
+        customQuery = this.updateQuery(customQuery, "statut", "Présent", "$eq");
+        customQuery = this.updateQuery(customQuery, "date_atelier", new Date(item.date_debut), "$gte-$lt", new Date(item.date_fin));
+        
+        let sujet_loc_check = 0; // Les termes du sujet à rechercher
+        let action_loc_check = 0; // Les termes de l'action à rechercher
+        
+        for (const localite of item.sujet_localite) {
+            if (
+                localite != "n'importe quel département de la région" &&
+                localite != "N'importe quel département de la région" &&
+                localite != "France" &&
+                localite != ""
+            ) {
+                sujet_loc_check = 1;
+            }
+        }
+        for (const localite of item.action_localite) {
+            if (
+            localite != "n'importe quel département de la région" &&
+            localite != "N'importe quel département de la région" &&
+            localite != "France" &&
+            localite != ""
+            ) {
+                action_loc_check = 1;
+            }
+        }
+
+        if (sujet_loc_check == 1) {
+            customQuery = this.add_localite_to_query(customQuery, "candidat_residence", item.sujet_localite);
+        }
+
+        if (action_loc_check == 1) {
+            customQuery = this.add_localite_to_query(customQuery, "atelier_lieu", item.action_localite);
+        }
+
+        let data = await database.atcoenrcand.aggregate([
+            // Partie 1 : Filtrage des données selon customQuery
+            {
+                $match: customQuery, // Applique les critères personnalisés
+            },
+            {
+                $lookup: {
+                    from: "candidats",
+                    localField: "candidat_record_id",
+                    foreignField: "record_id",
+                    as: "candidatDetails",
+                },
+            },
+            {
+                $lookup: {
+                    from: "cdpenrcands",
+                    localField: "candidat_record_id",
+                    foreignField: "candidat_record_id",
+                    as: "cdpDetails",
+                },
+            },
+            {
+                $match: {
+                "cdpDetails.statut": "Présent"
+            }
+            },
+            {
+                $addFields: {
+                    // Si candidatDetails contient un seul élément, on peut l'aplatir
+                    candidat: { $arrayElemAt: ["$candidatDetails", 0] },
+                    cdpenrcand: { $arrayElemAt: ["$cdpDetails", 0] },
+                },
+            },
+        ]).toArray();
+        console.log("data", data);
         return data;
     }
 
@@ -242,6 +319,20 @@ export class DevService {
             // Partie 1 : Filtrage des données selon customQuery
             {
                 $match: customQuery, // Applique les critères personnalisés
+            },
+            {
+                $lookup: {
+                    from: "candidats",
+                    localField: "candidat_record_id",
+                    foreignField: "record_id",
+                    as: "candidatDetails",
+                },
+            }, 
+            {
+                $addFields: {
+                    // Si candidatDetails contient un seul élément, on peut l'aplatir
+                    candidat: { $arrayElemAt: ["$candidatDetails", 0] },
+                },
             },
         ]).toArray();
         console.log("data", data);
@@ -294,6 +385,20 @@ export class DevService {
             // Partie 1 : Filtrage des données selon customQuery
             {
                 $match: customQuery, // Applique les critères personnalisés
+            },
+            {
+                $lookup: {
+                    from: "candidats",
+                    localField: "candidat_record_id",
+                    foreignField: "record_id",
+                    as: "candidatDetails",
+                },
+            }, 
+            {
+                $addFields: {
+                    // Si candidatDetails contient un seul élément, on peut l'aplatir
+                    candidat: { $arrayElemAt: ["$candidatDetails", 0] },
+                },
             },
         ])
         .toArray();
@@ -348,13 +453,12 @@ let response = await database.cdpenrcand.aggregate([
       as: "suiviDetails",
     },
   },
-
   // 3. Jointure avec la table des candidats
   {
     $lookup: {
       from: "candidats",
       localField: "candidat_record_id",
-      foreignField: "record_id", // ou `id` selon ton schéma
+      foreignField: "record_id",
       as: "candidatDetails",
     },
   },
@@ -385,13 +489,13 @@ let response = await database.cdpenrcand.aggregate([
           },
         },
       },
-      nombreSuivis: { $size: "$suiviDetails" },
+        nombreSuivis: { $size: "$suiviDetails" },
 
-      // Si candidatDetails contient un seul élément, on peut l'aplatir
-      candidat: { $arrayElemAt: ["$candidatDetails", 0] },
+        // Si candidatDetails contient un seul élément, on peut l'aplatir
+        candidat: { $arrayElemAt: ["$candidatDetails", 0] },
+        },
     },
-  },
-]).toArray();
+    ]).toArray();
     return response;
     }
 

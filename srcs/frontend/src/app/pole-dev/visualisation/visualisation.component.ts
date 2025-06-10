@@ -23,6 +23,7 @@ export class VisualisationComponent {
     dateFin: new Date(2025, 11, 31),
     valeur: "Nb Présent"
   };
+  ready = false;
   dataToDisplay: any[] = [];
   columns: string[] = [];
   filteredData: any[] = [];
@@ -73,14 +74,31 @@ export class VisualisationComponent {
         const newRow: any = {};
         for (const key in row) {
           const value = row[key];
-          console.log(`Clé: ${key}, Valeur:`, value);
+          //console.log(`Clé: ${key}, Valeur:`, value);
           if (key === "candidat") {
             const nom = value.nom || '';
             const prenom = value.prenom || '';
             newRow["nom"] = nom;
             newRow["prenom"] = prenom;
           }
-          else if (key === "_id" || key === "record_id" || key === "cdp_enr_cand_x_cdp_enr_benev_record_id" || key === "prescripteur_record_id" || key === "candidat_record_id" || key === "date_creation" || key === "bien_etre_enr_cand_record_id" || key === "at_co_enr_cand_record_id" || key === "__v" || key === "suiviDetails" || key === "candidatDetails" || value === null || value === undefined || value === '') {
+          else if (
+            key === "_id" 
+            || key === "record_id" 
+            || key === "cdp_enr_cand_x_cdp_enr_benev_record_id" 
+            || key === "prescripteur_record_id" 
+            || key === "candidat_record_id" 
+            || key === "date_creation" 
+            || key === "bien_etre_enr_cand_record_id" 
+            || key === "at_co_enr_cand_record_id" 
+            || key === "__v" 
+            || key === "suiviDetails" 
+            || key === "candidatDetails" 
+            || value === null 
+            || value === undefined 
+            || value === ''
+            || value === "cdpenrcand"
+            || value === "cdpDetails"
+          ) {
             // Ignore les champs _id, record_id et les clés vides
             continue;
           }
@@ -106,6 +124,9 @@ export class VisualisationComponent {
       if (err.status === 403) {
         alert("Accès interdit. Veuillez vérifier vos droits ou votre authentification.");
       }
+    },
+    complete: () => {
+      this.ready = true;
     }
   });
 }

@@ -1,3 +1,7 @@
+<div *ngIf="ready === false" class="loading-indicator">
+  <div class="spinner"></div>
+  Chargement des données...
+</div>
 <!-- Affichage si aucun résultat -->
 <div *ngIf="notFound === true">
   Résultat non trouvé. Veuillez vérifier les paramètres de votre requête.

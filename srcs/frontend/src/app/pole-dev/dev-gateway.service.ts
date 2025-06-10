@@ -30,7 +30,7 @@ export class DevGatewayService {
       date_debut: Date | null,
       date_fin: Date | null
     ): Observable<any> {
-      console.log('getVisualisationValue called with parameters:', {
+      /*console.log('getVisualisationValue called with parameters:', {
         action,
         action_localite,
         sujet,
@@ -39,7 +39,7 @@ export class DevGatewayService {
         sujet_indicateur,
         date_debut,
         date_fin
-      });
+      });*/
       let params = new HttpParams()
       .set('action', action.toString())
       .set('sujet', sujet.toString())
