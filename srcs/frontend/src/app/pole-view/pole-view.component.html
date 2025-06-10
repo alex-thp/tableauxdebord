@@ -143,4 +143,8 @@
             <h3 class="green-underline">Mobilisation des collabs</h3>
             <app-monthly-comparison [data]="this.data.nbCollabsByMonth"></app-monthly-comparison>
         </div>
+        <div class="data-block" *ngIf="values !== undefined && labels !== undefined">
+            <h3 class="green-underline">Mobilisation des collabs unique</h3>
+            <app-monthly-comparison [data]="this.data.nbCollabsByMonthUnique"></app-monthly-comparison>
+        </div>
 </div>

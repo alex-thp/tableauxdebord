@@ -162,6 +162,59 @@ async getMobilCollab(cdpenrbenev, start, end) {
     return nbBenevolesByMonth;
 }
 
+async getMobilCollabUniques(cdpenrbenev, start, end) {
+    let nbBenevolesByMonth = await cdpenrbenev.aggregate([
+        {
+            $match: {
+                benevole_id: { $ne: null },
+                date_atelier: { $gte: start, $lt: end },
+                est_be: { $eq: "Oui" },
+                statut: { $in: ["Présent", "Positionné"] }
+            }
+        },
+        {
+            $sort: {
+                benevole_id: 1,
+                date_atelier: 1
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    benevole_id: "$benevole_id",
+                    year: { $year: "$date_atelier" }
+                },
+                firstDate: { $first: "$date_atelier" }
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    year: { $year: "$firstDate" },
+                    month: { $month: "$firstDate" }
+                },
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $sort: {
+                "_id.year": 1,
+                "_id.month": 1
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                year: "$_id.year",
+                month: "$_id.month",
+                count: 1
+            }
+        }
+    ]).toArray();
+
+    return nbBenevolesByMonth;
+}
+
     async getMainData(date_debut, date_fin) {
         const connection = this.mongodb.client.db('test');
         const cdp = connection.collection("cdps");
@@ -347,6 +400,7 @@ async getMobilCollab(cdpenrbenev, start, end) {
       nb_fresque: 0,
       nb_atelier_moyen_par_be: 0,
       nbCollabsByMonth: [],
+      nbCollabsByMonthUnique: [],
     }
       const nb_venues_ateliers = await this.get_nb_repartition(cdpenrbenev, date_debut, date_fin);
       const nb_collecte = await this.get_tmp_nb_collecte(evenement_pc, date_debut, date_fin);
@@ -360,6 +414,7 @@ async getMobilCollab(cdpenrbenev, start, end) {
       result.nb_collabs = nb_benevoles[0]?.benevolesUniques || 0;
       result.nb_atelier_moyen_par_be = await this.get_nb_atelier_moyen(cdpenrbenev, date_debut, date_fin);
       result.nbCollabsByMonth = await this.getMobilCollab(cdpenrbenev, date_debut_collab, date_fin_collab);
+      result.nbCollabsByMonthUnique = await this.getMobilCollabUniques(cdpenrbenev, date_debut_collab, date_fin_collab);
       return result;
     }
 }
