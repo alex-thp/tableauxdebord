@@ -29,7 +29,7 @@ export class CardComponent implements OnChanges {
         case 'Pôle Bénévole':
           this.i = 2;
         break;
-        case 'Pôle Vêtement':
+        case 'Pôle Parcours Cravate':
           this.i = 3;
         break;
       }
