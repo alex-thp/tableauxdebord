@@ -335,51 +335,63 @@ export class DevService {
         if (action_loc_check == 1) {
             customQuery = this.add_localite_to_query(customQuery, "atelier_lieu", item.action_localite);
         }
-        let response = await database.cdpenrcand
-        .aggregate([
-        // Partie 1 : Filtrage des données selon customQuery
-        {
-            $match: customQuery,
-        },
-        // Partie 2 : Association des suivis
-        {
-            $lookup: {
-            from: "cdpsuivis",
-            localField: "candidat_record_id",
-            foreignField: "candidat_record_id",
-            as: "suiviDetails",
-            },
-        },
-    {
-        $addFields: {
-          sortiesPositives: {
-            $size: {
-              $filter: {
-                input: "$suiviDetails",
-                as: "suivi",
-                cond: {
-                  $in: [
-                    "$$suivi.situation_pro",
-                    [
-                      "CDI",
-                      "CDD (- de 6 mois)",
-                      "CDD (6 mois ou +)",
-                      "En formation",
-                      "En stage",
-                      "Auto-entrepreneur / Entrepreneur/ Création entreprise",
-                      "En alternance / En contrat d'apprentissage",
-                      "Intérim",
-                    ],
-                  ],
-                },
-              },
+let response = await database.cdpenrcand.aggregate([
+  // 1. Filtrage initial
+  { $match: customQuery },
+
+  // 2. Jointure avec la table des suivis
+  {
+    $lookup: {
+      from: "cdpsuivis",
+      localField: "candidat_record_id",
+      foreignField: "candidat_record_id",
+      as: "suiviDetails",
+    },
+  },
+
+  // 3. Jointure avec la table des candidats
+  {
+    $lookup: {
+      from: "candidats",
+      localField: "candidat_record_id",
+      foreignField: "record_id", // ou `id` selon ton schéma
+      as: "candidatDetails",
+    },
+  },
+
+  // 4. Fusionner les champs utiles du suivi et du candidat
+  {
+    $addFields: {
+      sortiesPositives: {
+        $size: {
+          $filter: {
+            input: "$suiviDetails",
+            as: "suivi",
+            cond: {
+              $in: [
+                "$$suivi.situation_pro",
+                [
+                  "CDI",
+                  "CDD (- de 6 mois)",
+                  "CDD (6 mois ou +)",
+                  "En formation",
+                  "En stage",
+                  "Auto-entrepreneur / Entrepreneur/ Création entreprise",
+                  "En alternance / En contrat d'apprentissage",
+                  "Intérim",
+                ],
+              ],
             },
           },
-          nombreSuivis: { $size: "$suiviDetails" },
         },
-      },     
-    ])
-    .toArray();
+      },
+      nombreSuivis: { $size: "$suiviDetails" },
+
+      // Si candidatDetails contient un seul élément, on peut l'aplatir
+      candidat: { $arrayElemAt: ["$candidatDetails", 0] },
+    },
+  },
+]).toArray();
     return response;
     }
 

@@ -7,10 +7,18 @@ interface ICandidat extends Document {
   cdp_enr_cand_record_id: string;
   bien_etre_enr_cand_record_id: string;
   at_co_enr_cand_record_id: string;
+  nom: string;
+  prenom: string;
 }
 
 const candidatSchema: Schema = new Schema(
   {
+    nom: {
+      type: String,
+    },
+    prenom: {
+      type: String,
+    },
     record_id: {
       type: String,
     },

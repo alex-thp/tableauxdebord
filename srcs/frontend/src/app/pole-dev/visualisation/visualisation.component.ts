@@ -15,13 +15,13 @@ import * as featherIcons from '@ng-icons/feather-icons';
 })
 export class VisualisationComponent {
   dataToSearch: any = {
-    "indicateur": "Accompagnement - CDP Fixe",
-    "departement": ["N'importe quel département de la région"],
-    "profil": "Candidat",
-    "type": "Tous profil",
-    "dateDebut": new Date(2025, 0, 1),
-    "dateFin": new Date(2025, 11, 31),
-    "valeur": "Nb Présent"
+    indicateur: "Accompagnement - CDP Fixe",
+    departement: ["N'importe quel département de la région"],
+    profil: "Candidat",
+    type: "Tous profil",
+    dateDebut: new Date(2025, 0, 1),
+    dateFin: new Date(2025, 11, 31),
+    valeur: "Nb Présent"
   };
   dataToDisplay: any[] = [];
   columns: string[] = [];
@@ -33,6 +33,7 @@ export class VisualisationComponent {
   Array = Array;
   rapportXIndicateurId: string = "";
   notFound: boolean = false;
+  dateFilters: { [key: string]: { before?: Date; after?: Date } } = {};
 
   constructor(
     private devGatewayService: DevGatewayService,
@@ -41,39 +42,60 @@ export class VisualisationComponent {
   ) {
     this.route.paramMap.subscribe(params => {
       this.rapportXIndicateurId = params.get('rapport_x_indicateur') || '';
-      console.log('Récupération de l\'ID du rapport X Indicateur:', this.rapportXIndicateurId);
+      console.log("Récupération de l'ID du rapport X Indicateur:", this.rapportXIndicateurId);
       this.devGatewayService.getRapportXIndicateur(this.rapportXIndicateurId)
         .subscribe(data => {
           if (data.message) {
             this.router.navigate(['/not_found']);
           } else {
-          this.dataToSearch = data || this.dataToSearch;
-          this.searchData();
-        }
-      });
-    }); 
+            this.dataToSearch = data || this.dataToSearch;
+            this.searchData();
+          }
+        });
+    });
   }
 
-  ngOnInit() {
-  }
-
-searchData() {
+  ngOnInit() {}
+  searchData() {
   console.log('Recherche avec les paramètres:', this.dataToSearch);
-    this.devGatewayService.getVisualisationValue(
-                              this.dataToSearch.action,
-                              this.dataToSearch.action_localite,
-                              this.dataToSearch.sujet,
-                              this.dataToSearch.sujet_critere,
-                              this.dataToSearch.sujet_localite,
-                              this.dataToSearch.sujet_indicateur,
-                              this.dataToSearch.date_debut,
-                              this.dataToSearch.date_fin
-                            ).subscribe({
+  this.devGatewayService.getVisualisationValue(
+    this.dataToSearch.action,
+    this.dataToSearch.action_localite,
+    this.dataToSearch.sujet,
+    this.dataToSearch.sujet_critere,
+    this.dataToSearch.sujet_localite,
+    this.dataToSearch.sujet_indicateur,
+    this.dataToSearch.date_debut,
+    this.dataToSearch.date_fin
+  ).subscribe({
     next: (data2) => {
-      this.dataToDisplay = data2 || [];
-      if (this.dataToDisplay.length === 0) {
-        this.notFound = true;
-      }
+      const parsedData = (data2 || []).map((row: { [x: string]: any; }) => {
+        const newRow: any = {};
+        for (const key in row) {
+          const value = row[key];
+          console.log(`Clé: ${key}, Valeur:`, value);
+          if (key === "candidat") {
+            const nom = value.nom || '';
+            const prenom = value.prenom || '';
+            newRow["nom"] = nom;
+            newRow["prenom"] = prenom;
+          }
+          else if (key === "_id" || key === "record_id" || key === "cdp_enr_cand_x_cdp_enr_benev_record_id" || key === "prescripteur_record_id" || key === "candidat_record_id" || key === "date_creation" || key === "bien_etre_enr_cand_record_id" || key === "at_co_enr_cand_record_id" || key === "__v" || key === "suiviDetails" || key === "candidatDetails" || value === null || value === undefined || value === '') {
+            // Ignore les champs _id, record_id et les clés vides
+            continue;
+          }
+          // Vérifie si la valeur est une string de date ISO
+          else if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))?$/.test(value)) {
+            newRow[key] = new Date(value);
+          } else {
+            newRow[key] = value;
+          }
+        }
+        return newRow;
+      });
+
+      this.dataToDisplay = parsedData;
+      this.notFound = this.dataToDisplay.length === 0;
       this.columns = this.dataToDisplay.length > 0 ? Object.keys(this.dataToDisplay[0]) : [];
       this.filteredData = [...this.dataToDisplay];
       this.visibleColumns = {};
@@ -86,28 +108,42 @@ searchData() {
       }
     }
   });
+}
+
+  toggleFilterDropdown(column: string | null) {
+    if (this.filterDropdownOpenFor === column) {
+      this.closeFilterDropdown();
+    } else {
+      this.filterDropdownOpenFor = column;
+      // Ici on active l'écoute globale pour clics extérieurs
+      document.addEventListener('click', this.handleOutsideClick, true);
+    }
   }
 
-
-  searchData2() {
-    this.devGatewayService.getVisualisationValue(
-      'Accompagnement - CDP Fixe',
-      ["N'importe quel département de la région"],
-      'Candidat',
-      ['Tous profil'],
-      ["N'importe quel département de la région"],
-      'Nb Présent',
-      new Date(2025, 0, 1),
-      new Date(2025, 11, 31)
-    ).subscribe(data2 => {
-      this.dataToDisplay = data2 || [];
-      this.columns = this.dataToDisplay.length > 0 ? Object.keys(this.dataToDisplay[0]) : [];
-      this.filteredData = [...this.dataToDisplay];
-      this.visibleColumns = {};
-      this.columns.forEach(col => this.visibleColumns[col] = true);
-    });
+  closeFilterDropdown() {
+    this.filterDropdownOpenFor = null;
+    document.removeEventListener('click', this.handleOutsideClick, true);
   }
 
+  handleOutsideClick = (event: MouseEvent) => {
+    // Vérifier si le clic est en dehors du dropdown et du bouton d'ouverture
+
+    // Trouve l'élément cliqué
+    const target = event.target as HTMLElement;
+
+    // Trouve le dropdown DOM (supposons class="filter-dropdown")
+    const dropdown = document.querySelector('.filter-dropdown');
+
+    // Trouve tous les boutons qui peuvent ouvrir un dropdown (ex: header-label)
+    const toggles = document.querySelectorAll('.header-label');
+
+    if (
+      dropdown && !dropdown.contains(target) &&
+      !Array.from(toggles).some(toggle => toggle.contains(target))
+    ) {
+      this.closeFilterDropdown();
+    }
+  }
   resetColumnVisibility() {
     this.columns.forEach(col => this.visibleColumns[col] = true);
   }
@@ -142,10 +178,62 @@ searchData() {
 
   filterData() {
     this.filteredData = this.dataToDisplay.filter(row => {
-      return Object.entries(this.activeFilters).every(([key, values]) =>
+      const matchFilters = Object.entries(this.activeFilters).every(([key, values]) =>
         values.includes(this.formatValue(row[key]))
       );
+
+      const matchDateFilters = Object.entries(this.dateFilters).every(([key, { before, after }]) => {
+        const rowDate = new Date(row[key]);
+        if (before && rowDate > before) return false;
+        if (after && rowDate < after) return false;
+        return true;
+      });
+
+      return matchFilters && matchDateFilters;
     });
+  }
+
+onFilterDropdownFocusOut(event: FocusEvent) {
+  // On attend un peu que le focus soit mis à jour
+  setTimeout(() => {
+    const active = document.activeElement;
+    const dropdown = event.currentTarget as HTMLElement;
+
+    // Si le focus n'est plus dans le dropdown, on ferme
+    if (!dropdown.contains(active)) {
+      this.filterDropdownOpenFor = null;
+    }
+  }, 0);
+}
+
+  isDateColumn(column: string): boolean {
+    return this.dataToDisplay.some(row => {
+      const value = row[column];
+      return value instanceof Date;
+      //return value && !Array.isArray(value) && !isNaN(Date.parse(value));
+    });
+  }
+
+  onDateFilterChange(event: Event, column: string, type: 'before' | 'after') {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    this.setDateFilter(column, value, type);
+  }
+
+  setDateFilter(column: string, value: string, type: 'before' | 'after') {
+    if (!this.dateFilters[column]) this.dateFilters[column] = {};
+    this.dateFilters[column][type] = value ? new Date(value) : undefined;
+
+    if (!this.dateFilters[column].before && !this.dateFilters[column].after) {
+      delete this.dateFilters[column];
+    }
+
+    this.filterData();
+  }
+
+  clearDateFilter(col: string) {
+    delete this.dateFilters[col];
+    this.filterData();
   }
 
   clearFilter(column: string) {
@@ -153,9 +241,9 @@ searchData() {
     this.filterData();
   }
 
-  toggleFilterDropdown(column: string | null) {
+  /*toggleFilterDropdown(column: string | null) {
     this.filterDropdownOpenFor = this.filterDropdownOpenFor === column ? null : column;
-  }
+  }*/
 
   getUniqueValuesForColumn(column: string): any[] {
     const values = this.dataToDisplay.map(row => this.formatValue(row[column]));

@@ -1,12 +1,15 @@
+<!-- Affichage si aucun résultat -->
 <div *ngIf="notFound === true">
   Résultat non trouvé. Veuillez vérifier les paramètres de votre requête.
   Si le problème persiste, veuillez contacter l'administrateur.
 </div>
 
+<!-- Affichage des résultats -->
 <div *ngIf="dataToDisplay.length > 0">
   <button (click)="resetColumnVisibility()" class="reset-columns-button">
     👁️ Réafficher toutes les colonnes
   </button>
+
   <table>
     <thead>
       <tr>
@@ -22,32 +25,46 @@
             {{ col }}
           </div>
 
-          <!-- Dropdown that appears when header is clicked -->
-          <div *ngIf="filterDropdownOpenFor === col" class="filter-dropdown" role="listbox">
-          <div
-          *ngFor="let val of getUniqueValuesForColumn(col)"
-          (click)="applyFilter(col, val)"
-          [ngClass]="{
-          'filter-option': true,
-          'active': Array.isArray(activeFilters[col]) && activeFilters[col].includes(val)
-          }"
-        >
-  {{ formatValue(val) }}
+<!-- Dropdown -->
+<div
+  *ngIf="filterDropdownOpenFor === col"
+  class="filter-dropdown"
+  role="listbox"
+  tabindex="0"
+  (focusout)="onFilterDropdownFocusOut($event)"
+>
+  <div *ngIf="isDateColumn(col)">
+    Ultérieur à : <input
+      type="date"
+      (change)="onDateFilterChange($event, col, 'after')"
+      placeholder="Après"
+    />
+    Antérieur à : <input
+      type="date"
+      (change)="onDateFilterChange($event, col, 'before')"
+      placeholder="Avant"
+    />
+    <button (click)="clearDateFilter(col); toggleFilterDropdown(null)">❌ Réinitialiser dates</button>
+  </div>
+  <div
+    *ngFor="let val of getUniqueValuesForColumn(col)"
+    (click)="applyFilter(col, val)"
+    [ngClass]="{
+      'filter-option': true,
+      'active': Array.isArray(activeFilters[col]) && activeFilters[col].includes(val)
+    }"
+  >
+    {{ formatValue(val) }}
+  </div>
+
+  <div (click)="clearFilter(col); toggleFilterDropdown(null)" class="filter-option clear-filter">
+    (Aucun filtre)
+  </div>
+
+  <div (click)="toggleColumnVisibility(col)" class="filter-option hide-column">
+    👁️‍🗨️ Masquer cette colonne
+  </div>
 </div>
-            <div
-              (click)="clearFilter(col); toggleFilterDropdown(null)"
-              class="filter-option clear-filter"
-              role="option"
-            >
-              (Aucun filtre)
-            </div>
-            <div
-              (click)="toggleColumnVisibility(col)"
-              class="filter-option hide-column"
-            >
-              👁️‍🗨️ Masquer cette colonne
-            </div>
-          </div>
         </th>
       </tr>
     </thead>
@@ -60,7 +77,8 @@
       </tr>
     </tbody>
   </table>
+
   <div class="fixed-row-count">
-  Total affiché : {{ filteredData.length }} ligne{{ filteredData.length > 1 ? 's' : '' }}
-</div>
+    Total affiché : {{ filteredData.length }} ligne{{ filteredData.length > 1 ? 's' : '' }}
+  </div>
 </div>
