@@ -1,0 +1,23 @@
+<div class="chart-container">
+  <div class="header-row">
+    <div class="year-label-empty"></div>
+    <div class="year-label" *ngFor="let year of getAvailableYears(processedData[0].years)">
+      {{ year }}
+    </div>
+  </div>
+
+  <div class="months-grid">
+    <div class="month-item" *ngFor="let monthData of processedData">
+      <div class="bars-group">
+        <div class="bar-container" *ngFor="let year of getAvailableYears(monthData.years)">
+          <div class="bar" 
+               [style.height]="getBarHeight(monthData.years[year])"
+               [title]="monthData.years[year] || 0">
+            <div class="bar-value">{{ monthData.years[year] || 0 }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="month-label">{{ monthData.monthName }}</div>
+    </div>
+  </div>
+</div>

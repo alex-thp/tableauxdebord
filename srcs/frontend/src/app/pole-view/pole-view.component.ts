@@ -8,11 +8,12 @@ import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { PieChartComponent } from '../pie-chart/pie-chart.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { DateSearchComponent } from '../date-search/date-search.component';
+import { MonthlyComparisonComponent } from '../monthly-comparison/monthly-comparison.component';
 
 
 @Component({
   selector: 'app-pole-view',
-  imports: [CommonModule, ProgressBarComponent, PieChartComponent, NgIcon, DateSearchComponent],
+  imports: [CommonModule, ProgressBarComponent, PieChartComponent, NgIcon, DateSearchComponent, MonthlyComparisonComponent],
   templateUrl: './pole-view.component.html',
   styleUrl: './pole-view.component.css',
   viewProviders: [provideIcons(featherIcons)],

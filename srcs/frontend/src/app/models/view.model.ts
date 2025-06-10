@@ -39,4 +39,5 @@ export interface ViewData {
     nb_atelier_moyen_par_benevole?: number, //bénévole classique
     nb_atelier_moyen_par_be?: number, //bénévole entreprise
     nb_cand_atco_unique?: number,
+    nbCollabsByMonth?: any, // Un tableau d'objets avec les mois et le nombre de collaborateurs
 }
