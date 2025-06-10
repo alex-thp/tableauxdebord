@@ -4,7 +4,7 @@ import { MongoDbService } from '../mongo-db/mongo-db.service';
 @Injectable()
 export class StatsVetementService {
     constructor(private mongodb: MongoDbService) {}
-    
+
     async get_tmp_nb_collecte(evenement_pc, date_debut, date_fin) {
       let tmp_nb_collecte = await evenement_pc.aggregate([
         {
@@ -123,6 +123,44 @@ export class StatsVetementService {
       ]).toArray();
       return nbBenevolesUniques_semaine;
     }
+
+async getMobilCollab(cdpenrbenev, start, end) {
+    let nbBenevolesByMonth = await cdpenrbenev.aggregate([
+        {
+          $match: {
+            benevole_id: { $ne: null },
+            date_atelier: { $gte: start, $lt: end },
+            est_be: { $eq: "Oui" },
+            statut: { $in: ["Présent", "Positionné"] }
+          }
+        },
+        {
+          $group: {
+            _id: {
+              year: { $year: "$date_atelier" },
+              month: { $month: "$date_atelier" }
+            },
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $sort: {
+            "_id.year": 1,
+            "_id.month": 1
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            year: "$_id.year",
+            month: "$_id.month",
+            count: 1
+          }
+        }
+    ]).toArray();
+    
+    return nbBenevolesByMonth;
+}
 
     async getMainData(date_debut, date_fin) {
         const connection = this.mongodb.client.db('test');
@@ -299,6 +337,8 @@ export class StatsVetementService {
 
       date_debut = new Date(date_debut);
       date_fin = new Date(date_fin);
+      const date_debut_collab = new Date(date_debut.getFullYear() - 1, 0, 1); // Premier jour du mois de début
+      const date_fin_collab = new Date(date_fin.getFullYear(), 11, 31); // Dernier jour du mois de fin
       let result = {label: "Pôle Vêtement",
       nb_collecte: 0,
       nb_tri: 0,
@@ -306,6 +346,7 @@ export class StatsVetementService {
       array_one: [],
       nb_fresque: 0,
       nb_atelier_moyen_par_be: 0,
+      nbCollabsByMonth: [],
     }
       const nb_venues_ateliers = await this.get_nb_repartition(cdpenrbenev, date_debut, date_fin);
       const nb_collecte = await this.get_tmp_nb_collecte(evenement_pc, date_debut, date_fin);
@@ -318,6 +359,7 @@ export class StatsVetementService {
       result.nb_fresque = nb_fresque[0]?.count || 0;
       result.nb_collabs = nb_benevoles[0]?.benevolesUniques || 0;
       result.nb_atelier_moyen_par_be = await this.get_nb_atelier_moyen(cdpenrbenev, date_debut, date_fin);
+      result.nbCollabsByMonth = await this.getMobilCollab(cdpenrbenev, date_debut_collab, date_fin_collab);
       return result;
     }
 }
