@@ -237,7 +237,7 @@ async getMobilCollabUniques(cdpenrbenev, start, end) {
         let startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
         let endOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6));
 
-        let result = {label: "Pôle Vêtement",
+        let result = {label: "Pôle Parcours Cravate",
             left: {
                 label: '2025', 
                 nb_collecte: 0, 
@@ -392,7 +392,7 @@ async getMobilCollabUniques(cdpenrbenev, start, end) {
       date_fin = new Date(date_fin);
       const date_debut_collab = new Date(date_debut.getFullYear() - 1, 0, 1); // Premier jour du mois de début
       const date_fin_collab = new Date(date_fin.getFullYear(), 11, 31); // Dernier jour du mois de fin
-      let result = {label: "Pôle Vêtement",
+      let result = {label: "Pôle Parcours Cravate",
       nb_collecte: 0,
       nb_tri: 0,
       nb_collabs: 0,
