@@ -1,0 +1,179 @@
+Adresses mails Airtable :
+1  - angela@
+2  - bienetreparis@
+3  - benevolat@
+4  - communication@
+5  - atelier.collectif@
+6  - pauline@
+7  - parcourscravateparis@
+8  - jennifer@
+9  - partenariat.candidat@
+10 - atelier@
+11 - admin.numerique@
+12 - mentorat@
+13 - manon.amram@
+14 - dev@
+15 - adistance-national@
+16 - 
+
+[
+    {
+        action_localite_1 : valeur,
+        next : [
+            {
+                sujet_localite_1 : valeur,
+                next : [ 
+                    {
+                        action_1 : valeur,
+                        next : [
+                            sujet_1 : valeur,
+                            next : [
+                                {
+                                    sujet_critere_1 : valeur,
+                                    next : [ 
+                                        {
+                                            objectif : valeur,
+                                            realisé : valeur,
+                                        },
+                                     ],
+                                },
+                                {
+                                    sujet_critere_2 : valeur,
+                                    next : [ 
+                                        {
+                                            objectif : valeur,
+                                            realisé : valeur,
+                                        },
+                                     ],
+                                },
+                                {
+                                    sujet_critere_3 : valeur,
+                                    next : [
+                                        {
+                                            objectif : valeur,
+                                            realisé : valeur,
+                                        },
+                                     ],
+                                }
+                            ]
+                        ]
+                    },
+                    {
+                        action_2 : valeur,
+                        next : [ 
+                            {
+                                sujet_1 : valeur,
+                                next : [
+                                    sujet_critere_1 : valeur,
+                                    next : [
+                                        {
+                                            objectif : valeur,
+                                            realisé : valeur,
+                                        },
+                                     ],
+                                ]
+                            },
+                            {
+                                sujet_2 : valeur,
+                                next : [
+                                    sujet_critere_1 : valeur,
+                                    next : [
+                                        {
+                                            objectif : valeur,
+                                            realisé : valeur,
+                                        },
+                                     ],
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                sujet_localite_2 : valeur,
+                next : [ 
+                    {
+                        action_1 : valeur,
+                        next : [
+                            sujet_1 : valeur,
+                            next : [
+                                sujet_critere_1 : valeur,
+                                next : [ 
+                                    {
+                                            objectif : valeur,
+                                            realisé : valeur,
+                                    },
+                                 ],
+                            ]
+                        ]
+                    }
+                ]
+            }  
+        ] 
+    },
+    {
+        action_localite_2 : valeur,
+        next : [
+            {
+                sujet_localite_1 : valeur,
+                next : [ 
+                    {
+                        action_1 : valeur,
+                        next : [
+                            sujet_1 : valeur,
+                            next : [
+                                sujet_critere_1 : valeur,
+                                next : [ 
+                                    {
+                                        objectif : valeur,
+                                        realisé : valeur,
+                                    },
+                                 ],
+                            ]
+                        ]
+                    }
+                ]
+            }  
+        ] 
+    }
+]
+
+ACTION : 
+Accompagnement - Atelier Bien-être
+Accompagnement - Atelier Collectif
+Accompagnement - Atelier Un temps pour elle
+Accompagnement - CDP + Atelier collectif
+Accompagnement - CDP Feminin
+Accompagnement - CDP Fixe
+Accompagnement - CDP Mobile
+Accompagnement - CDP Fixe ou Mobile
+
+ACTION LOCALITE : 
+75
+93 - Est Ensemble
+93 - Grand Paris Grand Est
+93 - Paris Terre d'Envol
+92
+
+SUJET : 
+Candidat
+Atelier
+
+SUJET LOCALITE : 
+75
+77
+93 - Grand Paris Grand Est
+93 - Paris Terre d'Envol
+93 - Plaine Commune
+code postal : 75001
+Aubervilliers
+Cergy
+
+SUJET CRITERE :
+< 20 ans
+> 49 ans
+EPA
+Femmes
+QPV
+RSA
+PPSMJ

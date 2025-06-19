@@ -1,0 +1,116 @@
+<div class="bloc bloc-objectif">
+  <h2>Objectifs - Accompagnement</h2>
+
+  <!-- Filtres placés juste après le h2 -->
+  <div class="filters">
+    <!-- Localités -->
+    <div class="filter-block">
+      <button class="button-filter" (click)="dropdownOpenLocalite = !dropdownOpenLocalite">Localités</button>
+      <div *ngIf="dropdownOpenLocalite" class="dropdown">
+        <input type="text" placeholder="🔍 Rechercher..."
+               (input)="searchLocalite = $any($event.target).value"
+               [value]="searchLocalite"
+               class="search-input" />
+        <div *ngFor="let loc of getFilteredOptions('localites'); trackBy: trackByFn" class="option-item">
+          <label>
+            <input type="checkbox"
+                   [value]="loc"
+                   (change)="toggleSelection('localites', loc, $any($event.target).checked)"
+                   [checked]="filtreLocalites.has(loc)" />
+            {{ loc }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="filter-block">
+      <button class="button-filter" (click)="dropdownOpenAction = !dropdownOpenAction">Actions</button>
+      <div *ngIf="dropdownOpenAction" class="dropdown">
+        <input type="text" placeholder="🔍 Rechercher..."
+               (input)="searchAction = $any($event.target).value"
+               [value]="searchAction"
+               class="search-input" />
+        <div *ngFor="let act of getFilteredOptions('actions'); trackBy: trackByFn" class="option-item">
+          <label>
+            <input type="checkbox"
+                   [value]="act"
+                   (change)="toggleSelection('actions', act, $any($event.target).checked)"
+                   [checked]="filtreActions.has(act)" />
+            {{ act }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sujets -->
+    <div class="filter-block">
+      <button class="button-filter" (click)="dropdownOpenSujet = !dropdownOpenSujet">Sujets</button>
+      <div *ngIf="dropdownOpenSujet" class="dropdown">
+        <input type="text" placeholder="🔍 Rechercher..."
+               (input)="searchSujet = $any($event.target).value"
+               [value]="searchSujet"
+               class="search-input" />
+        <div *ngFor="let s of getFilteredOptions('sujets'); trackBy: trackByFn" class="option-item">
+          <label>
+            <input type="checkbox"
+                   [value]="s"
+                   (change)="toggleSelection('sujets', s, $any($event.target).checked)"
+                   [checked]="filtreSujets.has(s)" />
+            {{ s }}
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngFor="let actionLocalite of getFilteredData()" class="bloc niveau-1">
+    <div class="label">📍 {{ actionLocalite.label }}</div>
+
+    <div *ngFor="let sujetLocalite of actionLocalite.next" class="bloc niveau-2">
+      <div class="label"> 🤓 {{ sujetLocalite.label }}</div>
+
+      <div *ngFor="let action of sujetLocalite.next">
+        <div *ngIf="action.label != 'PC - Tri' 
+        && action.label != 'PC - Site' 
+        && action.label != 'PC - Bénévole' 
+        && action.label != 'Formation' 
+        && action.label != 'Accompagnement - Mentorat'
+        && action.label != 'Accompagnement - CDPALM'
+        && action.label != 'PC - Fresque'" 
+        class="bloc niveau-3">
+        <div class="label label-mid">⚙️ {{ action.label }}</div>
+
+          <div *ngFor="let sujet of action.next">
+            <div *ngIf="sujet.label != 'Bénévole'">
+              <div class="label label-mid"> Sujet : {{ sujet.label }}</div>
+              <ul class="criteres">
+                <li *ngFor="let critere of sujet.next" class="bloc niveau-4 critere-ligne">
+                  <div *ngFor="let val of critere.next"
+                       class="objectif-zone"
+                       [ngClass]="{'objectif-ko': val.realise < val.objectif, 'objectif-ok': val.realise >= val.objectif}">
+                    <div class="critere-gauche">
+                      ▪️ <strong>{{ critere.label }}</strong>
+                    </div>
+                    <div class="critere-date">
+                      {{ val.date_debut }} - {{ val.date_fin }}
+                    </div>
+                    <div class="critere-droite">
+                      <span class="label">🎯</span>
+                      <span class="badge objectif">{{ val.objectif }}</span>
+                      <span class="label">✅</span>
+                      <span class="badge realisé">{{ val.realise }}</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="getFilteredData().length === 0" class="no-results">
+  Aucun résultat ne correspond aux filtres sélectionnés.
+  </div>
+</div>

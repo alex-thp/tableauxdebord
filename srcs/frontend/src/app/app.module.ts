@@ -9,7 +9,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './connection/login/login.component';
 import { AuthInterceptor } from './auth.interceptor';
 import { ConnectionComponent } from './connection/connection.component';
-
+import { FilterObjectifPipe } from './pipes/filter-objectif.pipe';
+import { FilterDatePipe } from './pipes/filter-date.pipe';
+import { SortByDateFinPipe } from './pipes/sort-by-date-fin.pipe';
 
 
 @NgModule({
@@ -23,7 +25,10 @@ declarations: [
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FilterObjectifPipe,
+    FilterDatePipe,
+    SortByDateFinPipe,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

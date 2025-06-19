@@ -1,0 +1,17 @@
+<div class="card">
+  <div class="card-header">
+    📍 <strong>{{ localite }}</strong>
+  </div>
+  <div class="card-body">
+    <div class="progress">
+      <span>🎯 {{ objectifsRealises }} / {{ objectifs }} objectifs</span>
+        <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="progress"></div>
+        </div>
+    </div>
+    <div class="deadline">
+      ⏳ Prochaine échéance : <strong>{{ nextDeadline }}</strong>
+    </div>
+  </div>
+</div>
+    

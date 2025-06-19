@@ -21,6 +21,12 @@ import { AdminController } from './controllers/admin.controller';
 import { UserController } from './user/user.controller';
 import { DevController } from './dev/dev.controller';
 import { DevService } from './dev/dev.service';
+import { EptService } from './dev/ept/ept.service';
+import { DashboardController } from './dashboard/dashboard.controller';
+import { DashboardService } from './dashboard/dashboard.service';
+import { PdfMakerService } from './pdf-maker/pdf-maker.service';
+import { PdfMakerController } from './pdf-maker/pdf-maker.controller';
+import { PdfMakerModule } from './pdf-maker/pdf-maker.module';
 
 @Module({
   imports: [
@@ -37,8 +43,16 @@ import { DevService } from './dev/dev.service';
     }),
     TypeOrmModule.forFeature([User, Role, Permission]),
     UserModule,
+    PdfMakerModule,
   ],
-  controllers: [AppController, AdminController, UserController, DevController],
+  controllers: [
+    AppController, 
+    AdminController, 
+    UserController, 
+    DevController, 
+    DashboardController, 
+    PdfMakerController
+  ],
   providers: [
     AppService,
     ParseDatePipe,
@@ -50,6 +64,9 @@ import { DevService } from './dev/dev.service';
     StatsVetementService,
     MajQpvService,
     DevService,
+    EptService,
+    DashboardService,
+    PdfMakerService,
 
   ],
   exports: [ParseDatePipe],

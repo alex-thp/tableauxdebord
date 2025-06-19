@@ -1,0 +1,31 @@
+<div class="pdf-merge-form">
+  <h2>Fusionner un PDF personnalisé</h2>
+
+  <form (ngSubmit)="onSubmit()" #pdfForm="ngForm">
+    <div class="form-section">
+      <label for="fileOriginal">Fichier original (à découper)</label>
+      <input type="file" id="fileOriginal" (change)="onFileChange($event, 'original')" accept="application/pdf" required>
+    </div>
+
+    <div class="form-section">
+      <label for="fileInsert">Fichier à insérer (entier)</label>
+      <input type="file" id="fileInsert" (change)="onFileChange($event, 'insert')" accept="application/pdf" required>
+    </div>
+
+    <div class="form-section">
+      <label>Pages à garder AVANT insertion</label>
+      <input type="number" [(ngModel)]="formData.fromFile1" name="fromFile1" min="1" required>
+      <span>à</span>
+      <input type="number" [(ngModel)]="formData.toFile1" name="toFile1" min="1" required>
+    </div>
+
+    <div class="form-section">
+      <label>Pages à garder APRÈS insertion</label>
+      <input type="number" [(ngModel)]="formData.fromFile2" name="fromFile2" min="1" required>
+      <span>à</span>
+      <input type="number" [(ngModel)]="formData.toFile2" name="toFile2" min="1" required>
+    </div>
+
+    <button type="submit" [disabled]="!pdfForm.form.valid || !fileOriginal || !fileInsert">Fusionner</button>
+  </form>
+</div>

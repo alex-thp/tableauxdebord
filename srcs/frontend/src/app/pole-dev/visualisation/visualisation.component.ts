@@ -8,7 +8,7 @@ import * as featherIcons from '@ng-icons/feather-icons';
 @Component({
   selector: 'app-visualisation',
   standalone: true,
-  imports: [CommonModule, NgIcon],
+  imports: [CommonModule],
   templateUrl: './visualisation.component.html',
   styleUrl: './visualisation.component.css',
   viewProviders: [provideIcons(featherIcons)],

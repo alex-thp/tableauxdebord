@@ -51,4 +51,25 @@ export class GatewayService {
       }
     });
   }
+  
+  getdashboardData(today: Date | null): Observable<any> {
+    let params = new HttpParams()
+    // Ajoute seulement les paramètres non-nuls
+    if (today) {
+      params = params.set('today', today.toISOString());
+    }
+    const token = localStorage.getItem('token');
+    return this.http.get(`${this.baseUrl}/dashboard/data`, { params });
+  }
+
+mergePdf(formData: FormData): Observable<Blob> {
+  const token = localStorage.getItem('token');
+
+  return this.http.post(`${this.baseUrl}/pdf/merge`, formData, {
+    headers: {
+      Authorization: `Bearer ${token || ''}`,
+    },
+    responseType: 'blob', // pour pouvoir télécharger le PDF
+  });
+}
 }
