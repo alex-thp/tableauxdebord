@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { MongoClient } from 'mongodb';
+import { EptService } from './ept/ept.service';
 
 @Injectable()
 export class DevService {
     uri :any = process.env.MONGODB_URL;
     private client: MongoClient;
 
-    constructor() {this.client = new MongoClient(this.uri);}
+    constructor(private eptService: EptService) {this.client = new MongoClient(this.uri);}
 
     async getIndicateurValue(): Promise<any> {
         // Logique pour récupérer la valeur de l'indicateur
@@ -131,6 +132,8 @@ export class DevService {
                         currentQuery = this.updateQuery(currentQuery, "secteur_recherche", tmp[1], "$eq");
                     } else if (tmp[0] === "ressources mensuelle" || tmp[0] === " ressources mensuelle") {
                         currentQuery = this.updateQuery(currentQuery, "ressources_mensuelle", Number(tmp[1]), "$lt");
+                    } else if (tmp[0] === "type contrat" || tmp[0] === " type contrat") {
+                        currentQuery = this.updateQuery(currentQuery, "type_contrat", tmp[1], "$eq");
                     }
                 }
             }
@@ -185,6 +188,30 @@ export class DevService {
             evenement_pc,
         };
         let data = "";
+        const eptArray = this.eptService.setEPT();
+        if (item.action_localite) {
+          if (item.action_localite === "93 - paris terre d'envol") {
+            item.action_localite = eptArray[3];
+          } else if (item.action_localite === "93 - est ensemble") {
+            item.action_localite = eptArray[2];
+          } else if (item.action_localite === "93 - grand paris grand est") {
+            item.action_localite = eptArray[1];
+          } else if (item.action_localite === "93 - plaine commune") {
+            item.action_localite = eptArray[0];
+          }
+        }
+
+         if (item.sujet_localite) {
+          if (item.sujet_localite === "93 - paris terre d'envol") {
+            item.sujet_localite = eptArray[3];
+          } else if (item.sujet_localite === "93 - est ensemble") {
+            item.sujet_localite = eptArray[2];
+          } else if (item.sujet_localite === "93 - grand paris grand est") {
+            item.sujet_localite = eptArray[1];
+          } else if (item.sujet_localite === "93 - plaine commune") {
+            item.sujet_localite = eptArray[0];
+          }
+        }
         item.sujet_critere = this.normalizeToArray(item.sujet_critere);
         item.action_localite = this.normalizeToArray(item.action_localite);
         item.sujet_localite = this.normalizeToArray(item.sujet_localite);
