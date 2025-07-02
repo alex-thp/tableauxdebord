@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 
 @Component({
@@ -12,20 +13,26 @@ import { AuthService } from '../../auth/auth.service';
 export class LoginComponent {
   loginForm: FormGroup;
   hidePassword = true;
+  redirectTo: string | null = null;
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private route: ActivatedRoute) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+    this.route.queryParamMap.subscribe(params => {
+      console.log("ICIIII : " + JSON.stringify(params));
+      this.redirectTo = params.get('redirectTo');
     });
   }
 
   onSubmit(): void {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      this.authService.login(email, password).subscribe({
-        error: () => alert('Identifiants invalides'),
-      });
+      console.log("ICI : " + this.redirectTo)
+      this.authService.login(email, password, this.redirectTo).subscribe({
+      error: err => console.error('Login failed', err)
+    });
     }
   }
 

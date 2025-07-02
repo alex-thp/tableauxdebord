@@ -11,15 +11,17 @@ export class AuthService {
   private apiUrl = '/api/auth';
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(email: string, password: string) {
-    return this.http.post<{ access_token: string }>(`${this.apiUrl}/login`, { email, password })
-      .pipe(
-        tap(res => {
-          localStorage.setItem('jwt_token', res.access_token);
-          this.router.navigate(['home']);
-        })
-      );
-  }
+login(email: string, password: string, redirectTo?: string | null) {
+  return this.http.post<{ access_token: string }>(`${this.apiUrl}/login`, { email, password })
+    .pipe(
+      tap(res => {
+        localStorage.setItem('jwt_token', res.access_token);
+        const destination = redirectTo ?? '/home';
+        console.log("destination : " + destination)
+        this.router.navigateByUrl(destination);
+      })
+    );
+}
 
   logout() {
     localStorage.removeItem('jwt_token');
@@ -38,7 +40,7 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/signup`, { email, password }).pipe(
         tap(res => {
           console.log(res);
-          this.router.navigate(['home']);
+          this.router.navigate(['/home']);
         })
       );
 

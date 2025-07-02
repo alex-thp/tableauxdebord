@@ -26,12 +26,11 @@ export const appRouteList: Routes = [
     { path: 'dev', component: MainDevViewComponent, canActivate: [AuthGuard] },
     { path: 'visualisation/:rapport_x_indicateur', component: VisualisationComponent, canActivate: [AuthGuard] },
     { path: 'not_found', component: NotFoundComponent },
-    //{ path: 'test', component: DashboardHierarchyComponent},
-    //{ path: 'test2', component: AccompagnementComponent},
     { path: 'generateCustomPDF', component: PdfMakerComponent, canActivate: [AuthGuard] },
     //{ path: 'gemini', component: AskGeminiComponent },
     //{ path: 'display_card_content:localite', component: DashboardHierarchyComponent },
-
+    //{ path: 'test', component: DashboardHierarchyComponent},
+    //{ path: 'test2', component: AccompagnementComponent},
     //{ path: 'visualisation', redirectTo: '/home', pathMatch: 'full' },
     //{ path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
     { path: '**', redirectTo: 'not_found' }

@@ -284,10 +284,6 @@ onFilterDropdownFocusOut(event: FocusEvent) {
     this.filterData();
   }
 
-  /*toggleFilterDropdown(column: string | null) {
-    this.filterDropdownOpenFor = this.filterDropdownOpenFor === column ? null : column;
-  }*/
-
   getUniqueValuesForColumn(column: string): any[] {
     const values = this.dataToDisplay.map(row => this.formatValue(row[column]));
     return Array.from(new Set(values));

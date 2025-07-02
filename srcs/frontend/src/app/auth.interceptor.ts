@@ -1,19 +1,21 @@
-import { Injectable } from '@angular/core';
 import {
+  HttpInterceptor,
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor,
+  HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { AuthService } from './auth/auth.service';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('AuthInterceptor: intercepting request');
     const token = this.authService.getToken();
 
     if (token) {
@@ -24,8 +26,19 @@ export class AuthInterceptor implements HttpInterceptor {
       });
     }
 
-    return next.handle(request);
+    return next.handle(request).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          //this.authService.logout();
+          // 👇 Récupère l’URL visible par l’utilisateur
+          const currentUrl = this.router.url;
+          console.log(currentUrl)
+          // Redirige vers /login avec redirectTo dans l’URL
+          this.router.navigate(['/login'], {queryParams: { redirectTo: currentUrl },});
+        }
+
+        return throwError(() => error);
+      })
+    );
   }
 }
-// This interceptor adds the JWT token to the Authorization header of outgoing HTTP requests if the user is logged in.
-// It uses the AuthService to retrieve the token from local storage.
