@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { GatewayService } from '../../gateway.service';
 
@@ -12,6 +11,7 @@ import { GatewayService } from '../../gateway.service';
 export class PdfMakerComponent {
   fileOriginal!: File;
   fileInsert!: File;
+  htmlContent: string = '<h1>Hello PDF</h1><p>Ce texte vient du champ HTML</p>';
 
   formData = {
     fromFile1: 1,
@@ -20,7 +20,7 @@ export class PdfMakerComponent {
     toFile2: 1,
   };
 
-  constructor(private http: HttpClient, private gatewayService: GatewayService) {}
+  constructor(private gatewayService: GatewayService) {}
 
   onFileChange(event: Event, type: 'original' | 'insert') {
     const input = event.target as HTMLInputElement;
@@ -53,5 +53,21 @@ export class PdfMakerComponent {
     }, error => {
       console.error('Erreur lors de la fusion du PDF :', error);
     });
+  }
+
+  generatePdf() {
+    this.gatewayService.generatePdfFromHtml(this.htmlContent).subscribe(blob => {
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'mon_pdf.pdf';
+  a.click();
+});
+  }
+
+  benevolePdf() {
+    this.gatewayService.benevolePdf().subscribe(blob => {
+      console.log(blob);
+    })
   }
 }

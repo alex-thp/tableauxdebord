@@ -134,6 +134,7 @@
             <p>Nombre de présentation de fresque: <span>{{ data.nb_fresque || 0 }}</span></p>
             <p>Nombre de collabs mobilisés: <span>{{ (data.nb_collabs || 0)}}</span></p>
             <p>Nombre d'ateliers moyen par collab: <span>{{ (data.nb_atelier_moyen_par_be || 0)}}</span></p>
+            <p>Nombre de nouveaux collabs: <span>{{ (data.nbNouveauCollab || 0) }}</span></p>
         </div>
 
         <div class="data-block" *ngIf="values !== undefined && labels !== undefined">

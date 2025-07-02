@@ -45,18 +45,37 @@ export class VisualisationComponent {
       this.rapportXIndicateurId = params.get('rapport_x_indicateur') || '';
       console.log("Récupération de l'ID du rapport X Indicateur:", this.rapportXIndicateurId);
       this.devGatewayService.getRapportXIndicateur(this.rapportXIndicateurId)
-        .subscribe(data => {
-          if (data.message) {
-            this.router.navigate(['/not_found']);
-          } else {
-            this.dataToSearch = data || this.dataToSearch;
-            this.searchData();
+        .subscribe({
+          next: data => {
+            console.log("Données du rapport X Indicateur:", data);
+
+            if (data?.message) {
+              this.router.navigate(['/not_found']);
+            } else {
+              this.dataToSearch = data || this.dataToSearch;
+              this.searchData();
+            }
+          },
+          error: err => {
+            console.error("Erreur lors de la récupération du rapport:", err);
+
+            if (err.status === 401) {
+              alert("Session expirée ou non authentifié. Veuillez vous reconnecter.");
+              this.router.navigate(['/login']);
+            } else if (err.status === 404) {
+              alert("Rapport non trouvé. Veuillez vérifier l'ID du rapport.");
+              this.router.navigate(['/not_found']);
+            } else {
+              // Autres erreurs (500, etc.)
+              // Optionnel : afficher une alerte ou une page d’erreur générique
+            }
           }
         });
     });
   }
 
   ngOnInit() {}
+
   searchData() {
   console.log('Recherche avec les paramètres:', this.dataToSearch);
   this.devGatewayService.getVisualisationValue(
@@ -123,6 +142,9 @@ export class VisualisationComponent {
       console.error('Erreur lors de la récupération des données :', err);
       if (err.status === 403) {
         alert("Accès interdit. Veuillez vérifier vos droits ou votre authentification.");
+      } else if (err.status === 401) {
+        alert("Session expirée ou non authentifié. Veuillez vous reconnecter.");
+        this.router.navigate(['/login']);
       }
     },
     complete: () => {

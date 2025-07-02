@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GatewayService } from '../gateway.service';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-hierarchy',
@@ -27,8 +28,11 @@ export class DashboardHierarchyComponent {
   dropdownOpenLocalite = false;
   dropdownOpenAction = false;
   dropdownOpenSujet = false;
+  localite: string = '';
 
-  constructor(private gatewayService: GatewayService) {}
+  constructor(private gatewayService: GatewayService, private route: ActivatedRoute) {
+    this.localite = this.route.snapshot.paramMap.get('localite') || '';
+  }
 
   ngOnInit(): void {
     this.gatewayService.getdashboardData(this.today).subscribe(data => {

@@ -72,4 +72,17 @@ mergePdf(formData: FormData): Observable<Blob> {
     responseType: 'blob', // pour pouvoir télécharger le PDF
   });
 }
+  generatePdfFromHtml(html: string): Observable<Blob> {
+    const token = localStorage.getItem('token');
+    return this.http.post(`${this.baseUrl}/pdf/generate`, { html }, {
+      headers: {
+        Authorization: `Bearer ${token || ''}`,
+      },
+      responseType: 'blob', // pour pouvoir télécharger le PDF
+    });
+  }
+
+  benevolePdf() {
+    return this.http.get(`${this.baseUrl}/pdf/benevolePdf`);
+  }
 }

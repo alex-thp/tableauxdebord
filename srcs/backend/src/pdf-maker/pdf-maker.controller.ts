@@ -1,4 +1,4 @@
-import { Controller, Post, UploadedFiles, Body, UseInterceptors, BadRequestException, Res } from '@nestjs/common';
+import { Controller, Post, UploadedFiles, Body, UseInterceptors, BadRequestException, Res, Get } from '@nestjs/common';
 import { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PdfMakerService } from './pdf-maker.service';
@@ -31,5 +31,25 @@ export class PdfMakerController {
     });
 
     return res.send(pdfBuffer);
+  }
+
+   @Post('generate')
+  async generatePdf(@Body() body: { html: string }, @Res() res: Response) {
+    try {
+      const pdf = await this.pdfMakerService.generatePdfFromHtml(body.html);
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename="generated.pdf"',
+      });
+      res.send(pdf);
+    } catch (err) {
+      console.error('❌ Erreur génération PDF :', err);
+      res.status(500).send('Erreur génération PDF');
+    }
+  }
+  
+  @Get('benevolePdf')
+  async generateBenevolePdf() {
+    return this.pdfMakerService.getDataToGeneratePdf()
   }
 }

@@ -79,6 +79,7 @@ async fetch_data(cdpenrcand) {
 }
 
 async majQPVFunction() {
+  console.log("majQPVFunction called");
   let result;
   try {
     let tabToUpdate: Array<{ id: string; fields: { QPV_AUTOMATISATION: string; QPV_NOM_QUARTIER_AUTOMATISATION: string; QPV_CODE_QUARTIER_AUTOMATISATION: string } }> = [];
@@ -110,6 +111,7 @@ async majQPVFunction() {
     if (i > 0) await this.update_airtable_10_by_10(tabToUpdate, process.env.AIRTABLE_CDP_ENR_CAND_TABLE);
     i = 0;
     result = [];
+    tabToUpdate = [];
     for (let bienetreenrcand of bien_etre_enr_cand_array) {
       if (i >= 9) {
         await this.update_airtable_10_by_10(tabToUpdate, process.env.AIRTABLE_BIEN_ETRE_ENR_CAND_TABLE);
@@ -123,6 +125,7 @@ async majQPVFunction() {
     if (i > 0) await this.update_airtable_10_by_10(tabToUpdate, process.env.AIRTABLE_BIEN_ETRE_ENR_CAND_TABLE);
     i = 0;
     result = [];
+    tabToUpdate = [];
     for (let atcoenrcand of at_co_enr_cand_array) {
       if (i >= 9) {
         await this.update_airtable_10_by_10(tabToUpdate, process.env.AIRTABLE_AT_CO_ENR_CAND_TABLE);

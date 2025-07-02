@@ -1,16 +1,3 @@
-<!--
-<div class="localite-grid">
-  <app-localite-card [localite]="93" [objectifsRealises]="10" [objectifs]="13" [nextDeadline]="'27/06/2025'"></app-localite-card>
-  <app-localite-card [localite]="'93 - plaine commune'" [objectifsRealises]="11" [objectifs]="12" [nextDeadline]="'13/09/2025'"></app-localite-card>
-  <app-localite-card [localite]="75" [objectifsRealises]="16" [objectifs]="18" [nextDeadline]="'31/11/2025'"></app-localite-card>
-  <app-localite-card [localite]="'n\'importe quel département de la région'" [objectifsRealises]="10" [objectifs]="13" [nextDeadline]="'30/12/2025'"></app-localite-card>
-  <app-localite-card [localite]="94" [objectifsRealises]="2" [objectifs]="4" [nextDeadline]="'31/12/2025'"></app-localite-card>
-  <app-localite-card [localite]="78" [objectifsRealises]="7" [objectifs]="9" [nextDeadline]="'31/12/2025'"></app-localite-card>
-  <app-localite-card [localite]="95" [objectifsRealises]="2" [objectifs]="2" [nextDeadline]="'-'"></app-localite-card>
-  <app-localite-card [localite]="'93 - est ensemble'" [objectifsRealises]="9" [objectifs]="9" [nextDeadline]="'-'"></app-localite-card>
-
-</div>
--->
 <div *ngFor="let groupe of syntheseGroupes">
   <div class="cards-container">
     <div class="group">Département : {{ groupe.departement }}</div>
@@ -20,6 +7,7 @@
       [objectifsRealises]="item.objectifs_realises"
       [objectifs]="item.objectifs"
       [nextDeadline]="item.date_prochaine_echeance"
+      (click)="displayContent(item.action_localite)"
     ></app-localite-card>
   </div>
 </div>

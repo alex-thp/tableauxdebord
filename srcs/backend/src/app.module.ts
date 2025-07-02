@@ -27,6 +27,8 @@ import { DashboardService } from './dashboard/dashboard.service';
 import { PdfMakerService } from './pdf-maker/pdf-maker.service';
 import { PdfMakerController } from './pdf-maker/pdf-maker.controller';
 import { PdfMakerModule } from './pdf-maker/pdf-maker.module';
+import { GeminiService } from './gemini/gemini.service';
+import { GeminiController } from './gemini/gemini.controller';
 
 @Module({
   imports: [
@@ -51,7 +53,7 @@ import { PdfMakerModule } from './pdf-maker/pdf-maker.module';
     UserController, 
     DevController, 
     DashboardController, 
-    PdfMakerController
+    PdfMakerController, GeminiController,
   ],
   providers: [
     AppService,
@@ -67,7 +69,7 @@ import { PdfMakerModule } from './pdf-maker/pdf-maker.module';
     EptService,
     DashboardService,
     PdfMakerService,
-
+    GeminiService,
   ],
   exports: [ParseDatePipe],
 })

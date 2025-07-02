@@ -20,6 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@google/genai": "^1.6.0",
+    "@google/generative-ai": "^0.24.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.0",
@@ -41,6 +43,8 @@
     "pdf-merger-js": "^5.1.2",
     "pg": "^8.16.0",
     "plugins": "^0.4.2",
+    "puppeteer": "^24.10.2",
+    "puppeteer-core": "^24.10.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.24"

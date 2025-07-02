@@ -41,4 +41,5 @@ export interface ViewData {
     nb_cand_atco_unique?: number,
     nbCollabsByMonth?: any, // Un tableau d'objets avec les mois et le nombre de collaborateurs
     nbCollabsByMonthUnique?: any,
+    nbNouveauCollab?: number, // Nombre de nouveaux collaborateurs
 }

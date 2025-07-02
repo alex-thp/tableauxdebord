@@ -141,4 +141,17 @@ export class MongoDbService {
       await mongoose.connection.close();
     }
   }
+
+  async getTable(tableName: string): Promise<any> {
+    try {
+      const db = this.client.db("test");
+      const table = db.collection(tableName);
+      return table;
+    } catch (error) {
+      console.error("Error fetching collections:", error);
+      throw error;
+    } finally {
+      await mongoose.connection.close();
+    }
+  }
 }

@@ -1,0 +1,38 @@
+<div class="ask-gemini-container">
+  <h2>Posez votre question à Gemini</h2>
+
+  <form (ngSubmit)="askGemini(question)">
+    <textarea 
+      [(ngModel)]="question"
+      name="question"
+      placeholder="Écrivez votre question ici..."
+      rows="6"
+      cols="50"
+      required>
+    </textarea>
+    <br />
+    <button type="submit">Envoyer</button>
+  </form>
+</div>
+
+<div *ngIf="answer" class="gemini-response">
+  <h3>Réponse de Gemini :</h3>
+  <p>{{ answer }}</p>
+</div>
+
+<div *ngIf="indicateur" class="indicateur-form">
+  <h3>Modifier l’indicateur</h3>
+  <form (ngSubmit)="saveModifications()">
+    <div *ngFor="let item of (indicateur | keyvalue)">
+      <label>{{ item.key }}</label>
+      <input 
+        [(ngModel)]="indicateur[getKey(item.key)]"
+        [name]="getKey(item.key)"
+        class="form-control" />
+    </div>
+    <br />
+    <button type="submit">Enregistrer les modifications</button>
+  </form>
+</div>
+
+<!--<div *ngIf="indicateur != null">indicateur : {{indicateur.action}} - {{indicateur.action_localite}} - {{indicateur.sujet}} - {{indicateur.sujet_critere}} - {{indicateur.sujet_localite}}-->

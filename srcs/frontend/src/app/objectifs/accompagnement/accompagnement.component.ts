@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LocaliteCardComponent } from '../localite-card/localite-card.component';
 import { GatewayService } from '../../gateway.service';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';;
 
 @Component({
   selector: 'app-accompagnement',
@@ -29,7 +30,7 @@ export class AccompagnementComponent implements OnInit {
     }[];
   }[] = [];
 
-  constructor(private gatewayService: GatewayService) {}
+  constructor(private router: Router, private gatewayService: GatewayService) {}
 
   ngOnInit(): void {
     this.gatewayService.getdashboardData(new Date()).subscribe(res => {
@@ -58,6 +59,11 @@ export class AccompagnementComponent implements OnInit {
         return date1.getTime() - date2.getTime();
       });
     });
+  }
+
+  displayContent(action_localite: string) {
+    console.log('Affichage du contenu pour la localité:', action_localite);
+    this.router.navigate(['/display_card_content', action_localite]);
   }
 
   parseDate(dateStr: string): Date {

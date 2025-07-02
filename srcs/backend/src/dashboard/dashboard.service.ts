@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MongoClient } from 'mongodb';
 import { EptService } from '../dev/ept/ept.service';
-import { get } from 'mongoose';
 
 interface ApiResponse {
   date_fin: Date;
@@ -251,7 +250,7 @@ sortCriteriaByDateFin(tree);
         return data;
     }
 
-    async getDashboardDataTest(today) {
+    async getDashboardDataTest() {
         // Simulate fetching data from a database or external service
         this.data = [
                     {

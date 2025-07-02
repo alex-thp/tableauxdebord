@@ -1,4 +1,15 @@
+<button (click)="benevolePdf()">benevolePdf()</button>
+
 <div class="pdf-merge-form">
+<h2>Génération de PDF</h2>
+
+<!-- Champ de texte HTML -->
+<textarea [(ngModel)]="htmlContent" rows="10" cols="80" placeholder="Entrez ici le HTML pour le PDF"></textarea>
+
+<br />
+
+<!-- Bouton pour générer -->
+<button (click)="generatePdf()">Générer un PDF</button>
   <h2>Fusionner un PDF personnalisé</h2>
 
   <form (ngSubmit)="onSubmit()" #pdfForm="ngForm">

@@ -401,6 +401,7 @@ async getMobilCollabUniques(cdpenrbenev, start, end) {
       nb_atelier_moyen_par_be: 0,
       nbCollabsByMonth: [],
       nbCollabsByMonthUnique: [],
+      nbNouveauCollab: 0,
     }
       const nb_venues_ateliers = await this.get_nb_repartition(cdpenrbenev, date_debut, date_fin);
       const nb_collecte = await this.get_tmp_nb_collecte(evenement_pc, date_debut, date_fin);
@@ -415,6 +416,8 @@ async getMobilCollabUniques(cdpenrbenev, start, end) {
       result.nb_atelier_moyen_par_be = await this.get_nb_atelier_moyen(cdpenrbenev, date_debut, date_fin);
       result.nbCollabsByMonth = await this.getMobilCollab(cdpenrbenev, date_debut_collab, date_fin_collab);
       result.nbCollabsByMonthUnique = await this.getMobilCollabUniques(cdpenrbenev, date_debut_collab, date_fin_collab);
+      result.nbNouveauCollab = await this.get_nb_benevole_unique_ancien(cdpenrbenev, date_debut, date_fin);
+      result.nbNouveauCollab = result.nbNouveauCollab[0]?.benevolesUniques || 0;
       return result;
     }
 }
