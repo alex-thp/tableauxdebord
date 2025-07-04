@@ -8,6 +8,7 @@ export interface ICdp extends Document {
   lieu?: string;
   record_id: string;
   mobile_vehicule?: string;
+  commune?: string;
 }
 
 // Créer le schéma Mongoose basé sur l'interface
@@ -18,6 +19,7 @@ const CdpSchema: Schema<ICdp> = new Schema({
   lieu: { type: String },
   record_id: { type: String, required: true },
   mobile_vehicule: { type: String },
+  commune: { type: String },
 });
 
 // Créer et exporter le modèle

@@ -6,6 +6,7 @@ export interface IAtCo extends Document {
   date?: Date;
   statut?: string;
   lieu?: string;
+  commune?: string;
 }
 
 // Créer le schéma Mongoose basé sur l'interface
@@ -14,6 +15,7 @@ const AtCoSchema: Schema<IAtCo> = new Schema({
   date: { type: Date },
   statut: { type: String },
   lieu: { type: String },
+  commune: { type: String },
 });
 
 // Créer et exporter le modèle

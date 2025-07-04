@@ -161,8 +161,8 @@ export class DevService {
         const benev = db.collection("benevs");
         const structures = db.collection("structures");
         const referents = db.collection("contactdestructures");
-        const atCo = db.collection("atcos");
-        const bienEtre = db.collection("bienetres");
+        const atco = db.collection("atcos");
+        const bienetre = db.collection("bienetres");
         const matching = db.collection("cdpenrcandxcdpenrbenevs");
         const evenement_pc = db.collection("evenementpcs");
 
@@ -182,13 +182,13 @@ export class DevService {
             benev,
             structures,
             referents,
-            atCo,
-            bienEtre,
+            atco,
+            bienetre,
             matching,
             evenement_pc,
         };
         let data = "";
-        const eptArray = this.eptService.setEPT();
+        const eptArray = await this.eptService.setEPT();
         if (item.action_localite) {
           if (item.action_localite === "93 - paris terre d'envol") {
             item.action_localite = eptArray[3];
@@ -210,33 +210,88 @@ export class DevService {
             item.sujet_localite = eptArray[1];
           } else if (item.sujet_localite === "93 - plaine commune") {
             item.sujet_localite = eptArray[0];
+            console.log(eptArray[0]);
+            //console.log(item.sujet_localite)
           }
         }
         item.sujet_critere = this.normalizeToArray(item.sujet_critere);
         item.action_localite = this.normalizeToArray(item.action_localite);
         item.sujet_localite = this.normalizeToArray(item.sujet_localite);
         if (item.action == "Accompagnement - CDP Fixe" || item.action == "Accompagnement - CDP Fixe (Global)")
-            data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP FIXE", database);
+        {
+            if(item.sujet === 'Candidat') {
+                data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP FIXE", database);
+            }
+            else if (item.sujet === 'Atelier') {
+                data = await this.forge_request_nb_atelier_cdp(item, "CDP FIXE", database);
+            }
+        }
         else if (item.action == "Accompagnement - CDP Mobile" || item.action == "Accompagnement - CDP Mobile (Global)")
-            data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP MOBILE", database);
+        {
+            if(item.sujet === 'Candidat') {
+                data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP MOBILE", database);
+            }
+            else if (item.sujet === 'Atelier') {
+                data = await this.forge_request_nb_atelier_cdp(item, "CDP MOBILE", database);
+            }
+        }
         else if (item.action == "Accompagnement - CDP Fixe ou Mobile" || item.action == "Accompagnement - CDP Fixe ou Mobile (Global)")
-            data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP FIXE, CDP MOBILE", database);
+        {
+            if(item.sujet === 'Candidat') {
+                data = await this.forge_request_nb_prescriptions_present_cdp(item, "CDP FIXE, CDP MOBILE", database);
+            }
+            else if (item.sujet === 'Atelier') {
+                data = await this.forge_request_nb_atelier_cdp(item, "CDP FIXE, CDP MOBILE", database);
+            }
+        }
         else if (item.action == "Accompagnement - Atelier Collectif" || item.action == "Accompagnement - Atelier Collectif (Global)")
-            data = await this.forge_request_nb_prescriptions_present_at_co(item, database);
+        {
+            if(item.sujet === 'Candidat') {
+                data = await this.forge_request_nb_prescriptions_present_at_co(item, database);
+            }
+            else if (item.sujet === 'Atelier') {
+                data = await this.forge_request_nb_atelier_at_co(item, database);
+            }
+        }
         else if (item.action == "Accompagnement - Atelier Bien-être" || item.action == "Accompagnement - Atelier Bien-être (Global)")
-            data = await this.forge_request_nb_prescriptions_present_bien_etre(item, database);
+        {    
+            if(item.sujet === 'Candidat') {
+                data = await this.forge_request_nb_prescriptions_present_bien_etre(item, database);
+            }
+            else if (item.sujet === 'Atelier') {
+                data = await this.forge_request_nb_atelier_bien_etre(item, database);
+            }
+        }
         else if (item.action == "Accompagnement - CDP + Atelier collectif" || item.action == "Accompagnement - CDP + Atelier Collectif (Global)")
-            data = await this.forge_request_nb_prescriptions_present_cdp_at_co(item, database);
+        {    
+            if(item.sujet === 'Candidat') {
+                data = await this.forge_request_nb_prescriptions_present_cdp_at_co(item, database);
+            }
+            else if (item.sujet === 'Atelier') {}
+        }
         else if (item.action == "Accompagnement - CDP Feminin")
-            data = await this.forge_request_nb_prescriptions_present_cdp_bien_etre(item, database);
+        {    
+            if(item.sujet === 'Candidat') {
+                data = await this.forge_request_nb_prescriptions_present_cdp_bien_etre(item, database);
+            }
+            else if (item.sujet === 'Atelier') {}
+        }
         else if (item.action = "Accompagnement - Atelier Un temps pour elle") 
-            data = await this.forge_request_nb_prescriptions_present_un_temps_pour_elle(item, database);
+        {    
+            if(item.sujet === 'Candidat') {
+                data = await this.forge_request_nb_prescriptions_present_un_temps_pour_elle(item, database);
+            }
+            else if (item.sujet === 'Atelier') {
+                data = await this.forge_request_nb_atelier_un_temps_pour_elle(item, database);
+            }
+        }
         return data;
     }
 
     async forge_request_nb_prescriptions_present_un_temps_pour_elle(item, database) {
-        let customQuery = this.forge_request_sujet_critere(item.sujet_critere);
-        customQuery = this.updateQuery(customQuery, "type_prestation", "Présent", "$in-tab", ["SOIN DES MAINS", "SOIN DU VISAGE", "COIFFURE"]);
+        let customQuery = {};
+        customQuery = this.forge_request_sujet_critere(item.sujet_critere);
+        customQuery = this.updateQuery(customQuery, "type_prestation", ["SOIN DES MAINS", "SOIN DU VISAGE", "COIFFURE"], "$in-tab");
         customQuery = this.updateQuery(customQuery, "statut", "Présent", "$eq");
         customQuery = this.updateQuery(customQuery, "date_atelier", new Date(item.date_debut), "$gte-$lt", new Date(item.date_fin));
         
@@ -265,7 +320,7 @@ export class DevService {
         }
 
         if (sujet_loc_check == 1) {
-            customQuery = this.add_localite_to_query(customQuery, "candidat_residence", item.sujet_localite);
+            customQuery = this.add_localite_to_query(customQuery, "code_postal", item.sujet_localite);
         }
 
         if (action_loc_check == 1) {
@@ -273,40 +328,12 @@ export class DevService {
         }
 
         let data = await database.bienetreenrcand.aggregate([
-            // Partie 1 : Filtrage des données selon customQuery
-            {
-                $match: customQuery, // Applique les critères personnalisés
-            },
-            {
-                $lookup: {
-                    from: "candidats",
-                    localField: "candidat_record_id",
-                    foreignField: "record_id",
-                    as: "candidatDetails",
-                },
-            },
-            {
-                $lookup: {
-                    from: "cdpenrcands",
-                    localField: "candidat_record_id",
-                    foreignField: "candidat_record_id",
-                    as: "cdpDetails",
-                },
-            },
-            {
-                $match: {
-                "cdpDetails.statut": "Présent"
-            }
-            },
-            {
-                $addFields: {
-                    // Si candidatDetails contient un seul élément, on peut l'aplatir
-                    candidat: { $arrayElemAt: ["$candidatDetails", 0] },
-                    cdpenrcand: { $arrayElemAt: ["$cdpDetails", 0] },
-                },
-            },
+        // 1. Applique les critères personnalisés
+        {
+            $match: customQuery,
+        },
         ]).toArray();
-        console.log("data", data);
+
         return data;
     }
 
@@ -460,6 +487,48 @@ export class DevService {
         return data;
     }
 
+    async forge_request_nb_atelier_bien_etre(item, database) {
+        let customQuery = {};
+        customQuery = this.updateQuery(customQuery, "date", item.date_debut, "$gte-$lt", item.date_fin);
+        customQuery = this.updateQuery(customQuery, "statut", "Validé", "$eq");
+
+        let action_loc_check = 0;
+
+        for (let localite of item.action_localite) {
+            if (localite != "n'importe quel département de la région" && localite != "N'importe quel département de la région" && localite != "France" && localite != "") {
+            action_loc_check = 1;
+            }
+        }
+
+        if (action_loc_check == 1) {
+            customQuery = this.add_localite_to_query(customQuery, "atelier_lieu", item.action_localite);
+        }
+        let data = await database.bienetre.aggregate([{$match: customQuery}]).toArray();
+        return data;
+    }
+
+    async forge_request_nb_atelier_un_temps_pour_elle(item, database) {
+        let customQuery = {};
+        customQuery = this.updateQuery(customQuery, "type_prestation", ["SOIN DES MAINS", "SOIN DU VISAGE", "COIFFURE"], "$in-tab");
+        customQuery = this.updateQuery(customQuery, "date", item.date_debut, "$gte-$lt", item.date_fin);
+        customQuery = this.updateQuery(customQuery, "statut", "Validé", "$eq");
+
+        let action_loc_check = 0;
+
+        for (let localite of item.action_localite) {
+            if (localite != "n'importe quel département de la région" && localite != "N'importe quel département de la région" && localite != "France" && localite != "") {
+            action_loc_check = 1;
+            }
+        }
+
+        if (action_loc_check == 1) {
+            customQuery = this.add_localite_to_query(customQuery, "atelier_lieu", item.action_localite);
+        }
+        let data = await database.bienetre.aggregate([{$match: customQuery}]).toArray();
+        return data;
+    }
+
+
     async forge_request_nb_prescriptions_present_bien_etre(item, database) {
         let customQuery = this.forge_request_sujet_critere(item.sujet_critere);
         customQuery = this.updateQuery(customQuery, "statut", "Présent", "$eq");
@@ -518,6 +587,26 @@ export class DevService {
             },
         ]).toArray();
         console.log("data", data);
+        return data;
+    }
+
+    async forge_request_nb_atelier_at_co(item, database) {
+        let customQuery = {};
+        customQuery = this.updateQuery(customQuery, "date", item.date_debut, "$gte-$lt", item.date_fin);
+        customQuery = this.updateQuery(customQuery, "statut", "Validé", "$eq");
+
+        let action_loc_check = 0;
+
+        for (let localite of item.action_localite) {
+            if (localite != "n'importe quel département de la région" && localite != "N'importe quel département de la région" && localite != "France" && localite != "") {
+            action_loc_check = 1;
+            }
+        }
+
+        if (action_loc_check == 1) {
+            customQuery = this.add_localite_to_query(customQuery, "commune", item.action_localite);
+        }
+        let data = await database.atco.aggregate([{$match: customQuery}]).toArray();
         return data;
     }
 
@@ -587,19 +676,39 @@ export class DevService {
         return response;
     }
 
-    async forge_request_nb_prescriptions_present_cdp(item, type_cdp, database) {
-        let customQuery = this.forge_request_sujet_critere(item.sujet_critere);
+    async forge_request_nb_atelier_cdp(item, type_cdp, database) {
+        let customQuery = {};
         switch (type_cdp) {
             case "CDP FIXE, CDP MOBILE":
-            customQuery = this.updateQuery(customQuery, "type_atelier", "CDP MOBILE", "$in", "CDP FIXE");
+            customQuery = this.updateQuery(customQuery, "type", "CDP MOBILE", "$in", "CDP FIXE");
             break;
             case "CDP FIXE":
-            customQuery = this.updateQuery(customQuery, "type_atelier", "CDP FIXE", "$eq");
+            customQuery = this.updateQuery(customQuery, "type", "CDP FIXE", "$eq");
             break;
             case "CDP MOBILE":
-            customQuery = this.updateQuery(customQuery, "type_atelier", "CDP MOBILE", "$eq");
+            customQuery = this.updateQuery(customQuery, "type", "CDP MOBILE", "$eq");
             break;
         }
+        customQuery = this.updateQuery(customQuery, "date", item.date_debut, "$gte-$lt", item.date_fin);
+        customQuery = this.updateQuery(customQuery, "statut", "Validé", "$eq");
+
+        let action_loc_check = 0;
+        for (let localite of item.action_localite) {
+            if (localite != "n'importe quel département de la région" && localite != "N'importe quel département de la région" && localite != "France" && localite != "") {
+            action_loc_check = 1;
+            }
+        }
+
+        if (action_loc_check == 1) {
+            customQuery = this.add_localite_to_query(customQuery, "lieu", item.action_localite);
+        }
+        let response = await database.cdp.aggregate([{ $match: customQuery },]).toArray();
+        return response;
+    }
+
+    async forge_request_nb_prescriptions_present_cdp(item, type_cdp, database) {
+        let customQuery = this.forge_request_sujet_critere(item.sujet_critere);
+        
         customQuery = this.updateQuery(customQuery, "date_atelier", item.date_debut, "$gte-$lt", item.date_fin);
         customQuery = this.updateQuery(customQuery, "statut", "Présent", "$eq");
 
