@@ -210,8 +210,6 @@ export class DevService {
             item.sujet_localite = eptArray[1];
           } else if (item.sujet_localite === "93 - plaine commune") {
             item.sujet_localite = eptArray[0];
-            console.log(eptArray[0]);
-            //console.log(item.sujet_localite)
           }
         }
         item.sujet_critere = this.normalizeToArray(item.sujet_critere);
@@ -276,13 +274,19 @@ export class DevService {
             }
             else if (item.sujet === 'Atelier') {}
         }
-        else if (item.action = "Accompagnement - Atelier Un temps pour elle") 
+        else if (item.action == "Accompagnement - Atelier Un temps pour elle") 
         {    
             if(item.sujet === 'Candidat') {
                 data = await this.forge_request_nb_prescriptions_present_un_temps_pour_elle(item, database);
             }
             else if (item.sujet === 'Atelier') {
                 data = await this.forge_request_nb_atelier_un_temps_pour_elle(item, database);
+            }
+        }
+        else if (item.action == "PC - Bénévole") {
+            if(item.sujet === 'Bénévole') {
+                console.log(item)
+                data = await this.forge_request_nb_be_atelier(item, database);
             }
         }
         return data;
@@ -328,7 +332,6 @@ export class DevService {
         }
 
         let data = await database.bienetreenrcand.aggregate([
-        // 1. Applique les critères personnalisés
         {
             $match: customQuery,
         },
@@ -789,6 +792,16 @@ let response = await database.cdpenrcand.aggregate([
     ]).toArray();
     return response;
     }
+
+    async forge_request_nb_be_atelier(item, database) {
+        let customQuery = {};
+        customQuery = this.updateQuery(customQuery, "date_atelier", new Date(item.date_debut), "$gte-$lt", new Date(item.date_fin));
+        customQuery = this.updateQuery(customQuery, "statut", "Présent", "$eq");
+        customQuery = this.updateQuery(customQuery, "est_be", "Oui", "$eq");
+        customQuery = this.updateQuery(customQuery, "benev_structure", item.structure_beneficiaire, "$in-tab");
+        let data = await database.cdpenrbenev.aggregate([{$match: customQuery}]).toArray();
+        return data;
+    };
 
     normalizeToArray(input: any): string[] {
         if (Array.isArray(input)) return input;

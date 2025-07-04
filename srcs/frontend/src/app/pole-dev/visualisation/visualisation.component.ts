@@ -15,13 +15,13 @@ import * as featherIcons from '@ng-icons/feather-icons';
 })
 export class VisualisationComponent {
   dataToSearch: any = {
-    indicateur: "Accompagnement - CDP Fixe",
-    departement: ["N'importe quel département de la région"],
-    profil: "Candidat",
-    type: "Tous profil",
+    indicateur: "",
+    departement: [],
+    profil: "",
+    type: "",
     dateDebut: new Date(2025, 0, 1),
     dateFin: new Date(2025, 11, 31),
-    valeur: "Nb Présent"
+    valeur: ""
   };
   ready = false;
   dataToDisplay: any[] = [];
@@ -86,7 +86,8 @@ export class VisualisationComponent {
     this.dataToSearch.sujet_localite,
     this.dataToSearch.sujet_indicateur,
     this.dataToSearch.date_debut,
-    this.dataToSearch.date_fin
+    this.dataToSearch.date_fin,
+    this.dataToSearch.structure_beneficiaire,
   ).subscribe({
     next: (data2) => {
       const parsedData = (data2 || []).map((row: { [x: string]: any; }) => {

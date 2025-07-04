@@ -24,7 +24,6 @@ export class DevController {
     @Get('indicateur')
     async getRapportXIndicateur(
         @Query('rapport_x_indicateur') rapport_x_indicateur: string): Promise<any> {
-        console.log('getIndicateur called with rapport_x_indicateur:', rapport_x_indicateur);
         if (!rapport_x_indicateur) {
             throw new Error('rapport_x_indicateur is required');
         }
@@ -77,7 +76,8 @@ export class DevController {
         @Query('sujet_localite') sujet_localite: [string],
         @Query('sujet_indicateur') sujet_indicateur: string,
         @Query('date_debut') date_debut: string,
-        @Query('date_fin') date_fin: string
+        @Query('date_fin') date_fin: string,
+        @Query('structure_beneficiaire') structure_beneficiaire: [string],
     ): Promise<any> {
         const debutDate = date_debut ? new Date(date_debut) : null;
         const finDate = date_fin ? new Date(date_fin) : null;
@@ -89,7 +89,8 @@ export class DevController {
             sujet_localite: sujet_localite,
             sujet_indicateur: sujet_indicateur,
             date_debut: debutDate,
-            date_fin: finDate
+            date_fin: finDate,
+            structure_beneficiaire: structure_beneficiaire,
         };
         return await this.devService.calculate_function(item);
       }

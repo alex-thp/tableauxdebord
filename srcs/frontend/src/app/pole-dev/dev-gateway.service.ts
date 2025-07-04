@@ -28,7 +28,8 @@ export class DevGatewayService {
       sujet_localite: [string],
       sujet_indicateur: string,
       date_debut: Date | null,
-      date_fin: Date | null
+      date_fin: Date | null,
+      structure_beneficiaire: [string],
     ): Observable<any> {
       /*console.log('getVisualisationValue called with parameters:', {
         action,
@@ -54,12 +55,16 @@ export class DevGatewayService {
       action_localite.forEach((loc: string) => {
         params = params.append('action_localite', loc);
       });
+      structure_beneficiaire.forEach((strbnf: string) => {
+        params = params.append('structure_beneficiaire', strbnf);
+      });
       if (date_debut) {
         params = params.set('date_debut', date_debut.toString());
       }
       if (date_fin) {
         params = params.set('date_fin', date_fin.toString());
       }
+
       const reponse = this.http.get(`${this.baseUrl}/indicateurValue`, { params });
       return reponse;
     }
