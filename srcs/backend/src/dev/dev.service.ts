@@ -215,6 +215,7 @@ export class DevService {
         item.sujet_critere = this.normalizeToArray(item.sujet_critere);
         item.action_localite = this.normalizeToArray(item.action_localite);
         item.sujet_localite = this.normalizeToArray(item.sujet_localite);
+        item.structure_beneficiaire = this.normalizeToArray(item.structure_beneficiaire);
         if (item.action == "Accompagnement - CDP Fixe" || item.action == "Accompagnement - CDP Fixe (Global)")
         {
             if(item.sujet === 'Candidat') {
@@ -794,6 +795,7 @@ let response = await database.cdpenrcand.aggregate([
     }
 
     async forge_request_nb_be_atelier(item, database) {
+        console.log(item)
         let customQuery = {};
         customQuery = this.updateQuery(customQuery, "date_atelier", new Date(item.date_debut), "$gte-$lt", new Date(item.date_fin));
         customQuery = this.updateQuery(customQuery, "statut", "Présent", "$eq");
