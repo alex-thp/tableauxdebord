@@ -1,0 +1,98 @@
+.dashboard-title {
+  text-align: center;
+  margin: 1rem 0;
+  color: #f1c40f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dashboard-container {
+  display: grid;
+  grid-template-columns: 1fr 300px 1fr;
+  grid-template-rows: auto 1px auto;
+  grid-template-areas:
+    "accompagnement pc benevoles";
+  gap: 2rem;
+  align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+/* Placement des zones */
+.block-accompagnement { grid-area: accompagnement; color: #16a085; }
+.block-benevoles            { grid-area: benevoles;            color: #2980b9; }
+.block-pc    { grid-area: pc;     color: #d35400;}
+.circle-container    { grid-area: circle; display: flex; justify-content: center; }
+
+/* Cercle */
+.circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 10px solid transparent;
+  border-top-color: #f1c40f;   /* jaune */
+  border-right-color: #3498db; /* bleu */
+  border-bottom-color: #e74c3c;/* rouge/rose */
+  border-left-color: #2ecc71;  /* vert */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.circle img { width: 120px; }
+
+/* Circle_animated */
+.circle_animated {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 10px solid transparent;
+  border-top-color: #f1c40f;   /* jaune */
+  border-right-color: #3498db; /* bleu */
+  border-bottom-color: #e74c3c;/* rouge/rose */
+  border-left-color: #2ecc71;  /* vert */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Animation */
+  animation: spin 2s linear infinite;
+}
+
+.circle_animated img {
+  width: 120px;
+}
+
+/* Définition de l'animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Blocs */
+.block {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.block h2 { margin-bottom: 0.5rem; }
+.block h3 { margin-top: 1rem; margin-bottom: 0.3rem; }
+.block ul { padding-left: 1.2rem; margin: 0; }
+
+/* Responsive */
+@media screen and (max-width: 992px) {
+  .dashboard-container {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "circle"
+      "accompagnement"
+      "pc"
+      "benevoles";
+  }
+  .circle { margin: 0 auto 2rem; }
+}

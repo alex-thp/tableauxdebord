@@ -11,6 +11,16 @@ export class RolesAndPermissionsGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
+
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+    const url: string = request.url;
+
+    // Autoriser toutes les routes /shared_link/*
+    console.log('URL demandée:', url);
+    if (url.startsWith('*/shared_link/*')) {
+      return true;
+    }
     const requiredRoles = this.reflector.getAllAndOverride<string[]>('roles', [
       context.getHandler(),
       context.getClass(),
@@ -20,9 +30,6 @@ export class RolesAndPermissionsGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
 
     if (!user) {
         console.error('Utilisateur non authentifié');

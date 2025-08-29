@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { MongoDbService } from './mongo-db/mongo-db.service';
-import { StatsAccompagnementService } from './stats-accompagnement/stats-accompagnement.service';
-import { StatsBenevoleService } from './stats-benevole/stats-benevole.service';
-import { StatsVetementService } from './stats-vetement/stats-vetement.service';
+import { MongoDbService } from './services/mongo-db/mongo-db.service';
+import { StatsAccompagnementService } from './services/stats-accompagnement/stats-accompagnement.service';
+import { StatsBenevoleService } from './services/stats-benevole/stats-benevole.service';
+import { StatsVetementService } from './services/stats-vetement/stats-vetement.service';
 
 @Injectable()
 export class AppService {
@@ -44,47 +44,5 @@ export class AppService {
     } else if (mode == '3') {
       return this.statsVetement.getViewData(date_debut, date_fin);
     }
-  }
-
-  getChart(mode): any {
-    if (mode == 1) {
-      return {
-        nb_homme_cdp: 150,
-        nb_femmes_cdp: 1500,
-        nb_moins_30_cdp: 867,
-        nb_plus_60_cdp: 534,
-        nb_epa_cdp: 340,
-        nb_ppsmj_cdp: 549,
-      };
-    } else if (mode == 2) {
-      return {
-        nb_homme_cdp: 1500,
-        nb_femmes_cdp: 150,
-        nb_moins_30_cdp: 867,
-        nb_plus_60_cdp: 534,
-        nb_epa_cdp: 340,
-        nb_ppsmj_cdp: 549,
-      };
-    } else if (mode == 3) {
-      return {
-        nb_homme_cdp: 1420,
-        nb_femmes_cdp: 1480,
-        nb_moins_30_cdp: 867,
-        nb_plus_60_cdp: 534,
-        nb_epa_cdp: 340,
-        nb_ppsmj_cdp: 549,
-      };
-    }
-  }
-
-  getSorties(): any {
-    return {
-      cdi: 324,
-      cdd_moins: 852,
-      cdd_plus: 867,
-      stage: 534,
-      en_recherche: 890,
-      formation: 549,
-    };
   }
 }

@@ -7,6 +7,10 @@ export interface IBenev extends Document {
   cdp_x_benev?: string[];
   date_atelier?: string[];
   date_premier_atelier?: Date;
+  formation_sensi_recap?: string;
+  nom?: string;
+  prenom?: string;
+  mail?: string;
 }
 
 // Créer le schéma Mongoose basé sur l'interface
@@ -16,6 +20,10 @@ const BenevSchema: Schema<IBenev> = new Schema({
   cdp_x_benev: { type: [String] },
   date_atelier: { type: [String] },
   date_premier_atelier: { type: Date },
+  formation_sensi_recap: { type: String },
+  nom: { type: String },
+  prenom: { type: String },
+  mail: { type: String },
 });
 
 // Créer et exporter le modèle

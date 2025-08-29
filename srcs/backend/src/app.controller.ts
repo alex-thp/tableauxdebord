@@ -1,9 +1,7 @@
-import { Controller, Get, Param, ParseDatePipe, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
-import { UpdateBaseService } from './update-base/update-base.service';
+import { UpdateBaseService } from './services/update-base/update-base.service';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesAndPermissionsGuard } from './guards/roles-and-permissions.guard';
-
 
 @Controller()
 export class AppController {
@@ -36,17 +34,5 @@ export class AppController {
       date_debut || defaultDate,
       date_fin || defaultDate
     );
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Get('chart/:mode')
-  getChart(@Param('mode') mode: string): string {
-    return this.appService.getChart(mode);
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Get('sortie')
-  getSorties(): string {
-    return this.appService.getSorties();
   }
 }

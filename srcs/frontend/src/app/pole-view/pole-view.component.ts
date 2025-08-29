@@ -4,11 +4,11 @@ import { GatewayService } from '../gateway.service';
 import { ViewData } from '../models/view.model';
 import { CommonModule } from '@angular/common';
 import * as featherIcons from '@ng-icons/feather-icons';
-import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
-import { PieChartComponent } from '../pie-chart/pie-chart.component';
+import { ProgressBarComponent } from '../graphs/progress-bar/progress-bar.component';
+import { PieChartComponent } from '../graphs/pie-chart/pie-chart.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { DateSearchComponent } from '../date-search/date-search.component';
-import { MonthlyComparisonComponent } from '../monthly-comparison/monthly-comparison.component';
+import { MonthlyComparisonComponent } from '../graphs/monthly-comparison/monthly-comparison.component';
 
 
 @Component({

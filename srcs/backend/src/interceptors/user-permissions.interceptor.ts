@@ -15,6 +15,13 @@ export class UserPermissionsInterceptor implements NestInterceptor {
   async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
+    const url: string = request.url;
+
+    // Autoriser toutes les routes /shared_link/*
+    console.log('URL demandée:', url);
+    if (url.startsWith('*/shared_link/*')) {
+      return next.handle();
+    }
 
     if (user && user.id) {
         const fullUser = await this.userService.findUserWithRolesAndPermissions(user.id);

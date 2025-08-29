@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GlobalViewComponent } from './global-view/global-view.component';
 import { CardComponent } from './card/card.component';
-import { GraphCandidatsComponent } from './graph-candidats/graph-candidats.component';
+import { GraphCandidatsComponent } from './graphs/graph-candidats/graph-candidats.component';
 import { PoleViewComponent } from './pole-view/pole-view.component';
 import { AuthGuard } from './auth/auth.guard';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { ConnectionComponent } from './connection/connection.component';
 import { MainDevViewComponent } from './pole-dev/main-dev-view/main-dev-view.component';
 import { VisualisationComponent } from './pole-dev/visualisation/visualisation.component';
@@ -14,6 +14,8 @@ import { DashboardHierarchyComponent } from './dashboard-hierarchy/dashboard-hie
 import { AccompagnementComponent } from './objectifs/accompagnement/accompagnement.component';
 import { PdfMakerComponent } from './pdf/pdf-maker/pdf-maker.component';
 import { AskGeminiComponent } from './ask-gemini/ask-gemini.component';
+import { SharedViewComponent } from './shared-view/shared-view.component';
+import { BoussoleComponent } from './boussole/boussole.component';
 
 export const appRouteList: Routes = [
     { path: '', component: GlobalViewComponent, canActivate: [AuthGuard] },
@@ -27,6 +29,8 @@ export const appRouteList: Routes = [
     { path: 'visualisation/:rapport_x_indicateur', component: VisualisationComponent, canActivate: [AuthGuard] },
     { path: 'not_found', component: NotFoundComponent },
     { path: 'generateCustomPDF', component: PdfMakerComponent, canActivate: [AuthGuard] },
+    { path: 'shared_link/:rapport_x_indicateur', component: SharedViewComponent },
+    { path: 'boussole', component: BoussoleComponent },
     //{ path: 'gemini', component: AskGeminiComponent },
     //{ path: 'display_card_content:localite', component: DashboardHierarchyComponent },
     //{ path: 'test', component: DashboardHierarchyComponent},

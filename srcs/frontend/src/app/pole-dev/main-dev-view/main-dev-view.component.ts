@@ -27,9 +27,17 @@ export class MainDevViewComponent {
   formulaire: FormGroup;
   criteresOptions: string[] = [
     'EPA', 
-    'RSA', 
+    'RSA',
+    'PPSMJ',
+    'QPV',
+    'RQTH',
+    'Orphelin',
     'Femmes', 
-    'Hommes'
+    'Hommes',
+    '< 20 ans',
+    '< 26 ans',
+    '< 30 ans',
+    '> 49 ans',
   ];
   localitesOptions = [
     '75', 
@@ -43,9 +51,18 @@ export class MainDevViewComponent {
     'Accompagnement - CDP Fixe', 
     'Accompagnement - CDP Mobile', 
     'Accompagnement - CDP Fixe ou Mobile', 
-    'Accompagnement - Atelier Collectif'
+    'Accompagnement - Atelier Collectif',
+    'Accompagnement - CDP + Atelier collectif',
+    'Accompagnement - Atelier Bien-être',
+    'Accompagnement - CDP Feminin',
+    'Accompagnement - Atelier Un temps pour elle',
+    'PC - Bénévole'
   ];
-  sujetOptions = ['Candidat'];
+  sujetOptions = [
+    'Candidat', 
+    'Atelier',
+    'Bénévole'
+  ];
   sujetIndicateurOptions = ['Nb Présents'];
 
   constructor(private devGatewayService: DevGatewayService, private fb: FormBuilder, private router: Router) {

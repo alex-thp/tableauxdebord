@@ -62,19 +62,43 @@ export class GatewayService {
     return this.http.get(`${this.baseUrl}/dashboard/data`, { params });
   }
 
-mergePdf(formData: FormData): Observable<Blob> {
-  const token = localStorage.getItem('token');
+  mergePdf(formData: FormData): Observable<Blob> {
+    const token = localStorage.getItem('token');
 
-  return this.http.post(`${this.baseUrl}/pdf/merge`, formData, {
-    headers: {
-      Authorization: `Bearer ${token || ''}`,
-    },
-    responseType: 'blob', // pour pouvoir télécharger le PDF
-  });
-}
+    return this.http.post(`${this.baseUrl}/pdf/merge`, formData, {
+      headers: {
+        Authorization: `Bearer ${token || ''}`,
+      },
+      responseType: 'blob', // pour pouvoir télécharger le PDF
+    });
+  }
+
+  mergePdfAtIndex(formData: FormData): Observable<Blob> {
+    const token = localStorage.getItem('token');
+
+    return this.http.post(`${this.baseUrl}/pdf/mergeAtIndex`, formData, {
+      headers: {
+        Authorization: `Bearer ${token || ''}`,
+      },
+      responseType: 'blob', // pour pouvoir télécharger le PDF
+    });
+  }
+
   generatePdfFromHtml(html: string): Observable<Blob> {
     const token = localStorage.getItem('token');
     return this.http.post(`${this.baseUrl}/pdf/generate`, { html }, {
+      headers: {
+        Authorization: `Bearer ${token || ''}`,
+      },
+      responseType: 'blob', // pour pouvoir télécharger le PDF
+    });
+  }
+
+//downloadBoussolePdf
+
+  downloadBoussolePdf(html: string): Observable<Blob> {
+    const token = localStorage.getItem('token');
+    return this.http.post(`${this.baseUrl}/pdf/downloadBoussolePdf`, { html }, {
       headers: {
         Authorization: `Bearer ${token || ''}`,
       },

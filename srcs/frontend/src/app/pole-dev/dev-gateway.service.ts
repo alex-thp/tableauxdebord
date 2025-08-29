@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class DevGatewayService {
   private baseUrl = '/api/dev';
+  private sharedUrl = '/api/shared-view';
 
   constructor(private http: HttpClient) {}
 
@@ -18,6 +19,11 @@ export class DevGatewayService {
     getRapportXIndicateur(rapport_x_indicateur: string): Observable<any> {
       let params = new HttpParams().set('rapport_x_indicateur', rapport_x_indicateur.toString());
       return this.http.get(`${this.baseUrl}/indicateur`, { params });
+    }
+
+    getRapportXIndicateurPublic(rapport_x_indicateur: string): Observable<any> {
+      let params = new HttpParams().set('rapport_x_indicateur', rapport_x_indicateur.toString());
+      return this.http.get(`${this.sharedUrl}/indicateur`, { params });
     }
 
     getVisualisationValue(
@@ -31,16 +37,6 @@ export class DevGatewayService {
       date_fin: Date | null,
       structure_beneficiaire: [string],
     ): Observable<any> {
-      /*console.log('getVisualisationValue called with parameters:', {
-        action,
-        action_localite,
-        sujet,
-        sujet_critere,
-        sujet_localite,
-        sujet_indicateur,
-        date_debut,
-        date_fin
-      });*/
       let params = new HttpParams()
       .set('action', action.toString())
       .set('sujet', sujet.toString())
@@ -105,9 +101,54 @@ export class DevGatewayService {
     if (date_fin) {
       params = params.set('date_fin', new Date(date_fin).toISOString());
     }
-  
-    console.log('la fonction est bien déclenchée');
-  
+    
     return this.http.get(`${this.baseUrl}/indicateurValue`, { params });
+  }
+
+  getIndicateurValuePublic(formulaire: FormGroup): Observable<any> {
+    const {
+      action,
+      action_localite,
+      sujet,
+      sujet_critere,
+      sujet_localite,
+      sujet_indicateur,
+      date_debut,
+      date_fin,
+      fields
+    } = formulaire.value;
+  
+    let params = new HttpParams()
+      .set('action', action.toString())
+      .set('sujet', sujet.toString())
+      .set('sujet_indicateur', sujet_indicateur.toString())
+        // Append les éléments un par un pour qu'ils soient reçus comme tableau côté backend
+      action_localite.forEach((loc: string) => {
+        params = params.append('action_localite', loc);
+      });
+
+      sujet_critere.forEach((crit: string) => {
+        params = params.append('sujet_critere', crit);
+      });
+
+      sujet_localite.forEach((loc: string) => {
+        params = params.append('sujet_localite', loc);
+      });;
+  
+    if (date_debut) {
+      params = params.set('date_debut', new Date(date_debut).toISOString());
+    }
+  
+    if (date_fin) {
+      params = params.set('date_fin', new Date(date_fin).toISOString());
+    }
+
+    if(fields) {
+      fields.forEach((field: string) => {
+        params = params.append('fields', field);
+      });
+    }
+    console.log('getIndicateurValuePublic called with parameters:', params.toString());
+    return this.http.get(`${this.sharedUrl}/indicateurValue-public`, { params });
   }
 }

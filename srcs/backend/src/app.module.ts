@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AirtableService } from './airtable/airtable.service';
-import { UpdateBaseService } from './update-base/update-base.service';
-import { MongoDbService } from './mongo-db/mongo-db.service';
-import { StatsAccompagnementService } from './stats-accompagnement/stats-accompagnement.service';
-import { StatsBenevoleService } from './stats-benevole/stats-benevole.service';
-import { StatsVetementService } from './stats-vetement/stats-vetement.service';
+import { AirtableService } from './services/airtable/airtable.service';
+import { UpdateBaseService } from './services/update-base/update-base.service';
+import { MongoDbService } from './services/mongo-db/mongo-db.service';
+import { StatsAccompagnementService } from './services/stats-accompagnement/stats-accompagnement.service';
+import { StatsBenevoleService } from './services/stats-benevole/stats-benevole.service';
+import { StatsVetementService } from './services/stats-vetement/stats-vetement.service';
 import { ParseDatePipe } from './pipes/parse-date.pipe';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,21 +14,24 @@ import { User } from './user/user.entity';
 import { Role } from './roles/role.entity';
 import { Permission } from './permissions/permission.entity';
 import { DataSource } from 'typeorm';
-import { MajQpvService } from './maj-qpv/maj-qpv.service';
+import { MajQpvService } from './services/maj-qpv/maj-qpv.service';
 import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
-import { AdminController } from './controllers/admin.controller';
+import { AdminController } from './controllers/admin/admin.controller';
 import { UserController } from './user/user.controller';
-import { DevController } from './dev/dev.controller';
-import { DevService } from './dev/dev.service';
-import { EptService } from './dev/ept/ept.service';
-import { DashboardController } from './dashboard/dashboard.controller';
-import { DashboardService } from './dashboard/dashboard.service';
-import { PdfMakerService } from './pdf-maker/pdf-maker.service';
-import { PdfMakerController } from './pdf-maker/pdf-maker.controller';
-import { PdfMakerModule } from './pdf-maker/pdf-maker.module';
-import { GeminiService } from './gemini/gemini.service';
-import { GeminiController } from './gemini/gemini.controller';
+import { DevController } from './controllers/dev/dev.controller';
+import { DevService } from './services/dev/dev.service';
+import { EptService } from './services/dev/ept/ept.service';
+import { DashboardController } from './controllers/dashboard/dashboard.controller';
+import { DashboardService } from './services/dashboard/dashboard.service';
+import { PdfMakerService } from './services/pdf-maker/pdf-maker.service';
+import { PdfMakerController } from './controllers/pdf-maker/pdf-maker.controller';
+import { PdfMakerModule } from './controllers/pdf-maker/pdf-maker.module';
+import { GeminiService } from './services/gemini/gemini.service';
+import { GeminiController } from './controllers/gemini/gemini.controller';
+import { SharedViewController } from './controllers/shared_view/shared_view.controller';
+import { BoussoleController } from './controllers/boussole/boussole.controller';
+import { BoussoleService } from './services/boussole/boussole.service';
 
 @Module({
   imports: [
@@ -53,7 +56,10 @@ import { GeminiController } from './gemini/gemini.controller';
     UserController, 
     DevController, 
     DashboardController, 
-    PdfMakerController, GeminiController,
+    PdfMakerController, 
+    GeminiController,
+    SharedViewController,
+    BoussoleController,
   ],
   providers: [
     AppService,
@@ -70,6 +76,7 @@ import { GeminiController } from './gemini/gemini.controller';
     DashboardService,
     PdfMakerService,
     GeminiService,
+    BoussoleService,
   ],
   exports: [ParseDatePipe],
 })

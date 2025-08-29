@@ -18,7 +18,11 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.authService.getToken();
 
-    if (token) {
+    const isPublicEndpoint =
+    request.url.includes('/indicateurValue-public') ||
+    request.url.includes('/some-other-public-endpoint');
+
+    if (token && !isPublicEndpoint) {
       request = request.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,

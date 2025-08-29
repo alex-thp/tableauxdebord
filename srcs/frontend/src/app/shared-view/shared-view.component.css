@@ -1,0 +1,166 @@
+.table-container {
+  max-height: 100%; /* hauteur visible de ton tableau */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Le tableau prend toute la largeur */
+.styled-table {
+  width: 99%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* 1re ligne d’en-tête : "Données personnelles", etc. */
+.styled-table thead tr:first-child th {
+  position: sticky;
+  top: 0;
+  background: #005f73;
+  color: white;
+  z-index: 3;
+}
+
+/* 2e ligne d’en-tête : les labels */
+.styled-table thead tr:nth-child(2) th {
+  position: sticky;
+  top: 40px; /* doit correspondre à la hauteur de la ligne 1 */
+  background: #94d2bd;
+  color: #003d33;
+  z-index: 2;
+}
+
+.styled-table th, .styled-table td {
+  padding: 10px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.styled-table tbody tr:hover {
+  background-color: #e0f7fa;
+}
+
+.header.group1 {
+  background: #005f73;
+}
+
+.header.group2 {
+  background: #0a9396;
+}
+
+.header.group3 {
+  background: #94d2bd;
+}
+
+.header.group4 {
+  background: #ee9b00;
+  color: #fff;
+}
+
+.label.filter-open {
+  background-color: #ca6702 !important;
+  color: white;
+  border-radius: 4px;
+}
+
+.filter-header {
+  cursor: move;
+}
+
+.filter-popup {
+  position: fixed;
+  top: 150px;
+  left: 50px;
+  background: white;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  border-radius: 8px;
+  padding: 15px 20px;
+  z-index: 100;
+  min-width: 220px;
+  font-size: 13px;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #005f73;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: #777;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #ca6702;
+}
+
+.date-filter-container label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #0a9396;
+}
+
+.date-filter-container input[type="date"] {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #94d2bd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.apply-btn {
+  margin-top: 15px;
+  width: 100%;
+  padding: 8px;
+  background-color: #0a9396;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.apply-btn:hover {
+  background-color: #005f73;
+}
+
+.row-count-fixed {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  background: #0a9396;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  user-select: none;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 10px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+  user-select: none;
+
+  /* ✅ Ces trois lignes assurent le retour à la ligne */
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}

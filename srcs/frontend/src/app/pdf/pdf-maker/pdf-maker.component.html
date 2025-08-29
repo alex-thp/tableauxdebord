@@ -4,12 +4,35 @@
 <h2>Génération de PDF</h2>
 
 <!-- Champ de texte HTML -->
-<textarea [(ngModel)]="htmlContent" rows="10" cols="80" placeholder="Entrez ici le HTML pour le PDF"></textarea>
+<textarea [(ngModel)]="htmlContent" rows="15" cols="61" placeholder="Entrez ici le HTML pour le PDF"></textarea>
 
 <br />
 
-<!-- Bouton pour générer -->
 <button (click)="generatePdf()">Générer un PDF</button>
+  <h2>Fusionner un PDF personnalisé</h2>
+
+  <form (ngSubmit)="mergeByIndex()" #pdfForm="ngForm">
+    <div class="form-section">
+      <label for="fileOriginal">Fichier original (à découper)</label>
+      <input type="file" id="fileOriginal" (change)="onFileChange($event, 'original')" accept="application/pdf" required>
+    </div>
+
+    <div class="form-section">
+      <label for="fileInsert">Fichier à insérer (entier)</label>
+      <input type="file" id="fileInsert" (change)="onFileChange($event, 'insert')" accept="application/pdf" required>
+    </div>
+
+    <div class="form-section">
+      <label>Index AVANT insertion</label>
+      <input type="number" [(ngModel)]="insertData.index" name="fromFile1" min="1" required>
+    </div>
+
+    <button type="submit" [disabled]="!pdfForm.form.valid || !fileOriginal || !fileInsert">Fusionner</button>
+  </form>
+</div>
+
+<!-- Bouton pour générer -->
+<!--<button (click)="generatePdf()">Générer un PDF</button>
   <h2>Fusionner un PDF personnalisé</h2>
 
   <form (ngSubmit)="onSubmit()" #pdfForm="ngForm">
@@ -40,3 +63,4 @@
     <button type="submit" [disabled]="!pdfForm.form.valid || !fileOriginal || !fileInsert">Fusionner</button>
   </form>
 </div>
+-->

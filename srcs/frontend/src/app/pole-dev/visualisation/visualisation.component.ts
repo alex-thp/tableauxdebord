@@ -67,7 +67,7 @@ export class VisualisationComponent {
               this.router.navigate(['/not_found']);
             } else {
               // Autres erreurs (500, etc.)
-              // Optionnel : afficher une alerte ou une page d’erreur générique
+              // afficher une alerte ou une page d’erreur générique
             }
           }
         });
@@ -122,11 +122,18 @@ export class VisualisationComponent {
             // Ignore les champs _id, record_id et les clés vides
             continue;
           }
+          else if (typeof value === 'number' && !Number.isInteger(value)) {
+            const label = key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+            newRow[label] = value.toFixed(0);
+          // C'est un float
+          }
           // Vérifie si la valeur est une string de date ISO
           else if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))?$/.test(value)) {
-            newRow[key] = new Date(value);
+            const label = key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+            newRow[label] = new Date(value);
           } else {
-            newRow[key] = value;
+            const label = key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase()).replace("Candidat", '').replace("Cdp X Benev", 'Ateliers').replace("Benev", '');
+            newRow[label] = value;
           }
         }
         return newRow;
@@ -286,7 +293,25 @@ onFilterDropdownFocusOut(event: FocusEvent) {
   }
 
   getUniqueValuesForColumn(column: string): any[] {
-    const values = this.dataToDisplay.map(row => this.formatValue(row[column]));
-    return Array.from(new Set(values));
+    const rawValues = this.dataToDisplay.map(row => row[column]);
+
+    // Déterminer le type dominant des valeurs non nulles/undefined
+    const nonNullValues = rawValues.filter(v => v !== null && v !== undefined);
+    const sample = nonNullValues[0];
+
+    let sortedValues: any[] = [];
+
+    if (sample instanceof Date) {
+      sortedValues = [...new Set(nonNullValues.map(v => (v instanceof Date ? v : new Date(v))))];
+      sortedValues.sort((a, b) => a.getTime() - b.getTime());
+    } else if (typeof sample === 'number') {
+      sortedValues = [...new Set(nonNullValues)];
+      sortedValues.sort((a, b) => a - b);
+    } else {
+      sortedValues = [...new Set(nonNullValues.map(v => v.toString()))];
+      sortedValues.sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
+    }
+
+    return sortedValues;
   }
 }

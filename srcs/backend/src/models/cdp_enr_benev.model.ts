@@ -13,6 +13,8 @@ export interface ICdpEnrBenev extends Document {
   cdp_record_id?: string;
   statut?: string;
   type_cdp?: string;
+  label?: string;
+  intervention_utile?: string;
 }
 
 // Créer le schéma Mongoose basé sur l'interface
@@ -27,7 +29,9 @@ const CdpEnrBenevSchema: Schema<ICdpEnrBenev> = new Schema({
   benevole_id: { type: String },
   cdp_record_id: { type: String },
   statut: { type: String },
-  type_cdp: { type: String }
+  type_cdp: { type: String },
+  label: { type: String },
+  intervention_utile: { type: String },
 });
 
 // Créer et exporter le modèle

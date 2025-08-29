@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GatewayService } from '../gateway.service';
 import { CardComponent } from '../card/card.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DeconnectionComponent } from '../connection/deconnection/deconnection.component';
 import { PoleDevComponent } from '../pole-dev/pole-dev.component';
 
@@ -22,7 +22,8 @@ export class GlobalViewComponent implements OnInit {
   constructor(
     private _activatedRoute: ActivatedRoute, 
     private gatewayService: GatewayService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -57,6 +58,14 @@ export class GlobalViewComponent implements OnInit {
         this.currentMaging = false;
         location.reload();
       }
+    });
+  }
+
+  goToBoussole() {
+    this.router.navigate(['/boussole']).then(nav => {
+      console.log(nav); // true if navigation is successful
+    }, err => {
+      console.log(err) // when there's an error
     });
   }
 }

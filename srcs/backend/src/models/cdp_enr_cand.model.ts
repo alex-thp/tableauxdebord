@@ -31,6 +31,7 @@ export interface ICdpEnrCand extends Document {
   code_postal?: string;
   date_creation?: Date;
   type_prescription?: string;
+  ressources_mensuelles?: number;
 }
 
 // Créer le schéma Mongoose basé sur l'interface
@@ -64,6 +65,7 @@ const CdpEnrCandSchema: Schema<ICdpEnrCand> = new Schema({
   code_postal: { type: String },
   date_creation: { type: Date },
   type_prescription: { type: String },
+  ressources_mensuelles: { type: Number },
 });
 
 // Créer et exporter le modèle
