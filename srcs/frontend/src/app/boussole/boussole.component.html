@@ -9,118 +9,138 @@
 
   <button (click)="loadBoussoleData()">Recharger</button>
 </div>
+
 <div #pdfContent>
-<div class="dashboard-title">
-  <div *ngIf="chargement" class="circle_animated"></div>
-  <div *ngIf="!chargement" class="circle"></div>&nbsp;&nbsp;&nbsp;
-  <h2>
-  La Boussole (du {{ dateDebut | date:'dd/MM/yyyy' }} au {{ dateFin | date:'dd/MM/yyyy' }})
-  </h2>
-</div>
-<div class="dashboard-container">
-
-  <!-- Pôle Accompagnement -->
-  <div class="block block-accompagnement">
-    <h2>Pôle Accompagnement</h2>
-    <h3>Objectifs opé :</h3>
-    <ul>
-      <li>Nombre de candidats CDP fixe & Mobile : 
-        <strong>{{ boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile }}</strong> candidat(e)s
-      </li>
-      <li>Nombre de candidats en AtCO : 
-        <strong>{{ boussoleData.accompagnement.nb_cand_at_co }}</strong> candidat(e)s
-      </li>
-      <li>Nombre de candidats en “Bien-être” : 
-        <strong>{{ boussoleData.accompagnement.nb_cand_bien_etre }}</strong> candidat(e)s
-      </li>
-      <li>Nombre de candidats en Mentorat : 
-        <strong>{{ boussoleData.accompagnement.nb_cand_mentorat }}</strong> candidat(e)s
-      </li>
-      <li>% candidats ateliers complémentaires + CDP : 
-        <strong>{{ taux_cdp_et_at_co }}%</strong>
-      </li>
-      <li>Taux de présence : 
-        <strong>{{ taux_presence_cdp | number:'1.0-0' }}%</strong> en CDP, 
-        <strong>{{ taux_presence_bien_etre | number:'1.0-0' }}%</strong> en Bien être
-      </li>
-      <li>% QPV : 
-        <strong>{{ taux_qpv_total | number:'1.0-0' }}%</strong> 
-        ({{ taux_qpv_fixe | number:'1.0-0' }}% fixe, 
-        {{ taux_qpv_mobile | number:'1.0-0' }}% mobile)
-      </li>
-      <li>% candidats fin de parcours : 
-        <strong>{{ pourcent_fin_parcours_string | number:'1.0-0' }}%</strong>
-      </li>
-      <li>% candidats remobilisation : 
-        <strong>{{ pourcent_remob_string | number:'1.0-0' }}%</strong>
-      </li>
-    </ul>
-
-    <h3>Objectifs impact :</h3>
-    <ul>
-      <li>Taux de satisfaction : note de 
-        <strong>{{ boussoleData.accompagnement.taux_satisfaction_cdp | number:'1.1-2' }}/10</strong>
-      </li>
-      <li>Taux de sortie positive fin de parcours : 
-        <strong>{{ taux_fin_parcours | number:'1.0-0' }}%</strong>
-      </li>
-      <li>Taux de sortie positive remob : 
-        <strong>{{ taux_remob | number:'1.0-0' }}%</strong>
-      </li>
-    </ul>
+  <div class="dashboard-title">
+    <h2>
+      La Boussole (du {{ dateDebut | date:'dd/MM/yyyy' }} au {{ dateFin | date:'dd/MM/yyyy' }})
+    </h2>
   </div>
 
-  <!-- Cercle central -->
-   <!--
+  <div class="dashboard-container">
+
+    <!-- Ligne 1 : Accompagnement + PC -->
+    <div class="row row-top">
+      <!-- Pôle Accompagnement -->
+      <div class="block block-accompagnement">
+        <h2>Pôle Accompagnement</h2>
+        <h3>Objectifs opé :</h3>
+        <ul>
+          <li>Nombre de candidats CDP fixe & Mobile : 
+            <strong>{{ boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile }}</strong> candidat(e)s
+          </li>
+          <li>Nombre de candidats en AtCO : 
+            <strong>{{ boussoleData.accompagnement.nb_cand_at_co }}</strong> candidat(e)s
+          </li>
+          <li>Nombre de candidats en “Bien-être” : 
+            <strong>{{ boussoleData.accompagnement.nb_cand_bien_etre }}</strong> candidat(e)s
+          </li>
+          <li>Nombre de candidats en Mentorat : 
+            <strong>{{ boussoleData.accompagnement.nb_cand_mentorat }}</strong> candidat(e)s
+          </li>
+          <li>% candidats ateliers complémentaires + CDP : 
+            <strong>{{ taux_cdp_et_at_co }}%</strong>
+          </li>
+          <li>Taux de présence : 
+            <strong>{{ taux_presence_cdp | number:'1.0-0' }}%</strong> en CDP, 
+            <strong>{{ taux_presence_bien_etre | number:'1.0-0' }}%</strong> en Bien être
+          </li>
+          <li>% QPV : 
+            <strong>{{ taux_qpv_total | number:'1.0-0' }}%</strong> 
+            ({{ taux_qpv_fixe | number:'1.0-0' }}% fixe, 
+            {{ taux_qpv_mobile | number:'1.0-0' }}% mobile)
+          </li>
+          <li>% candidats fin de parcours : 
+            <strong>{{ pourcent_fin_parcours_string | number:'1.0-0' }}%</strong>
+          </li>
+          <li>% candidats remobilisation : 
+            <strong>{{ pourcent_remob_string | number:'1.0-0' }}%</strong>
+          </li>
+        </ul>
+
+        <h3>Objectifs impact :</h3>
+        <ul>
+          <li>Taux de satisfaction : note de 
+            <strong>{{ boussoleData.accompagnement.taux_satisfaction_cdp | number:'1.1-2' }}/10</strong>
+          </li>
+          <li>Taux de sortie positive fin de parcours : 
+            <strong>{{ taux_fin_parcours | number:'1.0-0' }}%</strong>
+          </li>
+          <li>Taux de sortie positive remob : 
+            <strong>{{ taux_remob | number:'1.0-0' }}%</strong>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Pôle PC -->
+      <div class="block block-pc">
+        <h2>Pôle PC</h2>
+        <h3>Objectifs opé :</h3>
+        <ul>
+          <li>Nombre de collectes : <strong>{{ boussoleData.pc.nb_collectes }}</strong></li>
+          <li>Nombre de journées de tri : <strong>{{ boussoleData.pc.nb_tri }}</strong> ({{ boussoleData.pc.nb_collab }} collab)</li>
+          <li>Nombre de collaborateurs mobilisés : <strong>{{ boussoleData.pc.nb_collab }}</strong></li>
+          <li>% de collab > 1 atelier : <strong>{{ boussoleData.pc.nb_collab_plus_un_atelier | number:'1.0-0' }}%</strong></li>
+          <li>Nombre moyen d’ateliers par collab unique : <strong>{{ boussoleData.pc.nb_cdp_moyen_be }}</strong> (dont {{ boussoleData.pc.nb_collab_3x_plus }} collabs venus 3x ou+)</li>
+        </ul>
+        <h3>Objectifs impact :</h3>
+        <ul>
+          <li>Taux de satisfaction collectes : <strong>{{ boussoleData.pc.taux_satisfaction_collecte | number:'1.1-2' }}</strong></li>
+          <li>Taux de satisfaction tri : <strong>{{ boussoleData.pc.taux_satisfaction_tri | number:'1.1-2' }}</strong></li>
+          <li>% de personnes souhaitant s’engager post-tri : <strong>{{ boussoleData.pc.pourcent_souhaitant_engager | number:'1.0-0' }}%</strong></li>
+        </ul>
+      </div>
+    </div>
+
+<!-- Ligne 2 : Cercle -->
+<div class="row row-circle">
   <div class="circle-container">
-    <div class="circle"></div>
-  </div>
--->
-  <!-- Pôle PC -->
-  <div class="block block-pc">
-    <h2>Pôle PC</h2>
-    <h3>Objectifs opé :</h3>
-    <ul>
-      <li>Nombre de collectes : <strong>{{ boussoleData.pc.nb_collectes }}</strong></li>
-      <li>Nombre de journées de tri : <strong>{{ boussoleData.pc.nb_tri }}</strong> ({{ boussoleData.pc.nb_collab }} collab)</li>
-      <li>Nombre de collaborateurs mobilisés : <strong>{{ boussoleData.pc.nb_collab }}</strong></li>
-      <li>% de collab > 1 atelier : <strong>{{ boussoleData.pc.nb_collab_plus_un_atelier | number:'1.0-0' }}%</strong></li>
-      <li>Nombre moyen d’ateliers par collab unique : <strong>{{ boussoleData.pc.nb_cdp_moyen_be }}</strong> (dont {{ boussoleData.pc.nb_collab_3x_plus }} collabs venus 3x ou+)</li>
-    </ul>
-    <h3>Objectifs impact :</h3>
-    <ul>
-      <li>Taux de satisfaction collectes : <strong>{{ boussoleData.pc.taux_satisfaction_collecte | number:'1.1-2' }}</strong></li>
-      <li>Taux de satisfaction tri : <strong>{{ boussoleData.pc.taux_satisfaction_tri | number:'1.1-2' }}</strong></li>
-      <li>% de personnes souhaitant s’engager post-tri : <strong>{{ boussoleData.pc.pourcent_souhaitant_engager | number:'1.0-0' }}%</strong></li>
-    </ul>
-  </div>
 
-  <!-- Pôle Bénévoles -->
-  <div class="block block-benevoles">
-    <h2>Pôle Bénévoles</h2>
-    <h3>Objectifs opé :</h3>
-    <ul>
-      <li>Nombre d'actions bénévole mobilisées (présence atelier) : <strong>{{ boussoleData.benevoles.nb_actions_benevole_mobilisees }}</strong></li>
-      <li>Nombre d'actions bénévole mobilisées disc : <strong>{{ boussoleData.benevoles.nb_actions_benevole_mobilisees_93_95 }}</strong></li>
-      <li>Nombre d’ateliers par bénévole unique : <strong>{{ boussoleData.benevoles.nb_ateliers_par_benevole_unique | number:'1.2-2' }}</strong> 
-        (dont {{ boussoleData.benevoles.nb_venues_ateliers['4x et plus'] }} 3+)
-      </li>
-      <li>Nombre nouveaux bénévoles présents en session d'accueil : <strong>{{ boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil }}</strong></li>
-      <li>Taux de transformation suite session d’accueil : <strong>{{ boussoleData.benevoles.taux_transformation_session_accueil | number:'1.0-0' }}%</strong></li>
-      <li>Nombre d’événements sensi : <strong>{{ boussoleData.benevoles.nb_evenements_sensi_visites }}</strong></li>
-      <li>Nombre de participants uniques sensi : <strong>{{ boussoleData.benevoles.nb_participants_uniques_sensi_visites }}</strong></li>
-      <li>Nb de venues : 1x : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['1x'] }}</strong> | 2x : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['2x'] }}</strong> | 3x : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['3x'] }}</strong> | 4x et plus : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['4x et plus'] }}</strong>
-      </li>
-      <li>%BE vs BC : <strong>{{ boussoleData.benevoles.pourcent_be_vs_bc | number:'1.0-0' }}%</strong></li>
-      <li>% bénévoles adhérents : <strong>{{ boussoleData.benevoles.pourcent_benevoles_adherents | number:'1.0-0' }}%</strong></li>
-    </ul>
-    <h3>Objectifs impact :</h3>
-    <ul>
-      <li>Taux de satisfaction d’utilité : <strong>{{ boussoleData.benevoles.taux_satisfaction_utilite_benevolat | number:'1.0-0' }}%</strong></li>
-      <li>Changement de regard discri</li>
-      <li>Sentiment d’amélioration des pratiques</li>
-      <li>Sentiment de compétences adaptés aux besoins des publics</li>
-    </ul>
+    <!-- Version animée -->
+    <div *ngIf="chargement" class="circle circle_animated">
+      <div class="circle_inner">
+        <img class="circle_content_animated" [src]="imageUrl" alt="La Boussole" />
+      </div>
+    </div>
+
+    <!-- Version statique -->
+    <div *ngIf="!chargement" class="circle">
+      <div class="circle_inner">
+        <img class="circle_content" [src]="imageUrl" alt="La Boussole" />
+      </div>
+    </div>
+
   </div>
 </div>
+
+    <!-- Ligne 3 : Bénévoles -->
+    <div class="row row-benevoles">
+      <div class="block block-benevoles">
+        <h2>Pôle Bénévoles</h2>
+        <h3>Objectifs opé :</h3>
+        <ul>
+          <li>Nombre d'actions bénévole mobilisées (présence atelier) : <strong>{{ boussoleData.benevoles.nb_actions_benevole_mobilisees }}</strong></li>
+          <li>Nombre d'actions bénévole mobilisées disc : <strong>{{ boussoleData.benevoles.nb_actions_benevole_mobilisees_93_95 }}</strong></li>
+          <li>Nombre d’ateliers par bénévole unique : <strong>{{ boussoleData.benevoles.nb_ateliers_par_benevole_unique | number:'1.2-2' }}</strong> 
+            (dont {{ boussoleData.benevoles.nb_venues_ateliers['4x et plus'] }} 3+)
+          </li>
+          <li>Nombre nouveaux bénévoles présents en session d'accueil : <strong>{{ boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil }}</strong></li>
+          <li>Taux de transformation suite session d’accueil : <strong>{{ boussoleData.benevoles.taux_transformation_session_accueil | number:'1.0-0' }}%</strong></li>
+          <li>Nombre d’événements sensi : <strong>{{ boussoleData.benevoles.nb_evenements_sensi_visites }}</strong></li>
+          <li>Nombre de participants uniques sensi : <strong>{{ boussoleData.benevoles.nb_participants_uniques_sensi_visites }}</strong></li>
+          <li>Nb de venues : 1x : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['1x'] }}</strong> | 2x : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['2x'] }}</strong> | 3x : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['3x'] }}</strong> | 4x et plus : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['4x et plus'] }}</strong></li>
+          <li>%BE vs BC : <strong>{{ boussoleData.benevoles.pourcent_be_vs_bc | number:'1.0-0' }}%</strong></li>
+          <li>% bénévoles adhérents : <strong>{{ boussoleData.benevoles.pourcent_benevoles_adherents | number:'1.0-0' }}%</strong></li>
+        </ul>
+        <h3>Objectifs impact :</h3>
+        <ul>
+          <li>Taux de satisfaction d’utilité : <strong>{{ boussoleData.benevoles.taux_satisfaction_utilite_benevolat | number:'1.0-0' }}%</strong></li>
+          <li>Changement de regard discri</li>
+          <li>Sentiment d’amélioration des pratiques</li>
+          <li>Sentiment de compétences adaptés aux besoins des publics</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
 </div>

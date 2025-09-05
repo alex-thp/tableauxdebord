@@ -15,10 +15,10 @@ export class GeminiController {
   }
 
   @Post('rapport_activite')
-  async askGeminiToSelect(@Body('question') question: string): Promise<any> {
+  async askGeminiToSelect(@Body('question') question: string[]): Promise<any> {
       console.log('Question reçue :', question); 
-      const instruction = "Here is a list of what we will call 'Verbatim' associated to a benevole that you can identify using the nom and prenom field. You have to select the three that suits the best to the following rules: 1. A Verbatim can't be choose if it contains any insult or any bad word. 2. The verbatim has to be nice. By nice I mean that it has to be positive. 3. The more the verbatim is talking about the benevole, the more it has to be selected if it is a positive one. 4. The longest a Verbatim is, the best it is. Netherless, the verbatim shouldn't be too long. (600 char maximum). 5. The verbatim should not be about someone else than the benevole. ";
+      const instruction = "Here is a list of what we will call 'Verbatim' associated to a benevole that you can identify using the nom and prenom field. You have to select the three that suits the best to the following rules: 1. A Verbatim can't be choose if it contains any insult or any bad word. 2. The verbatim has to be nice. By nice I mean that it has to be positive. 3. The more the verbatim is talking about the benevole, the more it has to be selected if it is a positive one. 4. The longest a Verbatim is, the best it is. Netherless, the verbatim shouldn't be too long. (600 char maximum). 5. The verbatim should not be about someone but it can be about the team or the structure. 6. The verbatim has to be understandable. If it is not understandable, it can't be selected. 7. The verbatim has to be relevant with the benevole's activity. If it is not relevant, it can't be selected. 8. The verbatim has to be grammatically correct. If it is not grammatically correct, it can't be selected. 9. The verbatim has to be unique. If two verbatims are very similar, only one of them can be selected. 10. The verbatim has to be in French.";
       
-    return this.geminiService.askGemini(question, instruction);
+    return this.geminiService.askGeminiArray(question, instruction);
   }
 }

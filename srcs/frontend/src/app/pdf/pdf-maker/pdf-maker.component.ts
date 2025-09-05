@@ -95,6 +95,7 @@ export class PdfMakerComponent {
   }
 
   benevolePdf() {
+    console.log('Début de la fonction benevolePdf');
     this.gatewayService.benevolePdf().subscribe((response) => {
       let note_satisfaction = 0;
       let nb_notes = 0;
@@ -111,8 +112,8 @@ export class PdfMakerComponent {
         verbatims?: string[],
       } = {};
       let benevoles: any[] = [];
-      data.forEach(benev => {
-        let verbatims = [];
+      let benev = data[0]
+      let verbatims: string[] = [""];
         const benev_nom = this.capitalizeFirstLetter(benev.nom) || 'Inconnu';
         const benev_prenom = this.capitalizeFirstLetter(benev.prenom) || 'Inconnu';
         console.log(`Bénévole: ${benev_nom} ${benev_prenom}`);
@@ -121,16 +122,25 @@ export class PdfMakerComponent {
         benevStats.mail = benev.mail || 'Inconnu@gmail.com';
         if (benev.cdp_x_benev && benev.cdp_x_benev.length > 0 && benev_nom != "Inconnu" && benev_prenom != "Inconnu") {
         const secteurCount: { [secteur: string]: number } = {};
+        console.log(benev.cdp_x_benev)
           for (const cdp of benev.cdp_x_benev || []) {
+            console.log("dans le matching")
             note_satisfaction += cdp?.cand?.note_satisfaction;
             nb_notes++;
             const secteur = cdp?.cand?.secteur_recherche;
-            verbatims.push(cdp?.verbatim);
-            if (secteur) {
+              console.log("verbatim : " + cdp?.cand.verbatim);
+              verbatims.push(cdp?.cand.verbatim);
+            //verbatims.push(cdp?.verbatim);
+            if (cdp?.cand?.secteur) {
               secteurCount[secteur] = (secteurCount[secteur] || 0) + 1;
             }
           }
-
+        console.log("juste avant Gemini");
+        this.askGeminiService.askGeminiToSelect(verbatims).subscribe((res: any) => {
+          verbatims = res;
+          console.log('Verbatims sélectionnés par Gemini :', verbatims);
+        });
+        console.log("juste après Gemini");
         // 🔎 Affiche le classement dans la console
         const sorted = Object.entries(secteurCount)
           .sort((a, b) => b[1] - a[1]) // tri décroissant
@@ -148,7 +158,49 @@ export class PdfMakerComponent {
     verbatims = [];
     benevoles.push(benevStats);
     benevStats = {};
-  });
+      /*data.forEach(benev => {
+        let verbatims: string[] = [""];
+        const benev_nom = this.capitalizeFirstLetter(benev.nom) || 'Inconnu';
+        const benev_prenom = this.capitalizeFirstLetter(benev.prenom) || 'Inconnu';
+        console.log(`Bénévole: ${benev_nom} ${benev_prenom}`);
+        benevStats.nom = benev_nom;
+        benevStats.prenom = benev_prenom;
+        benevStats.mail = benev.mail || 'Inconnu@gmail.com';
+        if (benev.cdp_x_benev && benev.cdp_x_benev.length > 0 && benev_nom != "Inconnu" && benev_prenom != "Inconnu") {
+        const secteurCount: { [secteur: string]: number } = {};
+          for (const cdp of benev.cdp_x_benev || []) {
+            note_satisfaction += cdp?.cand?.note_satisfaction;
+            nb_notes++;
+            const secteur = cdp?.cand?.secteur_recherche;
+            verbatims.push(cdp?.verbatim);
+            if (secteur) {
+              secteurCount[secteur] = (secteurCount[secteur] || 0) + 1;
+            }
+          }
+        console.log("juste avant Gemini");
+        this.askGeminiService.askGeminiToSelect(verbatims).subscribe((res: any) => {
+          verbatims = res;
+          console.log('Verbatims sélectionnés par Gemini :', verbatims);
+        });
+        console.log("juste après Gemini");
+        // 🔎 Affiche le classement dans la console
+        const sorted = Object.entries(secteurCount)
+          .sort((a, b) => b[1] - a[1]) // tri décroissant
+          .map(([secteur, count]) => ({ secteur, count }));
+          const print_secteur = `- ${sorted[0]?.secteur}\\n- ${sorted[1]?.secteur}\\n- ${sorted[2]?.secteur}`
+          benevStats.print_secteur = print_secteur;
+        const nb_cand_acc = benev.cdp_x_benev?.length || 0;
+        benevStats.nb_cand_acc = nb_cand_acc;
+        benevStats.note_satisfaction = note_satisfaction;
+        benevStats.nb_notes = nb_notes;
+        benevStats.verbatims = verbatims;
+    }
+    note_satisfaction = 0;
+    nb_notes = 0;
+    verbatims = [];
+    benevoles.push(benevStats);
+    benevStats = {};
+  });*/
       console.table(benevoles);
       console.log('Fin de la fonction');
     });

@@ -16,6 +16,7 @@ import { PdfMakerComponent } from './pdf/pdf-maker/pdf-maker.component';
 import { AskGeminiComponent } from './ask-gemini/ask-gemini.component';
 import { SharedViewComponent } from './shared-view/shared-view.component';
 import { BoussoleComponent } from './boussole/boussole.component';
+import { ReservationComponent } from './reservation/reservation.component';
 
 export const appRouteList: Routes = [
     { path: '', component: GlobalViewComponent, canActivate: [AuthGuard] },
@@ -31,6 +32,7 @@ export const appRouteList: Routes = [
     { path: 'generateCustomPDF', component: PdfMakerComponent, canActivate: [AuthGuard] },
     { path: 'shared_link/:rapport_x_indicateur', component: SharedViewComponent },
     { path: 'boussole', component: BoussoleComponent },
+    { path: 'reservation', component: ReservationComponent },
     //{ path: 'gemini', component: AskGeminiComponent },
     //{ path: 'display_card_content:localite', component: DashboardHierarchyComponent },
     //{ path: 'test', component: DashboardHierarchyComponent},

@@ -1,0 +1,54 @@
+<div class="page-container">
+  <h1 class="page-title">Réserver une date d'atelier</h1>
+  <h4 class="page-subtitle">
+    Choisis ici la date et l'heure de passage qui te convient parmi celles disponibles.
+  </h4>
+
+  <!-- Loader -->
+  <div *ngIf="loader" class="loader-overlay">
+    <div class="loader-container">
+      <div class="loader-circle">
+        <div class="loader-dot"></div>
+      </div>
+      <div class="loader-text">Chargement des créneaux disponibles...</div>
+    </div>
+  </div>
+
+  <!-- Résultats -->
+  <div *ngIf="!loader" class="dispos-wrapper">
+    <div *ngFor="let dispo of dispos" class="dispo-card">
+      <div class="dispo-header">
+        <div class="dispo-date">{{ dispo.date | date:'dd/MM/yyyy' }}</div>
+        <div class="dispo-lieu">{{ dispo.lieu }}</div>
+      </div>
+
+      <div class="slots-container">
+        <div
+          class="slot-round"
+          *ngFor="let creneau of dispo.slotsLibres"
+          [class.selected]="dispo.selectedSlot === creneau"
+          (click)="selectSlot(dispo, creneau)">
+          {{ creneau.HEURE_RDV }}
+      </div>
+        </div>
+
+      <button
+        *ngIf="dispo.selectedSlot"
+        class="reserver-btn"
+        (click)="askForConfirmation(dispo)">
+        Réserver
+      </button>
+        <div class="overlay" *ngIf="confirmationPanel">
+          <div class="modal">
+            <h2>Confirmation</h2>
+            <h3>Es-tu sûr de vouloir réserver le créneau du {{ dispo.date | date:'dd/MM/yyyy' }} à {{ heure_rdv }} ?</h3>
+            <h3> L'atelier se déroulera au {{ dispo.lieu }}.</h3>
+            <div class="actions">
+              <button class="btn btn-cancel" (click)="onCancel()">Annuler</button>
+              <button class="btn btn-confirm" (click)="reserverCreneau(dispo.date, dispo.selectedSlot)">Confirmer</button>
+            </div>
+          </div>
+        </div>
+</div>
+  </div>
+</div>

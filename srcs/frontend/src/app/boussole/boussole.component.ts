@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { BoussoleService } from './boussole.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,7 +15,7 @@ import { GatewayService } from '../gateway.service';
 })
 export class BoussoleComponent implements OnInit {
   @ViewChild('pdfContent', { static: false }) pdfContent!: ElementRef;
-
+  imageUrl = "assets/images/boussole.jpg";
   boussoleData = {
     accompagnement: {
       nb_cand_cdp_fixe: 0,
@@ -82,11 +82,30 @@ export class BoussoleComponent implements OnInit {
   taux_cdp_et_at_co = 0;
   dateDebut: string = '2025-01-01';
   dateFin: string = '2025-08-25';
+  
+  @ViewChildren('bloc') blocs!: QueryList<ElementRef>;
 
   constructor(private boussoleService: BoussoleService, private gatewayService: GatewayService) {}
 
   ngOnInit(): void {
     this.loadBoussoleData();
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => { // petit délai pour être sûr que tout est rendu
+      let maxHeight = 0;
+
+      // on cherche la hauteur max
+      this.blocs.forEach(bloc => {
+        const h = bloc.nativeElement.offsetHeight;
+        if (h > maxHeight) maxHeight = h;
+      });
+
+      // on applique la hauteur max à tous les blocs
+      this.blocs.forEach(bloc => {
+        bloc.nativeElement.style.height = maxHeight + 'px';
+      });
+    });
   }
 
 generatePdf() {

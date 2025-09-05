@@ -1,76 +1,31 @@
 .dashboard-title {
   text-align: center;
   margin: 1rem 0;
-  color: #f1c40f;
+  color: #16a085;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .dashboard-container {
-  display: grid;
-  grid-template-columns: 1fr 300px 1fr;
-  grid-template-rows: auto 1px auto;
-  grid-template-areas:
-    "accompagnement pc benevoles";
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
-  align-items: start;
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 2rem;
 }
-/* Placement des zones */
-.block-accompagnement { grid-area: accompagnement; color: #16a085; }
-.block-benevoles            { grid-area: benevoles;            color: #2980b9; }
-.block-pc    { grid-area: pc;     color: #d35400;}
-.circle-container    { grid-area: circle; display: flex; justify-content: center; }
 
-/* Cercle */
-.circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 10px solid transparent;
-  border-top-color: #f1c40f;   /* jaune */
-  border-right-color: #3498db; /* bleu */
-  border-bottom-color: #e74c3c;/* rouge/rose */
-  border-left-color: #2ecc71;  /* vert */
+.row {
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* Ligne cercle centrée */
+.row-circle {
   justify-content: center;
-  align-items: center;
-}
-.circle img { width: 120px; }
-
-/* Circle_animated */
-.circle_animated {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 10px solid transparent;
-  border-top-color: #f1c40f;   /* jaune */
-  border-right-color: #3498db; /* bleu */
-  border-bottom-color: #e74c3c;/* rouge/rose */
-  border-left-color: #2ecc71;  /* vert */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  /* Animation */
-  animation: spin 2s linear infinite;
-}
-
-.circle_animated img {
-  width: 120px;
-}
-
-/* Définition de l'animation */
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 /* Blocs */
@@ -79,20 +34,67 @@
   padding: 1rem;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  flex: 1;
+  justify-content: center;
 }
 .block h2 { margin-bottom: 0.5rem; }
 .block h3 { margin-top: 1rem; margin-bottom: 0.3rem; }
 .block ul { padding-left: 1.2rem; margin: 0; }
 
+/* Couleurs des blocs */
+.block-accompagnement { color: #d35400; }
+.block-pc            { color: #f1c40f; }
+.block-benevoles     { color: #2980b9; }
+
+/* Cercle */
+/* Cercle extérieur avec 3 couleurs */
+.circle {
+  width: 120px;   /* taille totale */
+  height: 120px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #f1c40f 0deg 120deg,
+    #3498db 120deg 240deg,
+    #d35400 240deg 360deg
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Cercle intérieur qui contient l’image */
+.circle_inner {
+  width: 100px;   /* plus petit = épaisseur de la bordure */
+  height: 100px;
+  border-radius: 50%;
+  background: transparent;
+  overflow: hidden; /* coupe ce qui dépasse */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* L’image à l’intérieur */
+.circle_inner img {
+  width: 130%;
+  height: 130%;
+  object-fit: cover; /* garde le bon ratio */
+  border-radius: 50%; /* arrondie aussi l’image */
+}
+/* Animation */
+.circle_animated {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
 /* Responsive */
 @media screen and (max-width: 992px) {
-  .dashboard-container {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "circle"
-      "accompagnement"
-      "pc"
-      "benevoles";
+  .row {
+    flex-direction: column;
+    gap: 1.5rem;
   }
-  .circle { margin: 0 auto 2rem; }
 }
+

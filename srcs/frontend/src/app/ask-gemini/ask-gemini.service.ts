@@ -14,7 +14,7 @@ export class AskGeminiService {
     return this.http.post(`${this.baseUrl}/gemini/default`, { question });
   }
 
-  askGeminiToSelect(question: string): Observable<any> {
+  askGeminiToSelect(question: string[]): Observable<any> {
     return this.http.post(`${this.baseUrl}/gemini/rapport_activite`, { question });
   }
 }

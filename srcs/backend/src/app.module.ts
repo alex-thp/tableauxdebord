@@ -32,6 +32,7 @@ import { GeminiController } from './controllers/gemini/gemini.controller';
 import { SharedViewController } from './controllers/shared_view/shared_view.controller';
 import { BoussoleController } from './controllers/boussole/boussole.controller';
 import { BoussoleService } from './services/boussole/boussole.service';
+import { ReservationController } from './controllers/reservation/reservation.controller';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { BoussoleService } from './services/boussole/boussole.service';
     GeminiController,
     SharedViewController,
     BoussoleController,
+    ReservationController,
   ],
   providers: [
     AppService,
