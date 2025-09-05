@@ -45,8 +45,6 @@ ngOnInit() {
         slotsLibres: uniqueSlots
       };
     });
-
-    console.log("dispos formatés (dédupliqués) >>>", this.dispos);
   });
 }
 
@@ -73,10 +71,8 @@ onCancel() {
 
 reserverCreneau(date: Date, slot: any) {
   this.reservationService.verifyPrescriptionAvailability(this.record_id).subscribe((response) => {
-    console.log('Vérification de la disponibilité de la prescription:', response);
     if(response[0].available === true) {
       this.reservationService.setPrescriptionOnSlot(this.record_id, slot.CDP_ID[0]).subscribe((res) => {
-      console.log('Réponse de la réservation:', res);
       if(res.success) {
         alert(`Créneau du ${date.toLocaleDateString()} à ${slot.HEURE_RDV} réservé avec succès !`);
         this.reservationService.eraseOldSlot(slot.id).subscribe(() => {
