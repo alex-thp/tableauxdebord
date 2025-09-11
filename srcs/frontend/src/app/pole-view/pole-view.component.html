@@ -80,13 +80,6 @@
         </div>
         <div class="data-block">
             <h3 class="green-underline">Prescriptions mois par mois</h3>
-            <app-scatter-plot
-                [datasetA]="data.array_prescri_by_month"
-                [datasetB]="old_data.array_prescri_by_month">
-            </app-scatter-plot>
-        </div>
-        <div class="data-block">
-            <h3 class="green-underline">Prescriptions mois par mois</h3>
             <app-multi-year-line-chart
                 [datasetA]="data.array_prescri_by_month"
                 [datasetB]="old_data.array_prescri_by_month">
