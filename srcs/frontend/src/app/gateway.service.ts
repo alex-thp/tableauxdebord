@@ -84,7 +84,7 @@ export class GatewayService {
     });
   }
 
-  generatePdfFromHtml(html: string): Observable<Blob> {
+  generatePdfFromHtml(html: string): Observable<any> {
     const token = localStorage.getItem('token');
     return this.http.post(`${this.baseUrl}/pdf/generate`, { html }, {
       headers: {

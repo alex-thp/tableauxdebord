@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Page A4 avec texte vertical externe en haut</title>
+  <style>
+    @page { size: A4; margin: 0; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      position: relative;
+      width: 210mm;
+      height: 297mm;
+    }
+
+    /* Zone violette centrée avec marges */
+    .page {
+      width: 190mm;  /* 10mm marge de chaque côté */
+      height: 277mm; /* 10mm marge haut/bas */
+      background-color: #590a91;
+      position: absolute;
+      top: 10mm;
+      left: 10mm;
+    }
+
+    /* Texte vertical à gauche, en haut */
+    .texte-vertical {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg); /* bas → haut */
+      position: absolute;
+      top: 10mm;    /* distance depuis le haut de la page */
+      left: 0;      /* marge gauche du PDF */
+      font-size: 18px;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="texte-vertical">
+    Alexandre de Temmerman
+  </div>
+  <div class="page">
+    <!-- contenu de la page -->
+     <div>Nombre d'heures de coaching : </div>
+  </div>
+</body>
+</html>

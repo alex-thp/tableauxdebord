@@ -2,17 +2,21 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GatewayService } from '../../gateway.service';
 import { AskGeminiService } from '../../ask-gemini/ask-gemini.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-pdf-maker',
   templateUrl: './pdf-maker.component.html',
   styleUrls: ['./pdf-maker.component.css'],
-  imports: [FormsModule],
+  imports: [
+    FormsModule,
+    HttpClientModule
+  ],
 })
 export class PdfMakerComponent {
   fileOriginal!: File;
   fileInsert!: File;
-  htmlContent: string = '<h1>Hello PDF</h1><p>Ce texte vient du champ HTML</p>';
+  htmlContent: string = "";
 
   formData = {
     fromFile1: 1,
@@ -25,7 +29,25 @@ export class PdfMakerComponent {
     index: 1,
   }
 
-  constructor(private gatewayService: GatewayService, private askGeminiService: AskGeminiService) {}
+  constructor(private gatewayService: GatewayService, private askGeminiService: AskGeminiService, private http: HttpClient) {}
+
+  ngOnInit() {
+    console.log('chargement du template HTML');
+    this.loadHtmlTemplate();
+  }
+
+    loadHtmlTemplate() {
+    this.http.get('assets/templates/modele_de_ra.html', { responseType: 'text' })
+      .subscribe({
+        next: (data) => {
+          this.htmlContent = data;
+          console.log('HTML chargé :', this.htmlContent);
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement du HTML', err);
+        }
+      });
+  }
 
   onFileChange(event: Event, type: 'original' | 'insert') {
     const input = event.target as HTMLInputElement;
@@ -85,7 +107,8 @@ export class PdfMakerComponent {
   }
 
   generatePdf() {
-    this.gatewayService.generatePdfFromHtml(this.htmlContent).subscribe(blob => {
+      console.log('Génération du PDF à partir du contenu HTML');
+      this.gatewayService.generatePdfFromHtml(this.htmlContent).subscribe(blob => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

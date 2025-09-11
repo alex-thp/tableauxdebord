@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rapport d'activité</title>
+  <style>
+    @page { size: A4; margin: 0; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      width: 210mm;
+      height: 297mm;
+      position: relative;
+      background-color: #590a91;
+    }
+
+    /* Zone violette de fond */
+    .page {
+      width: 190mm;
+      height: 277mm;
+      background-color: #ffffff;
+      position: absolute;
+      top: 10mm;
+      left: 10mm;
+      overflow: hidden;
+    }
+
+    /* Texte vertical à gauche, en haut */
+    .texte-vertical {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      position: absolute;
+      top: 10mm;
+      left: 0;
+      font-size: 18px;
+      color: rgb(255, 255, 255);
+      font-weight: bold;
+    }
+
+    /* Zones de texte positionnées */
+    .zone-photo {
+      position: absolute;
+      top: 20mm;
+      left: 20mm;
+      width: 50mm;
+      height: 50mm;
+      border-radius: 50%;
+      background-color: #ff4081;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    .zone-verbatim {
+      position: absolute;
+      top: 20mm;
+      left: 90mm;
+      width: 90mm;
+      height: 40mm;
+      color: black;
+      font-size: 12px;
+    }
+
+    .zone-stats1 {
+      position: absolute;
+      top: 100mm;
+      left: 40mm;
+      font-size: 16px;
+      color: black;
+    }
+
+    .zone-stats2 {
+      position: absolute;
+      top: 100mm;
+      left: 120mm;
+      font-size: 16px;
+      color: black;
+    }
+
+    .zone-top3 {
+      position: absolute;
+      top: 160mm;
+      left: 20mm;
+      font-size: 14px;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="texte-vertical">DOMINIQUE</div>
+
+  <div class="page">
+    <div class="zone-photo">Photo candidat.e</div>
+    <div class="zone-verbatim">"VERBATIM candidat"</div>
+
+    <div class="zone-stats1">Nombre de personnes rencontrées: 165</div>
+    <div class="zone-stats2">Nombre d'heures de coaching: 170</div>
+
+    <div class="zone-top3">
+      <strong>TOP 3 DES SECTEURS DE MÉTIERS RENCONTRÉS</strong><br>
+      1. Hôtellerie - restauration<br>
+      2. Santé - médical<br>
+      3. Informatique - télécommunications
+    </div>
+  </div>
+  <div>La Cravate Solidaire Paris</div>
+  <div>Rapport d'activité 2024</div>
+</body>
+</html>
