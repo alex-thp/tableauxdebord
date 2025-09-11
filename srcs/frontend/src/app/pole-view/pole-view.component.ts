@@ -9,7 +9,6 @@ import { PieChartComponent } from '../graphs/pie-chart/pie-chart.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { DateSearchComponent } from '../date-search/date-search.component';
 import { MonthlyComparisonComponent } from '../graphs/monthly-comparison/monthly-comparison.component';
-import { ScatterPlotComponent } from '../scatter-plot/scatter-plot.component';
 import { MultiYearLineChartComponent } from '../multi-year-line-chart/multi-year-line-chart.component';
 
 
@@ -22,7 +21,6 @@ import { MultiYearLineChartComponent } from '../multi-year-line-chart/multi-year
     NgIcon, 
     DateSearchComponent, 
     MonthlyComparisonComponent, 
-    ScatterPlotComponent, 
     MultiYearLineChartComponent
   ],
   templateUrl: './pole-view.component.html',
