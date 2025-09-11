@@ -78,6 +78,20 @@
             <p>Candidats CDP + Bien-être: <span>{{ data.nb_cand_cdp_et_bien_etre || 0 }}</span></p>
             <app-progress-bar *ngIf="data.nb_cand_bien_etre !== undefined && data.nb_cand_cdp_et_bien_etre !== undefined" [realise]="data.nb_cand_cdp_et_bien_etre" [attendu]="data.nb_cand_bien_etre || 1"></app-progress-bar>
         </div>
+        <div class="data-block">
+            <h3 class="green-underline">Prescriptions mois par mois</h3>
+            <app-scatter-plot
+                [datasetA]="data.array_prescri_by_month"
+                [datasetB]="old_data.array_prescri_by_month">
+            </app-scatter-plot>
+        </div>
+        <div class="data-block">
+            <h3 class="green-underline">Prescriptions mois par mois</h3>
+            <app-multi-year-line-chart
+                [datasetA]="data.array_prescri_by_month"
+                [datasetB]="old_data.array_prescri_by_month">
+            </app-multi-year-line-chart>
+        </div>
     </div>
 </div>
 

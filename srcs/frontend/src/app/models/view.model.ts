@@ -42,4 +42,5 @@ export interface ViewData {
     nbCollabsByMonth?: any, // Un tableau d'objets avec les mois et le nombre de collaborateurs
     nbCollabsByMonthUnique?: any,
     nbNouveauCollab?: number, // Nombre de nouveaux collaborateurs
+    array_prescri_by_month?: any; // Un tableau d'objets avec les mois et le nombre de prescriptions
 }

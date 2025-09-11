@@ -7,21 +7,8 @@ export class StatsAccompagnementService {
 
     async getMainData(date_debut, date_fin) {
         const connection = this.mongodb.client.db('test');
-        const cdp = connection.collection("cdps");
-        const cdpenrbenev = connection.collection("cdpenrbenevs");
         const cdpenrcand = connection.collection("cdpenrcands");
         const cdpsuivi = connection.collection("cdpsuivis");
-        const bienetreenrcand = connection.collection("bienetreenrcands");
-        const atcoenrcand = connection.collection("atcoenrcands");
-        const contactdestructure = connection.collection("contactdestructures");
-        const candidat = connection.collection("candidats");
-        const benev = connection.collection("benevs");
-        const structures = connection.collection("structures");
-        const referents = connection.collection("contactdestructures");
-        const atCo = connection.collection("atcos");
-        const bienEtre = connection.collection("bienetres");
-        const matching = connection.collection("cdpenrcandxcdpenrbenevs");
-        const evenement_pc = connection.collection("evenementpcs");
 
         let result ={label: "Pôle Accompagnement", 
             left: {label: '2025', nb_candidat: 0, nb_suivi : 0, sortie_positive: 0}, 
@@ -664,6 +651,45 @@ async get_nb_cand_at_co(atcoenrcand, date_debut, date_fin) {
       return meilleuresStr + moinsBonnesStr;
     }
 
+    async getPrescriByMonth(cdpenrcand, date_debut, date_fin) {
+    const result = await cdpenrcand.aggregate([
+    // 1️⃣ Ne garder que les documents qui ont une date_creation
+    { 
+      $match: { 
+        date_creation: { $gte: date_debut, $lt: date_fin },
+    },
+  },
+
+    // 2️⃣ Regrouper par année et mois de date_creation
+    { 
+      $group: {
+        _id: {
+          year: { $year: "$date_creation" },
+          month: { $month: "$date_creation" }
+        },
+        totalPrescriptions: { $sum: 1 }
+      }
+    },
+
+    // 3️⃣ Trier du plus ancien au plus récent (facultatif)
+    { 
+      $sort: { "_id.year": 1, "_id.month": 1 }
+    },
+
+    // 4️⃣ Remettre sous forme plus lisible
+    { 
+      $project: {
+        _id: 0,
+        year: "$_id.year",
+        month: "$_id.month",
+        count: "$totalPrescriptions"
+      }
+    }
+  ]).toArray();
+
+  return result;
+}
+
     async getViewData(date_debut, date_fin) {
         date_debut = new Date(date_debut);
         date_fin = new Date(date_fin);
@@ -698,7 +724,10 @@ async get_nb_cand_at_co(atcoenrcand, date_debut, date_fin) {
             nb_prescr_attente: 0,
             string_asso_part_prescr: "",
             nb_cand_atco_unique: 0,
+            array_prescri_by_month: [],
           };
+
+        const array_prescri_by_month = await this.getPrescriByMonth(cdpenrcand, date_debut, date_fin);
 
         const nb_passage_cdp = await this.get_nb_passage_cdp(cdpenrcand, date_debut, date_fin);
         const nb_passage_fixe = nb_passage_cdp.find(item => item.type_atelier === "CDP FIXE")?.count || 0;
@@ -764,6 +793,7 @@ async get_nb_cand_at_co(atcoenrcand, date_debut, date_fin) {
         result.nb_cand_atco_unique = nb_candi_unique_at_co?.count || 0;
         result.nb_cand_bien_etre = nb_cand_bien_etre[0]?.total || 0;
         result.nb_cand_cdp_et_bien_etre = nb_cand_bien_etre[0]?.cdp_et_bien_etre || 0;
+        result.array_prescri_by_month = array_prescri_by_month;
 
         return result;
     }

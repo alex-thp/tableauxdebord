@@ -32,7 +32,7 @@ export const appRouteList: Routes = [
     { path: 'generateCustomPDF', component: PdfMakerComponent, canActivate: [AuthGuard] },
     { path: 'shared_link/:rapport_x_indicateur', component: SharedViewComponent },
     { path: 'boussole', component: BoussoleComponent },
-    { path: 'reservation', component: ReservationComponent },
+    //{ path: 'reservation', component: ReservationComponent },
     //{ path: 'gemini', component: AskGeminiComponent },
     //{ path: 'display_card_content:localite', component: DashboardHierarchyComponent },
     //{ path: 'test', component: DashboardHierarchyComponent},

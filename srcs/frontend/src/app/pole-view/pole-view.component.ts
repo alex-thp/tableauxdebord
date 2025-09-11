@@ -9,11 +9,22 @@ import { PieChartComponent } from '../graphs/pie-chart/pie-chart.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { DateSearchComponent } from '../date-search/date-search.component';
 import { MonthlyComparisonComponent } from '../graphs/monthly-comparison/monthly-comparison.component';
+import { ScatterPlotComponent } from '../scatter-plot/scatter-plot.component';
+import { MultiYearLineChartComponent } from '../multi-year-line-chart/multi-year-line-chart.component';
 
 
 @Component({
   selector: 'app-pole-view',
-  imports: [CommonModule, ProgressBarComponent, PieChartComponent, NgIcon, DateSearchComponent, MonthlyComparisonComponent],
+  imports: [
+    CommonModule, 
+    ProgressBarComponent, 
+    PieChartComponent, 
+    NgIcon, 
+    DateSearchComponent, 
+    MonthlyComparisonComponent, 
+    ScatterPlotComponent, 
+    MultiYearLineChartComponent
+  ],
   templateUrl: './pole-view.component.html',
   styleUrl: './pole-view.component.css',
   viewProviders: [provideIcons(featherIcons)],
@@ -22,6 +33,7 @@ import { MonthlyComparisonComponent } from '../graphs/monthly-comparison/monthly
 export class PoleViewComponent implements OnInit, OnChanges {
 
   data!: ViewData;
+  old_data!: ViewData;
   i!: string | null;
   labels?: any;
   values?: any;
@@ -32,6 +44,15 @@ export class PoleViewComponent implements OnInit, OnChanges {
   currentYear = new Date().getFullYear();
   date_debut: string = this.formatDate(new Date(this.currentYear, 0, 1));
   date_fin: string = this.formatDate(new Date(this.currentYear, 11, 31));
+  old_labels?: any;
+  old_values?: any;
+  old_colors?: any;
+  old_labels_two?: any;
+  old_values_two?: any;
+  old_colors_two?: any;
+  old_currentYear = new Date().getFullYear() - 1;
+  old_date_debut: string = this.formatDate(new Date(this.old_currentYear, 0, 1));
+  old_date_fin: string = this.formatDate(new Date(this.old_currentYear, 11, 31));
 ;
 
   constructor(
@@ -81,6 +102,30 @@ export class PoleViewComponent implements OnInit, OnChanges {
           this.labels_two = this.data.array_two.map((item: { type: string }) => item.type);
           this.values_two = this.data.array_two.map((item: { count: number }) => item.count);
           this.colors_two = this.generateColors(this.data.array_two.length);
+        }
+  
+        // Force Angular à détecter les changements après la mise à jour de `data`
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Erreur lors de la requête HTTP:', error);
+      }
+    });
+    this.gatewayService.getViewData(Number(this.i), new Date(this.old_date_debut), new Date(this.old_date_fin)).subscribe({
+      next: (response) => {
+        console.log('Données reçues (requête HTTP) :', response);
+        this.old_data = response;
+        console.log(this.data.array_one);
+        console.log('Data mise à jour:', this.data);
+        if (this.data.array_one !== undefined && Array.isArray(this.data.array_one)) {
+          this.old_labels = this.data.array_one.map((item: { type: string }) => item.type);
+          this.old_values = this.data.array_one.map((item: { count: number }) => item.count);
+          this.old_colors = this.generateColors(this.data.array_one.length);
+        }
+        if (this.data.array_two !== undefined && Array.isArray(this.data.array_two)) {
+          this.old_labels_two = this.data.array_two.map((item: { type: string }) => item.type);
+          this.old_values_two = this.data.array_two.map((item: { count: number }) => item.count);
+          this.old_colors_two = this.generateColors(this.data.array_two.length);
         }
   
         // Force Angular à détecter les changements après la mise à jour de `data`
