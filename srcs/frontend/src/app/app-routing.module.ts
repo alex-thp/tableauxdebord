@@ -29,7 +29,7 @@ export const appRouteList: Routes = [
     { path: 'dev', component: MainDevViewComponent, canActivate: [AuthGuard] },
     { path: 'visualisation/:rapport_x_indicateur', component: VisualisationComponent, canActivate: [AuthGuard] },
     { path: 'not_found', component: NotFoundComponent },
-    { path: 'generateCustomPDF', component: PdfMakerComponent, canActivate: [AuthGuard] },
+    //{ path: 'generateCustomPDF', component: PdfMakerComponent, canActivate: [AuthGuard] },
     { path: 'shared_link/:rapport_x_indicateur', component: SharedViewComponent },
     { path: 'boussole', component: BoussoleComponent },
     //{ path: 'reservation', component: ReservationComponent },
