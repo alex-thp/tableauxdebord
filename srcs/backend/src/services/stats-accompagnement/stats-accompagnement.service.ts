@@ -652,32 +652,43 @@ async get_nb_cand_at_co(atcoenrcand, date_debut, date_fin) {
     }
 
     async getPrescriByMonth(cdpenrcand, date_debut, date_fin) {
-    const result = await cdpenrcand.aggregate([
-    // 1️⃣ Ne garder que les documents qui ont une date_creation
-    { 
-      $match: { 
+  const result = await cdpenrcand.aggregate([
+    // 1️⃣ Filtre la plage de dates
+    {
+      $match: {
         date_creation: { $gte: date_debut, $lt: date_fin },
+      },
     },
-  },
 
-    // 2️⃣ Regrouper par année et mois de date_creation
-    { 
+    // 2️⃣ Première étape : dédupliquer -> une doc par candidat par mois
+    {
       $group: {
         _id: {
+          candidat_id: "$candidat_record_id",
           year: { $year: "$date_creation" },
           month: { $month: "$date_creation" }
+        }
+      }
+    },
+
+    // 3️⃣ Deuxième étape : compter ces candidats uniques par mois
+    {
+      $group: {
+        _id: {
+          year: "$_id.year",
+          month: "$_id.month"
         },
         totalPrescriptions: { $sum: 1 }
       }
     },
 
-    // 3️⃣ Trier du plus ancien au plus récent (facultatif)
-    { 
+    // 4️⃣ Trier du plus ancien au plus récent
+    {
       $sort: { "_id.year": 1, "_id.month": 1 }
     },
 
-    // 4️⃣ Remettre sous forme plus lisible
-    { 
+    // 5️⃣ Remettre sous forme lisible (même structure que précédemment)
+    {
       $project: {
         _id: 0,
         year: "$_id.year",
@@ -689,6 +700,7 @@ async get_nb_cand_at_co(atcoenrcand, date_debut, date_fin) {
 
   return result;
 }
+
 
     async getViewData(date_debut, date_fin) {
         date_debut = new Date(date_debut);

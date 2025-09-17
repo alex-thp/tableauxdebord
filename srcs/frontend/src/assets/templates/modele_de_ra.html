@@ -4,22 +4,34 @@
   <meta charset="UTF-8">
   <title>Page A4 avec texte vertical externe en haut</title>
   <style>
-    @page { size: A4; margin: 0; }
+    /* Force le PDF en A4 sans marges */
+    @page { 
+      size: A4; 
+      margin: 0; 
+    }
 
+    /* Corps de page = plein A4 avec image ajustée */
     body {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
       position: relative;
+
+      /* Dimensions exactes A4 */
       width: 210mm;
       height: 297mm;
+
+      /* Image de fond en plein écran */
+      background-image: url('{{fondUrl}}'); /* Data URI ou URL */
+      background-size: cover;       /* Remplit toute la page */
+      background-repeat: no-repeat; /* Pas de répétition */
+      background-position: center;  /* Centrée */
     }
 
-    /* Zone violette centrée avec marges */
+    /* Zone violette centrée avec marges de 10 mm tout autour */
     .page {
-      width: 190mm;  /* 10mm marge de chaque côté */
-      height: 277mm; /* 10mm marge haut/bas */
-      background-color: #590a91;
+      width: 190mm;   /* 210 - 20mm = 10mm de chaque côté */
+      height: 277mm;  /* 297 - 20mm = 10mm haut/bas */
       position: absolute;
       top: 10mm;
       left: 10mm;
@@ -31,8 +43,8 @@
       text-orientation: mixed;
       transform: rotate(180deg); /* bas → haut */
       position: absolute;
-      top: 10mm;    /* distance depuis le haut de la page */
-      left: 0;      /* marge gauche du PDF */
+      top: 10mm;   /* distance depuis le haut de la page */
+      left: 0;     /* collé au bord gauche */
       font-size: 18px;
       color: black;
     }
@@ -42,9 +54,10 @@
   <div class="texte-vertical">
     Alexandre de Temmerman
   </div>
+
   <div class="page">
     <!-- contenu de la page -->
-     <div>Nombre d'heures de coaching : </div>
+    <div>Nombre d'heures de coaching : </div>
   </div>
 </body>
 </html>

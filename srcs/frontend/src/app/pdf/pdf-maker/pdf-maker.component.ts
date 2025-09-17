@@ -17,6 +17,8 @@ export class PdfMakerComponent {
   fileOriginal!: File;
   fileInsert!: File;
   htmlContent: string = "";
+  fondPage: string = "";
+  fondUrl = "../../../../uploads/RA_benevole/Fond_page/fond_1.png";
 
   formData = {
     fromFile1: 1,
@@ -36,12 +38,27 @@ export class PdfMakerComponent {
     this.loadHtmlTemplate();
   }
 
+  loadImages() {
+    this.http.get('assets/RA_benevole/Fond_page/fond_1.png', { responseType: 'text' })
+      .subscribe({
+        next: (data) => {
+          this.fondPage = data;
+          this.htmlContent = data.replace('{{fondUrl}}', this.fondUrl);
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement du fond', err);
+        }
+      });
+  }
+
     loadHtmlTemplate() {
     this.http.get('assets/templates/modele_de_ra.html', { responseType: 'text' })
       .subscribe({
         next: (data) => {
           this.htmlContent = data;
           console.log('HTML chargé :', this.htmlContent);
+          const fondUrl = 'uploads/RA_benevole/Fond_page/fond_1.png';
+        this.htmlContent = data.replace('{{FOND_PAGE}}', fondUrl);
         },
         error: (err) => {
           console.error('Erreur lors du chargement du HTML', err);

@@ -2,113 +2,462 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Rapport d'activité</title>
+  <title>Page A4 avec texte vertical externe en haut</title>
   <style>
-    @page { size: A4; margin: 0; }
+    /* Force le PDF en A4 sans marges */
+    @page { 
+      size: A4; 
+      margin: 0; 
+    }
 
+    html { overflow: hidden; }
+
+    /* Corps de page = plein A4 avec image ajustée */
     body {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
+      position: relative;
+
+      /* Dimensions exactes A4 */
       width: 210mm;
       height: 297mm;
-      position: relative;
-      background-color: #590a91;
-    }
-
-    /* Zone violette de fond */
-    .page {
-      width: 190mm;
-      height: 277mm;
-      background-color: #ffffff;
-      position: absolute;
-      top: 10mm;
-      left: 10mm;
       overflow: hidden;
+
+      /* Image de fond en plein écran */
+      background-image: url('{{fondUrl}}'); /* Data URI ou URL */
+      background-size: cover;       /* Remplit toute la page */
+      background-repeat: no-repeat; /* Pas de répétition */
+      background-position: center;  /* Centrée */
     }
 
+    .retrospective {
+      position: absolute;
+      top: 100px; /* Ajuster selon besoin */
+      left: 15%; /* Ajuster selon besoin */
+      font-size: 22px;
+      font-weight: bold;
+      color: rgb(0, 0, 0);
+    }
+
+        /* Image personnage en haut */
+    .personnage {
+      position: absolute;
+      top: 0mm;      /* distance depuis le haut */
+      left: 92%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 20%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+    }
+
+    .personnageDepart {
+      position: absolute;
+      top: 105mm;      /* distance depuis le haut */
+      left: 15%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 20%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 10; /* devant */
+    }
+
+    .personnageRh {
+      position: absolute;
+      top: 90%;      /* distance depuis le haut */
+      left: 95%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 25%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 10; /* devant */
+    }
+
+    .persoCoteVeste {
+      position: absolute;
+      top: 55%;      /* distance depuis le haut */
+      left: 10%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 20%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 10; /* devant */
+    }
+
+    .route {
+      position: absolute;
+      top: 28%;      /* distance depuis le haut */
+      left: 50%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 83%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .map {
+      position: absolute;
+      top: 45%;      /* distance depuis le haut */
+      left: 15%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 10%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .panneau1{
+      position: absolute;
+      top: 30%;      /* distance depuis le haut */
+      left: 50%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 30%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .panneau2 {
+      position: absolute;
+      top: 55%;      /* distance depuis le haut */
+      left: 52%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      transform: scaleX(-1); /* miroir horizontal */
+      width: 20%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .panneau3 {
+      position: absolute;
+      top: 52%;      /* distance depuis le haut */
+      left: 72%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      transform: scaleX(-1); /* miroir horizontal */
+      width: 25%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .herbe {
+      position: absolute;
+      top: 62%;      /* distance depuis le haut */
+      left: 81%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      transform: rotate(-5.5deg);
+      width: 10%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .fleur {
+      position: absolute;
+      top: 62.5%;      /* distance depuis le haut */
+      left: 63%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 8%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .fleur2 {
+      position: absolute;
+      top: 43%;      /* distance depuis le haut */
+      left: 48%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 10%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .papillon {
+      position: absolute;
+      top: 30%;      /* distance depuis le haut */
+      left: 40%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 8%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .un {
+      position: absolute;
+      top: 71%;      /* distance depuis le haut */
+      left:20%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 7%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .deux {
+      position: absolute;
+      top: 79%;      /* distance depuis le haut */
+      left: 24%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 7%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .trois {
+      position: absolute;
+      top: 87%;      /* distance depuis le haut */
+      left: 29%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 7%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .verbatim1 {
+      position: absolute;
+      top: 15%;      /* distance depuis le haut */
+      left: 53%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 15%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
+
+    .verbatim_candidat {
+      position: absolute;
+      top: 20%;      /* distance depuis le haut */
+      left: 65%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      font-size: 20px;
+      font-weight: bold;
+      color: rgb(0, 0, 0);
+      z-index: 1; /* devant */
+    }
+
+    .verbatim2 {
+      position: absolute;
+      top: 20%;      /* distance depuis le haut */
+      left: 82%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 15%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      z-index: 1; /* devant */
+    }
     /* Texte vertical à gauche, en haut */
     .texte-vertical {
       writing-mode: vertical-rl;
       text-orientation: mixed;
-      transform: rotate(180deg);
+      transform: rotate(180deg); /* bas → haut */
       position: absolute;
-      top: 10mm;
-      left: 0;
-      font-size: 18px;
-      color: rgb(255, 255, 255);
+      top: 120;   /* distance depuis le haut de la page */
+      left: 40;     /* collé au bord gauche */
+      font-size: 35px;
       font-weight: bold;
+      color: rgb(255, 255, 255);
     }
 
-    /* Zones de texte positionnées */
-    .zone-photo {
+    .secteur1 {
       position: absolute;
-      top: 20mm;
-      left: 20mm;
-      width: 50mm;
-      height: 50mm;
-      border-radius: 50%;
-      background-color: #ff4081;
+      top: 73%;      /* distance depuis le haut */
+      left:30%;     /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      font-size: 20px;
+      font-weight: bold;
+      color: rgb(0, 0, 0);
+      z-index: 1; /* devant */
+    }
+
+    .secteur2 {
+      position: absolute;
+      top: 81%;      /* distance depuis le haut */
+      left: 34%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      font-size: 20px;
+      font-weight: bold;
+      color: rgb(0, 0, 0);
+      z-index: 1; /* devant */
+    }
+
+    .secteur3 {
+      position: absolute;
+      top: 89%;      /* distance depuis le haut */
+      left: 39%;       /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      font-size: 20px;
+      font-weight: bold;
+      color: rgb(0, 0, 0);
+      z-index: 1; /* devant */
+    }
+
+    .sortiePositive {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 57.5%;      /* distance depuis le haut */
+      left: 59%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      transform: rotate(-3.5deg);
+      z-index: 1; /* devant */
+    }
+
+    .number {
+      font-size: 20px;
+      color: #345b79
+    }
+
+    .texte {
+      font-size: 10px;
+      content: center;
+      text-align: center;
+      color: #3d2e58;
+    }
+
+    .heureCoaching {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 55.5%;      /* distance depuis le haut */
+      left: 79.5%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      transform: rotate(-3.5deg);
+      z-index: 1; /* devant */
+    }
+
+    .number2 {
+      font-size: 26px;
+      color: #345b79
+    }
+
+    .texte2 {
+      font-size: 16px;
+      content: center;
+      text-align: center;
+      color: #3d2e58;
+    }
+
+    .NbPersonnesRencontrees{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 34%;      /* distance depuis le haut */
+      left: 43%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      transform: rotate(2.5deg);
+      z-index: 1; /* devant */
+    }
+
+    .number3 {
+      font-size: 30px;
+      color: #345b79
+    }
+
+    .texte3 {
+      font-size: 14px;
+      content: center;
+      text-align: center;
+      color: #3d2e58;
+    }
+
+    .top3 {
+      position: absolute;
+      top: 63%;      /* distance depuis le haut */
+      left: 30%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 35%;    /* largeur de l’image */
+      height: 7%;   /* conserve le ratio */
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
+      z-index: 1; /* devant */
+      font-size: 18px;
       font-weight: bold;
+      color: rgb(255, 255, 255);
+      background-color: #3e6f94; /* jaune */
+      border-style: solid;
+      border-color: #fff200;
+      text-align: center;
     }
 
-    .zone-verbatim {
+    .statsPerso {
       position: absolute;
-      top: 20mm;
-      left: 90mm;
-      width: 90mm;
-      height: 40mm;
-      color: black;
-      font-size: 12px;
-    }
-
-    .zone-stats1 {
-      position: absolute;
-      top: 100mm;
-      left: 40mm;
-      font-size: 16px;
-      color: black;
-    }
-
-    .zone-stats2 {
-      position: absolute;
-      top: 100mm;
-      left: 120mm;
-      font-size: 16px;
-      color: black;
-    }
-
-    .zone-top3 {
-      position: absolute;
-      top: 160mm;
-      left: 20mm;
+      top: 47%;      /* distance depuis le haut */
+      left: 29%;     /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 25%;    /* largeur de l’image */
+      height: 3%;   /* conserve le ratio */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
       font-size: 14px;
-      color: black;
+      font-weight: bold;
+      color:#3e6f94;
+      background-color: #ffffff;
+      border-style: solid;
+      border-color: #fff200;
+      text-align: center;
+    }
+
+    .photo {
+      position: absolute;
+      top: 75%;      /* distance depuis le haut */
+      left: 75%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 25%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      /*border-radius: 95%;*/ /* cercle */
+      border: 4px solid #fff200; /* bordure jaune */
+      z-index: 10; /* devant */
+    }
+
+    .photoCandidat {
+      position: absolute;
+      top: 15%;      /* distance depuis le haut */
+      left: 25%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      width: 20%;    /* largeur de l’image */
+      height: auto;   /* conserve le ratio */
+      /*border-radius: 95%;*/ /* cercle */
+      border: 4px solid #fff200; /* bordure jaune */
+      z-index: 10; /* devant */
     }
   </style>
 </head>
 <body>
-  <div class="texte-vertical">DOMINIQUE</div>
-
-  <div class="page">
-    <div class="zone-photo">Photo candidat.e</div>
-    <div class="zone-verbatim">"VERBATIM candidat"</div>
-
-    <div class="zone-stats1">Nombre de personnes rencontrées: 165</div>
-    <div class="zone-stats2">Nombre d'heures de coaching: 170</div>
-
-    <div class="zone-top3">
-      <strong>TOP 3 DES SECTEURS DE MÉTIERS RENCONTRÉS</strong><br>
-      1. Hôtellerie - restauration<br>
-      2. Santé - médical<br>
-      3. Informatique - télécommunications
-    </div>
+  <div class="texte-vertical">
+    Alexandre ...
   </div>
-  <div>La Cravate Solidaire Paris</div>
-  <div>Rapport d'activité 2024</div>
+  <div class="retrospective">
+    RETROSPECTIVE SUR UNE ANNEE D’ENGAGEMENT
+  </div>
+  <img src="{{personnageUrl}}" alt="Personnage" class="personnage">
+  <img src="{{routeUrl}}" alt="Route" class="route">
+  <img src="{{persoDepartUrl}}" alt="PersonnageDepart" class="personnageDepart">
+  <img src="{{persoRhUrl}}" alt="PersonnageRh" class="personnageRh">
+  <img src="{{verbatim1Url}}" alt="verbatim1" class="verbatim1">
+  <img src="{{verbatim2Url}}" alt="verbatim2" class="verbatim2">
+  <div class="verbatim_candidat">VERBATIM candidat</div>
+  <img src="{{persoCoteVesteUrl}}" alt="persoVeste" class="persoCoteVeste">
+  <img src="{{panneauUrl}}" alt="Panneau" class="panneau1">
+  <img src="{{panneau2Url}}" alt="Panneau" class="panneau2">
+  <img src="{{panneau3Url}}" alt="Panneau" class="panneau3">
+  <img src="{{herbeUrl}}" alt="Herbe" class="herbe">
+  <img src="{{fleurUrl}}" alt="Fleur" class="fleur">
+  <img src="{{fleur2Url}}" alt="Fleur2" class="fleur2">
+  <img src="{{papillonUrl}}" alt="Papillon" class="papillon">
+  <img src="{{mapUrl}}" alt="Map" class="map">
+  <img src="{{unUrl}}" alt="Un" class="un">
+  <img src="{{deuxUrl}}" alt="Deux" class="deux">
+  <img src="{{troisUrl}}" alt="Trois" class="trois">
+  <div class="secteur1">secteur 1</div>
+  <div class="secteur2">secteur 2</div>
+  <div class="secteur3">secteur 3</div>
+  <div class="sortiePositive"><div class="number">65%</div>
+  <div class="texte">qui ont réussi<br/>leur entretien</div></div>
+  <div class="heureCoaching"><div class="number2">170h</div>
+  <div class="texte2">de coaching</div></div>
+  <div class="NbPersonnesRencontrees"><div class="number3">165</div>
+  <div class="texte3">personnes<br/>accompagnées</div></div>
+  <div class="top3">TOP 3 DES SECTEURS DE<br/>METIERS RENCONTRES</div>
+  <div class="statsPerso">TES STATS PERSO</div>
+  <img src="{{photoUrl}}" alt="Photo" class="photo">
+  <img src="{{photoCandidatUrl}}" alt="PhotoCandidat" class="photoCandidat">
+
 </body>
 </html>
