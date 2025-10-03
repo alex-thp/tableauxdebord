@@ -3,6 +3,8 @@ import { PDFDocument } from 'pdf-lib';
 import puppeteer from 'puppeteer';
 import { MongoDbService } from '../mongo-db/mongo-db.service';
 import { AirtableService } from '../airtable/airtable.service';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 type MulterFile = {
   path: string;
@@ -181,7 +183,7 @@ async mergePdf(
   }
 }
 
-/*async generatePdfFromHtml(html: string, rotation: number): Promise<Buffer> {
+async generatePdfFromHtml(html: string, rotation: number): Promise<Buffer> {
   console.log('➡️ generatePdfFromHtml - Génération PDF à partir du HTML');
     const browser = await puppeteer.launch({
       headless: true, // depuis Puppeteer v20
@@ -200,52 +202,93 @@ async mergePdf(
     });
 
     await browser.close();
+const pdfPath = path.join(process.cwd(), 'uploads/RA_benevole/page_2.pdf');
 
-    return Buffer.from(pdfBuffer);
-  }*/
+const pdf2Buffer = await fs.readFile(pdfPath);
 
-async generatePdfFromHtml(html: string, rotation: number): Promise<Buffer> {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    return this.mergePdfSimple(Buffer.from(pdfBuffer), pdf2Buffer)
+  }
+  
+async mergePdfSimple(pdf1Buffer: Buffer, pdf2Buffer: Buffer): Promise<Buffer> {
+  const pdf1 = await PDFDocument.load(pdf1Buffer);
+  const pdf2 = await PDFDocument.load(pdf2Buffer);
+
+  const copiedPages = await pdf1.copyPages(pdf2, pdf2.getPageIndices());
+  copiedPages.forEach((page) => pdf1.addPage(page));
+
+  const mergedPdfBytes = await pdf1.save();
+  return Buffer.from(mergedPdfBytes);
+}
+
+/**
+ * Insère toutes les pages de pdf2 dans pdf1 à partir d'un numéro de page donné.
+ *
+ * @param pdf1Buffer Buffer du premier PDF
+ * @param pdf2Buffer Buffer du deuxième PDF à insérer
+ * @param insertAfterPage numéro de page **(1-based)** de pdf1 après laquelle insérer pdf2
+ *                        → exemple : 3 = insérer juste après la page 3
+ * @returns Buffer du PDF final
+ */
+
+async mergePdfAtPosition(
+  pdf1Buffer: Buffer,
+  pdf2Buffer: Buffer,
+  insertAfterPage: number,
+): Promise<Buffer> {
+  // Charger les documents
+  const pdf1 = await PDFDocument.load(pdf1Buffer);
+  const pdf2 = await PDFDocument.load(pdf2Buffer);
+
+  const totalPagesPdf1 = pdf1.getPageCount();
+  if (insertAfterPage < 0 || insertAfterPage > totalPagesPdf1) {
+    throw new Error(`insertAfterPage doit être entre 0 et ${totalPagesPdf1}`);
+  }
+
+  // Créer le PDF final
+  const mergedPdf = await PDFDocument.create();
+
+  // Taille de référence (première page de pdf1)
+  const refPage = pdf1.getPage(0);
+  const { width: targetWidth, height: targetHeight } = refPage.getSize();
+
+  // 1️⃣ Pages de pdf1 avant la position
+  const beforePages = await mergedPdf.copyPages(pdf1, [...Array(insertAfterPage).keys()]);
+  beforePages.forEach(p => mergedPdf.addPage(p));
+
+  // 2️⃣ Pages de pdf2 avec adaptation de taille
+  const pdf2Pages = await mergedPdf.copyPages(pdf2, pdf2.getPageIndices());
+  pdf2Pages.forEach((page) => {
+    const { width, height } = page.getSize();
+    const scaleX = targetWidth / width;
+    const scaleY = targetHeight / height;
+    const scale = Math.min(scaleX, scaleY); // conserver le ratio
+
+    // Create a new page with the target size
+    const newPage = mergedPdf.addPage([targetWidth, targetHeight]);
+
+    // Centrer le contenu si la taille ne correspond pas exactement
+    const offsetX = (targetWidth - width * scale) / 2;
+    const offsetY = (targetHeight - height * scale) / 2;
+
+    // Embed the page before drawing
+    mergedPdf.embedPage(page).then((embeddedPage) => {
+      newPage.drawPage(embeddedPage, {
+        x: offsetX,
+        y: offsetY,
+        xScale: scale,
+        yScale: scale,
+      });
+    });
   });
 
-  const page = await browser.newPage();
+  // 3️⃣ Pages restantes de pdf1
+  const afterPages = await mergedPdf.copyPages(
+    pdf1,
+    [...Array(totalPagesPdf1 - insertAfterPage).keys()].map(i => i + insertAfterPage)
+  );
+  afterPages.forEach(p => mergedPdf.addPage(p));
 
-  // Viewport standard
-  await page.setViewport({ width: 1200, height: 1600 });
-  await page.emulateMediaType('screen');
-
-  const htmlWithStyles = `
-    <html>
-      <head>
-        <style>
-          @page { size: A4 ${rotation === 1 ? 'landscape' : 'portrait'}; margin: 10mm; }
-          body { margin: 0; padding: 0; }
-          .pdf-container { page-break-inside: avoid; }
-        </style>
-      </head>
-      <body>
-        <div class="pdf-container">${html}</div>
-      </body>
-    </html>
-  `;
-
-  await page.setContent(htmlWithStyles, { waitUntil: 'networkidle0' });
-
-  // Scale légèrement réduit si paysage pour éviter la page blanche
-  const scale = rotation === 1 ? 0.87 : 1;
-
-  const pdfBuffer = await page.pdf({
-    format: 'A4',
-    landscape: rotation === 1,
-    printBackground: true,
-    margin: { top: '10mm', bottom: '10mm', left: '10mm', right: '10mm' },
-    scale,
-    preferCSSPageSize: true,
-  });
-
-  await browser.close();
-  return Buffer.from(pdfBuffer);
+  const mergedBytes = await mergedPdf.save();
+  return Buffer.from(mergedBytes);
 }
 }

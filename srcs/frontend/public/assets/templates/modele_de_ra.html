@@ -43,8 +43,8 @@
         /* Image personnage en haut */
     .personnage {
       position: absolute;
-      top: 0mm;      /* distance depuis le haut */
-      left: 92%;      /* centré horizontalement */
+      top: 1%;      /* distance depuis le haut */
+      left: 90%;      /* centré horizontalement */
       transform: translateX(-50%); /* pour centrer l’image exactement */
       width: 20%;    /* largeur de l’image */
       height: auto;   /* conserve le ratio */
@@ -62,12 +62,12 @@
 
     .personnageRh {
       position: absolute;
-      top: 90%;      /* distance depuis le haut */
-      left: 95%;      /* centré horizontalement */
+      top: 85%;      /* distance depuis le haut */
+      left: 90%;      /* centré horizontalement */
       transform: translateX(-50%); /* pour centrer l’image exactement */
       width: 25%;    /* largeur de l’image */
       height: auto;   /* conserve le ratio */
-      z-index: 10; /* devant */
+      z-index: 4; /* devant */
     }
 
     .persoCoteVeste {
@@ -186,7 +186,7 @@
     .deux {
       position: absolute;
       top: 79%;      /* distance depuis le haut */
-      left: 24%;      /* centré horizontalement */
+      left: 20%;      /* centré horizontalement */
       transform: translateX(-50%); /* pour centrer l’image exactement */
       width: 7%;    /* largeur de l’image */
       height: auto;   /* conserve le ratio */
@@ -196,7 +196,7 @@
     .trois {
       position: absolute;
       top: 87%;      /* distance depuis le haut */
-      left: 29%;      /* centré horizontalement */
+      left: 20%;      /* centré horizontalement */
       transform: translateX(-50%); /* pour centrer l’image exactement */
       width: 7%;    /* largeur de l’image */
       height: auto;   /* conserve le ratio */
@@ -206,7 +206,7 @@
     .verbatim1 {
       position: absolute;
       top: 15%;      /* distance depuis le haut */
-      left: 53%;      /* centré horizontalement */
+      left: 45%;      /* centré horizontalement */
       transform: translateX(-50%); /* pour centrer l’image exactement */
       width: 15%;    /* largeur de l’image */
       height: auto;   /* conserve le ratio */
@@ -215,13 +215,25 @@
 
     .verbatim_candidat {
       position: absolute;
-      top: 20%;      /* distance depuis le haut */
-      left: 65%;      /* centré horizontalement */
+      top: 19%;      /* distance depuis le haut */
+      left: 63%;      /* centré horizontalement */
       transform: translateX(-50%); /* pour centrer l’image exactement */
-      font-size: 20px;
+      font-size: 12px;
       font-weight: bold;
       color: rgb(0, 0, 0);
       z-index: 1; /* devant */
+    }
+
+    .signature_candidat {
+      position: absolute;
+      top: 26%;      /* distance depuis le haut */
+      left: 72%;      /* centré horizontalement */
+      transform: translateX(-50%); /* pour centrer l’image exactement */
+      font-size: 12px;
+      /*font-weight: bold;*/
+      color: rgb(0, 0, 0);
+      z-index: 1; /* devant */
+      text-align: left;
     }
 
     .verbatim2 {
@@ -239,9 +251,9 @@
       text-orientation: mixed;
       transform: rotate(180deg); /* bas → haut */
       position: absolute;
-      top: 120;   /* distance depuis le haut de la page */
-      left: 40;     /* collé au bord gauche */
-      font-size: 35px;
+      top: 10%;   /* distance depuis le haut de la page */
+      left: 20;     /* collé au bord gauche */
+      font-size: 55px;
       font-weight: bold;
       color: rgb(255, 255, 255);
     }
@@ -249,33 +261,42 @@
     .secteur1 {
       position: absolute;
       top: 73%;      /* distance depuis le haut */
-      left:30%;     /* centré horizontalement */
+      left:73%;     /* centré horizontalement */
       transform: translateX(-50%); /* pour centrer l’image exactement */
-      font-size: 20px;
+      font-size: 12px;
       font-weight: bold;
       color: rgb(0, 0, 0);
+      z-index: 1; /* devant */
+      text-align: left;
+      width: 100%;
       z-index: 1; /* devant */
     }
 
     .secteur2 {
       position: absolute;
       top: 81%;      /* distance depuis le haut */
-      left: 34%;      /* centré horizontalement */
+      left: 73%;      /* centré horizontalement */
       transform: translateX(-50%); /* pour centrer l’image exactement */
-      font-size: 20px;
+      font-size: 12px;
       font-weight: bold;
       color: rgb(0, 0, 0);
+      z-index: 1; /* devant */
+      text-align: left;
+      width: 100%;
       z-index: 1; /* devant */
     }
 
     .secteur3 {
       position: absolute;
       top: 89%;      /* distance depuis le haut */
-      left: 39%;       /* centré horizontalement */
+      left: 73%;       /* centré horizontalement */
       transform: translateX(-50%); /* pour centrer l’image exactement */
-      font-size: 20px;
+      font-size: 12px;
       font-weight: bold;
       color: rgb(0, 0, 0);
+      z-index: 1; /* devant */
+      text-align: left;
+      width: 100%;
       z-index: 1; /* devant */
     }
 
@@ -399,11 +420,11 @@
       top: 75%;      /* distance depuis le haut */
       left: 75%;      /* centré horizontalement */
       transform: translateX(-50%); /* pour centrer l’image exactement */
-      width: 25%;    /* largeur de l’image */
+      width: 20%;    /* largeur de l’image */
       height: auto;   /* conserve le ratio */
       /*border-radius: 95%;*/ /* cercle */
       border: 4px solid #fff200; /* bordure jaune */
-      z-index: 10; /* devant */
+      z-index: 3;
     }
 
     .photoCandidat {
@@ -411,17 +432,17 @@
       top: 15%;      /* distance depuis le haut */
       left: 25%;      /* centré horizontalement */
       transform: translateX(-50%); /* pour centrer l’image exactement */
-      width: 20%;    /* largeur de l’image */
+      width: 15%;    /* largeur de l’image */
       height: auto;   /* conserve le ratio */
       /*border-radius: 95%;*/ /* cercle */
       border: 4px solid #fff200; /* bordure jaune */
-      z-index: 10; /* devant */
+      z-index: 1; /* devant */
     }
   </style>
 </head>
 <body>
   <div class="texte-vertical">
-    Alexandre ...
+    {{benev_prenom}}...
   </div>
   <div class="retrospective">
     RETROSPECTIVE SUR UNE ANNEE D’ENGAGEMENT
@@ -432,7 +453,8 @@
   <img src="{{persoRhUrl}}" alt="PersonnageRh" class="personnageRh">
   <img src="{{verbatim1Url}}" alt="verbatim1" class="verbatim1">
   <img src="{{verbatim2Url}}" alt="verbatim2" class="verbatim2">
-  <div class="verbatim_candidat">VERBATIM candidat</div>
+  <div class="verbatim_candidat">{{verbatimCandidat}}</div>
+  <div class="signature_candidat">{{signatureCandidat}}</div>
   <img src="{{persoCoteVesteUrl}}" alt="persoVeste" class="persoCoteVeste">
   <img src="{{panneauUrl}}" alt="Panneau" class="panneau1">
   <img src="{{panneau2Url}}" alt="Panneau" class="panneau2">
@@ -445,14 +467,14 @@
   <img src="{{unUrl}}" alt="Un" class="un">
   <img src="{{deuxUrl}}" alt="Deux" class="deux">
   <img src="{{troisUrl}}" alt="Trois" class="trois">
-  <div class="secteur1">secteur 1</div>
-  <div class="secteur2">secteur 2</div>
-  <div class="secteur3">secteur 3</div>
+  <div class="secteur1">{{secteur 1}}</div>
+  <div class="secteur2">{{secteur 2}}</div>
+  <div class="secteur3">{{secteur 3}}</div>
   <div class="sortiePositive"><div class="number">65%</div>
   <div class="texte">qui ont réussi<br/>leur entretien</div></div>
-  <div class="heureCoaching"><div class="number2">170h</div>
+  <div class="heureCoaching"><div class="number2">{{heure_coaching}}</div>
   <div class="texte2">de coaching</div></div>
-  <div class="NbPersonnesRencontrees"><div class="number3">165</div>
+  <div class="NbPersonnesRencontrees"><div class="number3">{{nb_personnes_accompagnees}}</div>
   <div class="texte3">personnes<br/>accompagnées</div></div>
   <div class="top3">TOP 3 DES SECTEURS DE<br/>METIERS RENCONTRES</div>
   <div class="statsPerso">TES STATS PERSO</div>

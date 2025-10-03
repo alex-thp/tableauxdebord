@@ -106,7 +106,7 @@ export class GatewayService {
     });
   }
 
-  benevolePdf() {
-    return this.http.get(`${this.baseUrl}/pdf/benevolePdf`);
+  benevolePdf(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/pdf/benevolePdf`);
   }
 }

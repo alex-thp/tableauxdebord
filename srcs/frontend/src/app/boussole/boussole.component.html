@@ -1,4 +1,4 @@
-<button (click)="generatePdf()">Exporter PDF</button>
+<!--<button (click)="generatePdf()">Exporter PDF</button>-->
 
 <div class="date-filters">
   <label for="dateDebut">Date début :</label>
@@ -28,33 +28,71 @@
         <ul>
           <li>Nombre de candidats CDP fixe & Mobile : 
             <strong>{{ boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile }}</strong> candidat(e)s
+            <span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile, 3450).color">
+            ({{ getDiffPercent(boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile, 3450).value }}%) sur 3450
+            </span>
+            <!--<span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile, old_boussoleData.accompagnement.nb_cand_cdp_fixe + old_boussoleData.accompagnement.nb_cand_cdp_mobile).color">-->
+              <!--({{ getDiffPercent(boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile, old_boussoleData.accompagnement.nb_cand_cdp_fixe + old_boussoleData.accompagnement.nb_cand_cdp_mobile).value }}%)-->
+            <!--</span>-->
           </li>
           <li>Nombre de candidats en AtCO : 
             <strong>{{ boussoleData.accompagnement.nb_cand_at_co }}</strong> candidat(e)s
+            <span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_at_co, 700).color">
+            ({{ getDiffPercent(boussoleData.accompagnement.nb_cand_at_co, old_boussoleData.accompagnement.nb_cand_at_co).value }}%) sur 700
+            </span>
+            <!--<span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_at_co, old_boussoleData.accompagnement.nb_cand_at_co).color">-->
+              <!--({{ getDiffPercent(boussoleData.accompagnement.nb_cand_at_co, old_boussoleData.accompagnement.nb_cand_at_co).value }}%)-->
+            <!--</span>-->
           </li>
           <li>Nombre de candidats en “Bien-être” : 
             <strong>{{ boussoleData.accompagnement.nb_cand_bien_etre }}</strong> candidat(e)s
+            <span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_bien_etre, 400).color">
+            ({{ getDiffPercent(boussoleData.accompagnement.nb_cand_bien_etre, 400).value }}%) sur 400
+            </span>
+            <!--<span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_bien_etre, old_boussoleData.accompagnement.nb_cand_bien_etre).color">-->
+              <!--({{ getDiffPercent(boussoleData.accompagnement.nb_cand_bien_etre, old_boussoleData.accompagnement.nb_cand_bien_etre).value }}%)-->
+            <!--</span>-->
           </li>
           <li>Nombre de candidats en Mentorat : 
             <strong>{{ boussoleData.accompagnement.nb_cand_mentorat }}</strong> candidat(e)s
+            <span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_mentorat, old_boussoleData.accompagnement.nb_cand_mentorat).color">
+              ({{ getDiffPercent(boussoleData.accompagnement.nb_cand_mentorat, old_boussoleData.accompagnement.nb_cand_mentorat).value }}%)
+            </span>
           </li>
           <li>% candidats ateliers complémentaires + CDP : 
             <strong>{{ taux_cdp_et_at_co }}%</strong>
+            <span [style.color]="getDiffPercent(taux_cdp_et_at_co, taux_cdp_et_at_co_objectif).color">
+              ({{ getDiffPercent(taux_cdp_et_at_co, taux_cdp_et_at_co_objectif).value }}%) sur {{taux_cdp_et_at_co_objectif}}%
+            </span>
           </li>
           <li>Taux de présence : 
-            <strong>{{ taux_presence_cdp | number:'1.0-0' }}%</strong> en CDP, 
+            <strong>{{ taux_presence_cdp | number:'1.0-0' }}%</strong> en CDP 
+            <span [style.color]="getDiffPercent(taux_presence_cdp, 80).color">
+              ({{ getDiffPercent(taux_presence_cdp, 80).value }}%) sur 80%
+            </span>,
             <strong>{{ taux_presence_bien_etre | number:'1.0-0' }}%</strong> en Bien être
+            <span [style.color]="getDiffPercent(taux_presence_bien_etre, 80).color">
+              ({{ getDiffPercent(taux_presence_bien_etre, 80).value }}%) sur 80%
+            </span>
           </li>
           <li>% QPV : 
-            <strong>{{ taux_qpv_total | number:'1.0-0' }}%</strong> 
-            ({{ taux_qpv_fixe | number:'1.0-0' }}% fixe, 
-            {{ taux_qpv_mobile | number:'1.0-0' }}% mobile)
+            <strong>{{ taux_qpv_total | number:'1.0-0' }}%</strong>
+            <!--<span [style.color]="getDiffPercent(taux_qpv_total, old_taux_qpv_total).color">-->
+              <!--({{ getDiffPercent(taux_qpv_total, old_taux_qpv_total).value }}%)-->
+            <!--</span>-->
+            ({{ taux_qpv_fixe | number:'1.0-0' }}% fixe, {{ taux_qpv_mobile | number:'1.0-0' }}% mobile)
           </li>
           <li>% candidats fin de parcours : 
             <strong>{{ pourcent_fin_parcours_string | number:'1.0-0' }}%</strong>
+            <!--<span [style.color]="getDiffPercent(pourcent_fin_parcours_string, old_pourcent_fin_parcours_string).color">-->
+              <!--({{ getDiffPercent(pourcent_fin_parcours_string, old_pourcent_fin_parcours_string).value }}%)-->
+            <!--</span>-->
           </li>
           <li>% candidats remobilisation : 
             <strong>{{ pourcent_remob_string | number:'1.0-0' }}%</strong>
+            <!--<span [style.color]="getDiffPercent(pourcent_remob_string, old_pourcent_remob_string).color">-->
+              <!--({{ getDiffPercent(pourcent_remob_string, old_pourcent_remob_string).value }}%)-->
+            <!--</span>-->
           </li>
         </ul>
 
@@ -62,12 +100,21 @@
         <ul>
           <li>Taux de satisfaction : note de 
             <strong>{{ boussoleData.accompagnement.taux_satisfaction_cdp | number:'1.1-2' }}/10</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.accompagnement.taux_satisfaction_cdp, old_boussoleData.accompagnement.taux_satisfaction_cdp).color">-->
+              <!--({{ getDiffPercent(boussoleData.accompagnement.taux_satisfaction_cdp, old_boussoleData.accompagnement.taux_satisfaction_cdp).value }}%)-->
+            <!--</span>-->
           </li>
           <li>Taux de sortie positive fin de parcours : 
             <strong>{{ taux_fin_parcours | number:'1.0-0' }}%</strong>
+            <!--<span [style.color]="getDiffPercent(taux_fin_parcours, old_taux_fin_parcours).color">-->
+              <!--({{ getDiffPercent(taux_fin_parcours, old_taux_fin_parcours).value }}%)-->
+            <!--</span>-->
           </li>
           <li>Taux de sortie positive remob : 
             <strong>{{ taux_remob | number:'1.0-0' }}%</strong>
+            <!--<span [style.color]="getDiffPercent(taux_remob, old_taux_remob).color">-->
+              <!--({{ getDiffPercent(taux_remob, old_taux_remob).value }}%)-->
+            <!--</span>-->
           </li>
         </ul>
       </div>
@@ -77,41 +124,84 @@
         <h2>Pôle PC</h2>
         <h3>Objectifs opé :</h3>
         <ul>
-          <li>Nombre de collectes : <strong>{{ boussoleData.pc.nb_collectes }}</strong></li>
-          <li>Nombre de journées de tri : <strong>{{ boussoleData.pc.nb_tri }}</strong> ({{ boussoleData.pc.nb_collab }} collab)</li>
-          <li>Nombre de collaborateurs mobilisés : <strong>{{ boussoleData.pc.nb_collab }}</strong></li>
-          <li>% de collab > 1 atelier : <strong>{{ boussoleData.pc.nb_collab_plus_un_atelier | number:'1.0-0' }}%</strong></li>
-          <li>Nombre moyen d’ateliers par collab unique : <strong>{{ boussoleData.pc.nb_cdp_moyen_be }}</strong> (dont {{ boussoleData.pc.nb_collab_3x_plus }} collabs venus 3x ou+)</li>
+          <li>Nombre de collectes : 
+            <strong>{{ boussoleData.pc.nb_collectes }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.pc.nb_collectes, old_boussoleData.pc.nb_collectes).color">-->
+              <!--({{ getDiffPercent(boussoleData.pc.nb_collectes, old_boussoleData.pc.nb_collectes).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>Nombre de journées de tri : 
+            <strong>{{ boussoleData.pc.nb_tri }}</strong> ({{ boussoleData.pc.nb_collab }} collab)
+            <!--<span [style.color]="getDiffPercent(boussoleData.pc.nb_tri, old_boussoleData.pc.nb_tri).color">-->
+              <!--({{ getDiffPercent(boussoleData.pc.nb_tri, old_boussoleData.pc.nb_tri).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>Nombre de collaborateurs mobilisés : 
+            <strong>{{ boussoleData.pc.nb_collab }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.pc.nb_collab, old_boussoleData.pc.nb_collab).color">-->
+              <!--({{ getDiffPercent(boussoleData.pc.nb_collab, old_boussoleData.pc.nb_collab).value }}%)-->
+            <!--</span>-->
+          </li>/
+           <li>% de collab > 1 atelier : 
+            <strong>{{ boussoleData.pc.nb_collab_plus_un_atelier | number:'1.0-0' }}%</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.pc.nb_collab_plus_un_atelier, old_boussoleData.pc.nb_collab_plus_un_atelier).color">-->
+              <!--({{ getDiffPercent(boussoleData.pc.nb_collab_plus_un_atelier, old_boussoleData.pc.nb_collab_plus_un_atelier).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>Nombre moyen d’ateliers par collab unique : 
+            <strong>{{ boussoleData.pc.nb_cdp_moyen_be }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.pc.nb_cdp_moyen_be, old_boussoleData.pc.nb_cdp_moyen_be).color">-->
+              <!--({{ getDiffPercent(boussoleData.pc.nb_cdp_moyen_be, old_boussoleData.pc.nb_cdp_moyen_be).value }}%)-->
+            <!--</span>-->
+            (dont {{ boussoleData.pc.nb_collab_3x_plus }} collabs venus 3x ou+)
+          </li>
         </ul>
         <h3>Objectifs impact :</h3>
         <ul>
-          <li>Taux de satisfaction collectes : <strong>{{ boussoleData.pc.taux_satisfaction_collecte | number:'1.1-2' }}</strong></li>
-          <li>Taux de satisfaction tri : <strong>{{ boussoleData.pc.taux_satisfaction_tri | number:'1.1-2' }}</strong></li>
-          <li>% de personnes souhaitant s’engager post-tri : <strong>{{ boussoleData.pc.pourcent_souhaitant_engager | number:'1.0-0' }}%</strong></li>
+          <li>Taux de satisfaction collectes : <strong>8.9</strong>
+            <!--<strong>{{ boussoleData.pc.taux_satisfaction_collecte | number:'1.1-2' }}</strong>-->
+            <!--<span [style.color]="getDiffPercent(boussoleData.pc.taux_satisfaction_collecte, old_boussoleData.pc.taux_satisfaction_collecte).color">-->
+              <!--({{ getDiffPercent(boussoleData.pc.taux_satisfaction_collecte, old_boussoleData.pc.taux_satisfaction_collecte).value }}%)-->
+           <!--</span>-->
+          </li>
+          <li>Taux de satisfaction tri : 
+            <strong>9.3</strong>
+            <!--<strong>{{ boussoleData.pc.taux_satisfaction_tri | number:'1.1-2' }}</strong>-->
+            <!--<span [style.color]="getDiffPercent(boussoleData.pc.taux_satisfaction_tri, old_boussoleData.pc.taux_satisfaction_tri).color">-->
+              <!--({{ getDiffPercent(boussoleData.pc.taux_satisfaction_tri, old_boussoleData.pc.taux_satisfaction_tri).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>% de personnes souhaitant s’engager post-tri : 
+            <strong>{{(92/217*100).toFixed(2) | number:'1.0-0'}}%</strong>
+            <!--<strong>{{ boussoleData.pc.pourcent_souhaitant_engager | number:'1.0-0' }}%</strong>-->
+            <!--<span [style.color]="getDiffPercent(boussoleData.pc.pourcent_souhaitant_engager, old_boussoleData.pc.pourcent_souhaitant_engager).color">-->
+              <!--({{ getDiffPercent(boussoleData.pc.pourcent_souhaitant_engager, old_boussoleData.pc.pourcent_souhaitant_engager).value }}%)-->
+            <!--</span>-->
+          </li>
         </ul>
       </div>
     </div>
 
-<!-- Ligne 2 : Cercle -->
-<div class="row row-circle">
-  <div class="circle-container">
+    <!-- Ligne 2 : Cercle -->
+    <div class="row row-circle">
+      <div class="circle-container">
 
-    <!-- Version animée -->
-    <div *ngIf="chargement" class="circle circle_animated">
-      <div class="circle_inner">
-        <img class="circle_content_animated" [src]="imageUrl" alt="La Boussole" />
+        <!-- Version animée -->
+        <div *ngIf="chargement" class="circle circle_animated">
+          <div class="circle_inner">
+            <img class="circle_content_animated" [src]="imageUrl" alt="La Boussole" />
+          </div>
+        </div>
+
+        <!-- Version statique -->
+        <div *ngIf="!chargement" class="circle">
+          <div class="circle_inner">
+            <img class="circle_content" [src]="imageUrl" alt="La Boussole" />
+          </div>
+        </div>
+
       </div>
     </div>
-
-    <!-- Version statique -->
-    <div *ngIf="!chargement" class="circle">
-      <div class="circle_inner">
-        <img class="circle_content" [src]="imageUrl" alt="La Boussole" />
-      </div>
-    </div>
-
-  </div>
-</div>
 
     <!-- Ligne 3 : Bénévoles -->
     <div class="row row-benevoles">
@@ -119,22 +209,95 @@
         <h2>Pôle Bénévoles</h2>
         <h3>Objectifs opé :</h3>
         <ul>
-          <li>Nombre d'actions bénévole mobilisées (présence atelier) : <strong>{{ boussoleData.benevoles.nb_actions_benevole_mobilisees }}</strong></li>
-          <li>Nombre d'actions bénévole mobilisées disc : <strong>{{ boussoleData.benevoles.nb_actions_benevole_mobilisees_93_95 }}</strong></li>
-          <li>Nombre d’ateliers par bénévole unique : <strong>{{ boussoleData.benevoles.nb_ateliers_par_benevole_unique | number:'1.2-2' }}</strong> 
+          <li>Nombre d'actions bénévole mobilisées (présence atelier) : 
+            <strong>{{ boussoleData.benevoles.nb_actions_benevole_mobilisees }}</strong>
+
+            <span [style.color]="getDiffPercent(boussoleData.benevoles.nb_actions_benevole_mobilisees, 2500).color">
+              ({{ getDiffPercent(boussoleData.benevoles.nb_actions_benevole_mobilisees, 2500).value }}%) sur 2500
+            </span>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nb_actions_benevole_mobilisees, old_boussoleData.benevoles.nb_actions_benevole_mobilisees).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.nb_actions_benevole_mobilisees, old_boussoleData.benevoles.nb_actions_benevole_mobilisees).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>Nombre d'actions bénévole mobilisées 93 et 95 : 
+            <strong>{{ boussoleData.benevoles.nb_actions_benevole_mobilisees_93_95 }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nb_actions_benevole_mobilisees_93_95, old_boussoleData.benevoles.nb_actions_benevole_mobilisees_93_95).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.nb_actions_benevole_mobilisees_93_95, old_boussoleData.benevoles.nb_actions_benevole_mobilisees_93_95).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>Nombre d’ateliers par bénévole unique : 
+            <strong>{{ boussoleData.benevoles.nb_ateliers_par_benevole_unique | number:'1.2-2' }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nb_ateliers_par_benevole_unique, old_boussoleData.benevoles.nb_ateliers_par_benevole_unique).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.nb_ateliers_par_benevole_unique, old_boussoleData.benevoles.nb_ateliers_par_benevole_unique).value }}%)-->
+            <!--</span>-->
             (dont {{ boussoleData.benevoles.nb_venues_ateliers['4x et plus'] }} 3+)
           </li>
-          <li>Nombre nouveaux bénévoles présents en session d'accueil : <strong>{{ boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil }}</strong></li>
-          <li>Taux de transformation suite session d’accueil : <strong>{{ boussoleData.benevoles.taux_transformation_session_accueil | number:'1.0-0' }}%</strong></li>
-          <li>Nombre d’événements sensi : <strong>{{ boussoleData.benevoles.nb_evenements_sensi_visites }}</strong></li>
-          <li>Nombre de participants uniques sensi : <strong>{{ boussoleData.benevoles.nb_participants_uniques_sensi_visites }}</strong></li>
-          <li>Nb de venues : 1x : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['1x'] }}</strong> | 2x : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['2x'] }}</strong> | 3x : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['3x'] }}</strong> | 4x et plus : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['4x et plus'] }}</strong></li>
-          <li>%BE vs BC : <strong>{{ boussoleData.benevoles.pourcent_be_vs_bc | number:'1.0-0' }}%</strong></li>
-          <li>% bénévoles adhérents : <strong>{{ boussoleData.benevoles.pourcent_benevoles_adherents | number:'1.0-0' }}%</strong></li>
+          <li>Nombre nouveaux bénévoles présents en session d'accueil : 
+            <strong>{{ boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil }}</strong>
+            <span [style.color]="getDiffPercent(boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil, 405).color">
+              ({{ getDiffPercent(boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil, 405).value }}%) sur 405
+            </span>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil, old_boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil, old_boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>Taux de transformation suite session d’accueil : 
+            <strong>{{ boussoleData.benevoles.taux_transformation_session_accueil | number:'1.0-0' }}%</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.taux_transformation_session_accueil, old_boussoleData.benevoles.taux_transformation_session_accueil).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.taux_transformation_session_accueil, old_boussoleData.benevoles.taux_transformation_session_accueil).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>Nombre d’événements sensi : 
+            <strong>{{ boussoleData.benevoles.nb_evenements_sensi_visites }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nb_evenements_sensi_visites, old_boussoleData.benevoles.nb_evenements_sensi_visites).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.nb_evenements_sensi_visites, old_boussoleData.benevoles.nb_evenements_sensi_visites).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>Nombre de participants uniques sensi : 
+            <strong>{{ boussoleData.benevoles.nb_participants_uniques_sensi_visites }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nb_participants_uniques_sensi_visites, old_boussoleData.benevoles.nb_participants_uniques_sensi_visites).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.nb_participants_uniques_sensi_visites, old_boussoleData.benevoles.nb_participants_uniques_sensi_visites).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>Nb de venues : 1x : 
+            <strong>{{ boussoleData.benevoles.nb_venues_ateliers['1x'] }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nb_venues_ateliers['1x'], old_boussoleData.benevoles.nb_venues_ateliers['1x']).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.nb_venues_ateliers['1x'], old_boussoleData.benevoles.nb_venues_ateliers['1x']).value }}%)-->
+            <!--</span> |-->
+            2x : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['2x'] }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nb_venues_ateliers['2x'], old_boussoleData.benevoles.nb_venues_ateliers['2x']).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.nb_venues_ateliers['2x'], old_boussoleData.benevoles.nb_venues_ateliers['2x']).value }}%)-->
+            <!--</span> |-->
+            3x : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['3x'] }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nb_venues_ateliers['3x'], old_boussoleData.benevoles.nb_venues_ateliers['3x']).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.nb_venues_ateliers['3x'], old_boussoleData.benevoles.nb_venues_ateliers['3x']).value }}%)-->
+            <!--</span> |-->
+            4x et plus : <strong>{{ boussoleData.benevoles.nb_venues_ateliers['4x et plus'] }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nb_venues_ateliers['4x et plus'], old_boussoleData.benevoles.nb_venues_ateliers['4x et plus']).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.nb_venues_ateliers['4x et plus'], old_boussoleData.benevoles.nb_venues_ateliers['4x et plus']).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>%BE vs BC : 
+            <strong>{{ boussoleData.benevoles.pourcent_be_vs_bc | number:'1.0-0' }}%</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.pourcent_be_vs_bc, old_boussoleData.benevoles.pourcent_be_vs_bc).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.pourcent_be_vs_bc, old_boussoleData.benevoles.pourcent_be_vs_bc).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>% bénévoles adhérents : 
+            <strong>{{ boussoleData.benevoles.pourcent_benevoles_adherents | number:'1.0-0' }}%</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.pourcent_benevoles_adherents, old_boussoleData.benevoles.pourcent_benevoles_adherents).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.pourcent_benevoles_adherents, old_boussoleData.benevoles.pourcent_benevoles_adherents).value }}%)-->
+            <!--</span>-->
+          </li>
         </ul>
         <h3>Objectifs impact :</h3>
         <ul>
-          <li>Taux de satisfaction d’utilité : <strong>{{ boussoleData.benevoles.taux_satisfaction_utilite_benevolat | number:'1.0-0' }}%</strong></li>
+          <li>Taux de satisfaction d’utilité : 
+            <strong>{{ boussoleData.benevoles.taux_satisfaction_utilite_benevolat | number:'1.0-0' }}%</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.taux_satisfaction_utilite_benevolat, old_boussoleData.benevoles.taux_satisfaction_utilite_benevolat).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.taux_satisfaction_utilite_benevolat, old_boussoleData.benevoles.taux_satisfaction_utilite_benevolat).value }}%)-->
+            <!--</span>-->
+          </li>
           <li>Changement de regard discri</li>
           <li>Sentiment d’amélioration des pratiques</li>
           <li>Sentiment de compétences adaptés aux besoins des publics</li>

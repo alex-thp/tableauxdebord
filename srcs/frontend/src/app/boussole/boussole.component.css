@@ -28,6 +28,19 @@
   justify-content: center;
 }
 
+.row-benevoles {
+  display: flex;           /* flex row */
+  justify-content: center; /* centre horizontalement les blocs */
+  align-items: flex-start; /* aligne verticalement en haut si nécessaire */
+  width: 100%;             /* occupe toute la largeur de la ligne */
+  gap: 2rem;
+}
+
+.row-benevoles .block {
+  flex: unset;    /* empêche les blocs de s’étendre automatiquement */
+  width: 49%;     /* chaque bloc fait 49% */
+}
+
 /* Blocs */
 .block {
   background: #fff;
