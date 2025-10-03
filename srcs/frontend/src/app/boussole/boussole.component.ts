@@ -294,4 +294,23 @@ getDiffPercent(newValue: any, oldValue: any): { value: number, color: string } {
     color: diff >= 0 ? 'green' : 'red'
   };
 }
+
+getMissingPercent(currentValue: any, targetValue: any): { value: number, color: string } {
+  const current = Number(currentValue);
+  const target = Number(targetValue);
+
+  if (target === 0) {
+    return { value: 0, color: 'black' };
+  }
+
+  // Pourcentage atteint
+  const achieved = (current / target) * 100;
+  // % manquant
+  const missing = 100 - achieved;
+
+  return {
+    value: Math.max(0, Math.round(achieved)), // évite les négatifs si objectif dépassé
+    color: achieved < 75 ? 'red' : achieved < 100 ? 'orange' : 'green' // rouge si objectif pas encore atteint
+  };
+}
 }

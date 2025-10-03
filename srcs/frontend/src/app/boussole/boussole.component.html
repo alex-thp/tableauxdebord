@@ -28,8 +28,8 @@
         <ul>
           <li>Nombre de candidats CDP fixe & Mobile : 
             <strong>{{ boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile }}</strong> candidat(e)s
-            <span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile, 3450).color">
-            ({{ getDiffPercent(boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile, 3450).value }}%) sur 3450
+            <span [style.color]="getMissingPercent(boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile, 3450).color">
+            ({{ getMissingPercent(boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile, 3450).value }}%) sur 3450
             </span>
             <!--<span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile, old_boussoleData.accompagnement.nb_cand_cdp_fixe + old_boussoleData.accompagnement.nb_cand_cdp_mobile).color">-->
               <!--({{ getDiffPercent(boussoleData.accompagnement.nb_cand_cdp_fixe + boussoleData.accompagnement.nb_cand_cdp_mobile, old_boussoleData.accompagnement.nb_cand_cdp_fixe + old_boussoleData.accompagnement.nb_cand_cdp_mobile).value }}%)-->
@@ -37,8 +37,8 @@
           </li>
           <li>Nombre de candidats en AtCO : 
             <strong>{{ boussoleData.accompagnement.nb_cand_at_co }}</strong> candidat(e)s
-            <span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_at_co, 700).color">
-            ({{ getDiffPercent(boussoleData.accompagnement.nb_cand_at_co, old_boussoleData.accompagnement.nb_cand_at_co).value }}%) sur 700
+            <span [style.color]="getMissingPercent(boussoleData.accompagnement.nb_cand_at_co, 700).color">
+            ({{ getMissingPercent(boussoleData.accompagnement.nb_cand_at_co, old_boussoleData.accompagnement.nb_cand_at_co).value }}%) sur 700
             </span>
             <!--<span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_at_co, old_boussoleData.accompagnement.nb_cand_at_co).color">-->
               <!--({{ getDiffPercent(boussoleData.accompagnement.nb_cand_at_co, old_boussoleData.accompagnement.nb_cand_at_co).value }}%)-->
@@ -46,8 +46,8 @@
           </li>
           <li>Nombre de candidats en “Bien-être” : 
             <strong>{{ boussoleData.accompagnement.nb_cand_bien_etre }}</strong> candidat(e)s
-            <span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_bien_etre, 400).color">
-            ({{ getDiffPercent(boussoleData.accompagnement.nb_cand_bien_etre, 400).value }}%) sur 400
+            <span [style.color]="getMissingPercent(boussoleData.accompagnement.nb_cand_bien_etre, 400).color">
+            ({{ getMissingPercent(boussoleData.accompagnement.nb_cand_bien_etre, 400).value }}%) sur 400
             </span>
             <!--<span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_bien_etre, old_boussoleData.accompagnement.nb_cand_bien_etre).color">-->
               <!--({{ getDiffPercent(boussoleData.accompagnement.nb_cand_bien_etre, old_boussoleData.accompagnement.nb_cand_bien_etre).value }}%)-->
@@ -55,24 +55,24 @@
           </li>
           <li>Nombre de candidats en Mentorat : 
             <strong>{{ boussoleData.accompagnement.nb_cand_mentorat }}</strong> candidat(e)s
-            <span [style.color]="getDiffPercent(boussoleData.accompagnement.nb_cand_mentorat, old_boussoleData.accompagnement.nb_cand_mentorat).color">
-              ({{ getDiffPercent(boussoleData.accompagnement.nb_cand_mentorat, old_boussoleData.accompagnement.nb_cand_mentorat).value }}%)
+            <span [style.color]="getMissingPercent(boussoleData.accompagnement.nb_cand_mentorat, old_boussoleData.accompagnement.nb_cand_mentorat).color">
+              ({{ getMissingPercent(boussoleData.accompagnement.nb_cand_mentorat, old_boussoleData.accompagnement.nb_cand_mentorat).value }}%)
             </span>
           </li>
           <li>% candidats ateliers complémentaires + CDP : 
             <strong>{{ taux_cdp_et_at_co }}%</strong>
-            <span [style.color]="getDiffPercent(taux_cdp_et_at_co, taux_cdp_et_at_co_objectif).color">
-              ({{ getDiffPercent(taux_cdp_et_at_co, taux_cdp_et_at_co_objectif).value }}%) sur {{taux_cdp_et_at_co_objectif}}%
+            <span [style.color]="getMissingPercent(taux_cdp_et_at_co, taux_cdp_et_at_co_objectif).color">
+              ({{ getMissingPercent(taux_cdp_et_at_co, taux_cdp_et_at_co_objectif).value }}%) sur {{taux_cdp_et_at_co_objectif}}%
             </span>
           </li>
           <li>Taux de présence : 
             <strong>{{ taux_presence_cdp | number:'1.0-0' }}%</strong> en CDP 
-            <span [style.color]="getDiffPercent(taux_presence_cdp, 80).color">
-              ({{ getDiffPercent(taux_presence_cdp, 80).value }}%) sur 80%
+            <span [style.color]="getMissingPercent(taux_presence_cdp, 80).color">
+              ({{ getMissingPercent(taux_presence_cdp, 80).value }}%) sur 80%
             </span>,
             <strong>{{ taux_presence_bien_etre | number:'1.0-0' }}%</strong> en Bien être
-            <span [style.color]="getDiffPercent(taux_presence_bien_etre, 80).color">
-              ({{ getDiffPercent(taux_presence_bien_etre, 80).value }}%) sur 80%
+            <span [style.color]="getMissingPercent(taux_presence_bien_etre, 80).color">
+              ({{ getMissingPercent(taux_presence_bien_etre, 80).value }}%) sur 80%
             </span>
           </li>
           <li>% QPV : 
@@ -212,8 +212,8 @@
           <li>Nombre d'actions bénévole mobilisées (présence atelier) : 
             <strong>{{ boussoleData.benevoles.nb_actions_benevole_mobilisees }}</strong>
 
-            <span [style.color]="getDiffPercent(boussoleData.benevoles.nb_actions_benevole_mobilisees, 2500).color">
-              ({{ getDiffPercent(boussoleData.benevoles.nb_actions_benevole_mobilisees, 2500).value }}%) sur 2500
+            <span [style.color]="getMissingPercent(boussoleData.benevoles.nb_actions_benevole_mobilisees, 2500).color">
+              ({{ getMissingPercent(boussoleData.benevoles.nb_actions_benevole_mobilisees, 2500).value }}%) sur 2500
             </span>
             <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nb_actions_benevole_mobilisees, old_boussoleData.benevoles.nb_actions_benevole_mobilisees).color">-->
               <!--({{ getDiffPercent(boussoleData.benevoles.nb_actions_benevole_mobilisees, old_boussoleData.benevoles.nb_actions_benevole_mobilisees).value }}%)-->
@@ -234,8 +234,8 @@
           </li>
           <li>Nombre nouveaux bénévoles présents en session d'accueil : 
             <strong>{{ boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil }}</strong>
-            <span [style.color]="getDiffPercent(boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil, 405).color">
-              ({{ getDiffPercent(boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil, 405).value }}%) sur 405
+            <span [style.color]="getMissingPercent(boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil, 405).color">
+              ({{ getMissingPercent(boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil, 405).value }}%) sur 405
             </span>
             <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil, old_boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil).color">-->
               <!--({{ getDiffPercent(boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil, old_boussoleData.benevoles.nb_nouveaux_benevoles_session_accueil).value }}%)-->
