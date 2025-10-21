@@ -653,25 +653,34 @@ async get_nb_cand_at_co(atcoenrcand, date_debut, date_fin) {
 
     async getPrescriByMonth(cdpenrcand, date_debut, date_fin) {
   const result = await cdpenrcand.aggregate([
-    // 1️⃣ Filtre la plage de dates
+    // 1️⃣ Filtrer la plage de dates
     {
       $match: {
         date_creation: { $gte: date_debut, $lt: date_fin },
       },
     },
 
-    // 2️⃣ Première étape : dédupliquer -> une doc par candidat par mois
+    // 2️⃣ Ajouter les champs année, mois, jour pour dédupliquer par jour
+    {
+      $addFields: {
+        year: { $year: "$date_creation" },
+        month: { $month: "$date_creation" },
+        day: { $dayOfMonth: "$date_creation" }
+      }
+    },
+
+    // 3️⃣ Grouper par candidat_id + jour -> 1 doc max par jour et candidat
     {
       $group: {
         _id: {
           candidat_id: "$candidat_record_id",
-          year: { $year: "$date_creation" },
-          month: { $month: "$date_creation" }
+          year: "$year",
+          month: "$month",
         }
       }
     },
 
-    // 3️⃣ Deuxième étape : compter ces candidats uniques par mois
+    // 4️⃣ Regrouper ensuite par mois pour compter les candidats uniques (par jour)
     {
       $group: {
         _id: {
@@ -682,12 +691,12 @@ async get_nb_cand_at_co(atcoenrcand, date_debut, date_fin) {
       }
     },
 
-    // 4️⃣ Trier du plus ancien au plus récent
+    // 5️⃣ Trier du plus ancien au plus récent
     {
       $sort: { "_id.year": 1, "_id.month": 1 }
     },
 
-    // 5️⃣ Remettre sous forme lisible (même structure que précédemment)
+    // 6️⃣ Rendre le résultat plus lisible
     {
       $project: {
         _id: 0,
@@ -700,6 +709,7 @@ async get_nb_cand_at_co(atcoenrcand, date_debut, date_fin) {
 
   return result;
 }
+
 
 
     async getViewData(date_debut, date_fin) {

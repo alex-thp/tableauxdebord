@@ -67,7 +67,8 @@ export class SharedViewController {
                 'type_atelier',
                 'note_satisfaction',
                 'metier_recherche',
-                'secteur_recherche'
+                'secteur_recherche',
+                'droit_photo'
             ];
             const debutDate = date_debut ? new Date(date_debut) : null;
             const finDate = date_fin ? new Date(date_fin) : null;
