@@ -27,6 +27,7 @@ export interface ViewData {
     nb_sensi?: number,
     array_one?:any, //un tableau d'objets de label/valeur
     array_two?:any,
+    array_three?:any,
     nb_present_sensi?: number,
     nb_action_benev?: number,
     nb_actions_93_95?: number,

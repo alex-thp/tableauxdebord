@@ -370,7 +370,8 @@ export class StatsBenevoleService {
               "Sensibilisation : Femmes",
               "Sensibilisation : Personnes en situation de précarité et d'isolement",
               "Sensibilisation : LGBTQIA+",
-              "Sensibilisation : Jeunes"
+              "Sensibilisation : Jeunes",
+              "Sensibilisation : Séniors"
             ]
           }
         }
@@ -393,6 +394,56 @@ export class StatsBenevoleService {
         $sort: { count: -1 }
       }
     ]).toArray();
+    
+
+    const count = raw.reduce((acc, item) => acc + item.count_presents, 0);
+    const total = raw.reduce((acc, item) => acc + item.count, 0);
+    return {
+      total, // total tous thèmes confondus
+      count, // total global de présences tous thèmes confondus
+      repartition: raw // tableau avec le détail par thème
+    }
+  }
+
+    async get_nb_formation(evenement_benev, date_debut, date_fin) {
+    const raw = await evenement_benev.aggregate([
+      {
+        $match: {
+          date: { $gte: date_debut, $lt: date_fin },
+          theme: {
+            $in: [
+              "Formation CI",
+              "Formation métier : Administration publique, professions juridiques, armée et police",
+              "Formation métier : BTP",
+              "Formation métier : Commerce, distribution, e-commerce, marketing",
+              "Formation métier : Gestion, administration",
+              "Formation métier : Hôtellerie, restauration, alimentation",
+              "Formation métier : Informatique/Télécommunications",
+              "Formation non discri",
+              "Formation Auto Entrepreneur",
+            ]
+          }
+        }
+      },
+      {
+        $group: {
+          _id: "$theme",
+          count: { $sum: 1 },
+        }
+      },
+      {
+        $project: {
+          type: "$_id",
+          count: 1,
+          count_presents: 1,
+          _id: 0
+        }
+      },
+      {
+        $sort: { count: -1 }
+      }
+    ]).toArray();
+    
 
     const count = raw.reduce((acc, item) => acc + item.count_presents, 0);
     const total = raw.reduce((acc, item) => acc + item.count, 0);
@@ -559,21 +610,7 @@ export class StatsBenevoleService {
     date_fin = new Date(date_fin);
     
     const connection = this.mongodb.client.db('test');
-    const cdp = connection.collection("cdps");
     const cdpenrbenev = connection.collection("cdpenrbenevs");
-    const cdpenrcand = connection.collection("cdpenrcands");
-    const cdpsuivi = connection.collection("cdpsuivis");
-    const bienetreenrcand = connection.collection("bienetreenrcands");
-    const atcoenrcand = connection.collection("atcoenrcands");
-    const contactdestructure = connection.collection("contactdestructures");
-    const candidat = connection.collection("candidats");
-    const benev = connection.collection("benevs");
-    const structures = connection.collection("structures");
-    const referents = connection.collection("contactdestructures");
-    const atCo = connection.collection("atcos");
-    const bienEtre = connection.collection("bienetres");
-    const matching = connection.collection("cdpenrcandxcdpenrbenevs");
-    const evenement_pc = connection.collection("evenementpcs");
     const evenement_benev = connection.collection("evenementbenevs");
     const evenement_benev_x_benev = connection.collection("evenementbenevxbenevs");
     let result = {
@@ -588,6 +625,7 @@ export class StatsBenevoleService {
       nb_actions_93_95: 0,
       array_two: [],
       nb_atelier_moyen_par_benevole: 0,
+      array_three: [],
     };
 
     const nb_session_acc = await this.get_nb_session_acc(evenement_benev, date_debut, date_fin);
@@ -598,6 +636,7 @@ export class StatsBenevoleService {
     const nb_presence_atelier_benev_93_95 = await this.get_nb_presence_atelier_benev_93_95(cdpenrbenev, date_debut, date_fin);
     const nb_repartition = await this.get_nb_repartition(cdpenrbenev, date_debut, date_fin);
     const nb_ateliers_moyen = await this.get_nb_atelier_moyen(cdpenrbenev, date_debut, date_fin);
+    const nb_formation = await this.get_nb_formation(evenement_benev, date_debut, date_fin);
 
     result.nb_session_acc = nb_session_acc[0]?.count || 0;
     result.nv_benevole = nb_benev_session_accueil?.total || 0;
@@ -609,6 +648,7 @@ export class StatsBenevoleService {
     result.nb_actions_93_95 = nb_presence_atelier_benev_93_95[0]?.count || 0;
     result.array_two = nb_repartition;
     result.nb_atelier_moyen_par_benevole = nb_ateliers_moyen;
+    result.array_three = nb_formation?.repartition || [];
     
     return result;
   }

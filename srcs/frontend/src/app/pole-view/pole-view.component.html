@@ -119,8 +119,12 @@
             <p>Nombre de présents: <span>{{ (data.nb_present_sensi || 0) }}</span></p>
         </div>
         <div class="data-block" *ngIf="values !== undefined && labels !== undefined">
-            <h3 class="green-underline">Répartition par sujet</h3>
+            <h3 class="green-underline">Répartition par sujet (sensibilisations)</h3>
             <app-pie-chart [data]="values" [labels]="labels" [colors]="colors"></app-pie-chart>
+        </div>
+        <div class="data-block" *ngIf="values !== undefined && labels !== undefined">
+            <h3 class="green-underline">Répartition par sujet (formations)</h3>
+            <app-pie-chart [data]="values_three" [labels]="labels_three" [colors]="colors_three"></app-pie-chart>
         </div>
     </div>
 </div>
