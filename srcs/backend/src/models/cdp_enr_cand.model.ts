@@ -11,6 +11,7 @@ export interface ICdpEnrCand extends Document {
   atelier_lieu?: string;
   type_atelier?: string;
   qpv?: string;
+  qpv_300?: string;
   epa?: string;
   aide_sociale?: string;
   sous_main_justice?: string;
@@ -24,8 +25,11 @@ export interface ICdpEnrCand extends Document {
   cdp_suivi?: string;
   orphelin?: string;
   candidat_numero_et_rue?: string;
+  prescription_candidat_numero_et_rue?: string;
   candidat_code_postal?: string;
+  prescription_candidat_code_postal?: string;
   candidat_commune_ville?: string;
+  prescription_candidat_commune_ville?: string;
   metier_recherche?: string;
   secteur_recherche?: string;
   code_postal?: string;
@@ -47,6 +51,7 @@ const CdpEnrCandSchema: Schema<ICdpEnrCand> = new Schema({
   atelier_lieu: { type: String },
   type_atelier: { type: String },
   qpv: { type: String },
+  qpv_300: { type: String },
   epa: { type: String },
   aide_sociale: { type: String },
   sous_main_justice: { type: String },
@@ -60,8 +65,11 @@ const CdpEnrCandSchema: Schema<ICdpEnrCand> = new Schema({
   cdp_suivi: { type: String },
   orphelin: { type: String },
   candidat_numero_et_rue: { type: String },
+  prescription_candidat_numero_et_rue: { type: String },
   candidat_code_postal: { type: String },
+  prescription_candidat_code_postal: { type: String },
   candidat_commune_ville: { type: String },
+  prescription_candidat_commune_ville: { type: String },
   metier_recherche: { type: String },
   secteur_recherche: { type: String },
   code_postal: { type: String },

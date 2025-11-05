@@ -107,6 +107,8 @@ export class DevService {
                     currentQuery = this.updateQuery(currentQuery, "candidat_age", 16, "$gte-$lt", 21);
                 } else if (s_critere === "QPV" || s_critere === " QPV") {
                     currentQuery = this.updateQuery(currentQuery, "qpv", "Oui", "$eq");
+                } else if (s_critere === "QPV_300" || s_critere === " QPV_300") {
+                    currentQuery = this.updateQuery(currentQuery, "qpv_300", "Oui", "$eq");
                 } else if (s_critere === "EPA" || s_critere === " EPA") {
                     currentQuery = this.updateQuery(currentQuery, "epa", "EPA", "$eq");
                 } else if (s_critere === "RSA" || s_critere === " RSA") {
