@@ -37,7 +37,7 @@ services:
       - ./scripts/backup.sh:/backup.sh
     environment:
       PGPASSWORD: mypassword
-    entrypoint: ["bash", "-c", "chmod +x /backup.sh && while true; do /backup.sh; sleep 43200; done"]  # Sauvegarde toutes les demis journées
+    entrypoint: ["bash", "-c", "chmod +x /backup.sh && while true; do /backup.sh; sleep 2629800; done"]  # Sauvegarde tous les mois
     networks:
       - app-network
   frontend:
