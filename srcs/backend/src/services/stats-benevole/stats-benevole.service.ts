@@ -370,6 +370,7 @@ export class StatsBenevoleService {
               "Sensibilisation : Femmes",
               "Sensibilisation : Personnes en situation de précarité et d'isolement",
               "Sensibilisation : LGBTQIA+",
+              "Sensibilisation : Jeunes"
             ]
           }
         }
