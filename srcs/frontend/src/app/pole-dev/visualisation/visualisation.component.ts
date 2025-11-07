@@ -35,7 +35,11 @@ export class VisualisationComponent {
   rapportXIndicateurId: string = "";
   notFound: boolean = false;
   dateFilters: { [key: string]: { before?: Date; after?: Date } } = {};
+  numericFilters: { [key: string]: { greaterThan?: number; lessThan?: number } } = {};
+  textFilters: { [key: string]: { id: string; value: string }[] } = {};
 
+  private nextTextFilterId = 1;
+  
   constructor(
     private devGatewayService: DevGatewayService,
     private router: Router,
@@ -124,7 +128,7 @@ export class VisualisationComponent {
           }
           else if (typeof value === 'number' && !Number.isInteger(value)) {
             const label = key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
-            newRow[label] = value.toFixed(0);
+            newRow[label] = value;
           // C'est un float
           }
           // Vérifie si la valeur est une string de date ISO
@@ -160,16 +164,24 @@ export class VisualisationComponent {
     }
   });
 }
+    private makeTextFilterItem(value = '') {
+    return { id: `tf_${this.nextTextFilterId++}`, value };
+  }
 
   toggleFilterDropdown(column: string | null) {
-    if (this.filterDropdownOpenFor === column) {
-      this.closeFilterDropdown();
-    } else {
-      this.filterDropdownOpenFor = column;
-      // Ici on active l'écoute globale pour clics extérieurs
-      document.addEventListener('click', this.handleOutsideClick, true);
+  if (this.filterDropdownOpenFor === column) {
+    this.closeFilterDropdown();
+  } else {
+    this.filterDropdownOpenFor = column;
+
+    // Si la colonne est textuelle, initialiser au besoin
+    if (column && !this.isNumericColumn(column) && !this.isDateColumn(column)) {
+      this.initTextFilter(column);
     }
+
+    document.addEventListener('click', this.handleOutsideClick, true);
   }
+}
 
   closeFilterDropdown() {
     this.filterDropdownOpenFor = null;
@@ -207,6 +219,9 @@ export class VisualisationComponent {
   formatValue(value: any): string {
     if (Array.isArray(value)) return value.join(', ');
     if (value instanceof Date) return value.toLocaleDateString();
+    if (typeof value === 'number') {
+      return Number.isInteger(value) ? value.toString() : value.toFixed(0);
+    }
     return value !== null && value !== undefined ? value.toString() : '';
   }
 
@@ -227,22 +242,41 @@ export class VisualisationComponent {
     this.filterData();
   }
 
-  filterData() {
-    this.filteredData = this.dataToDisplay.filter(row => {
-      const matchFilters = Object.entries(this.activeFilters).every(([key, values]) =>
-        values.includes(this.formatValue(row[key]))
-      );
+filterData() {
+  this.filteredData = this.dataToDisplay.filter(row => {
+    const matchFilters = Object.entries(this.activeFilters).every(([key, values]) =>
+      values.includes(this.formatValue(row[key]))
+    );
 
-      const matchDateFilters = Object.entries(this.dateFilters).every(([key, { before, after }]) => {
-        const rowDate = new Date(row[key]);
-        if (before && rowDate > before) return false;
-        if (after && rowDate < after) return false;
-        return true;
-      });
-
-      return matchFilters && matchDateFilters;
+    const matchDateFilters = Object.entries(this.dateFilters).every(([key, { before, after }]) => {
+      const rowDate = new Date(row[key]);
+      if (before && rowDate > before) return false;
+      if (after && rowDate < after) return false;
+      return true;
     });
-  }
+
+    const matchNumericFilters = Object.entries(this.numericFilters).every(([key, { greaterThan, lessThan }]) => {
+      const value = row[key];
+      if (typeof value !== 'number') return true;
+      if (greaterThan !== undefined && value <= greaterThan) return false;
+      if (lessThan !== undefined && value >= lessThan) return false;
+      return true;
+    });
+
+    const matchTextFilters = Object.entries(this.textFilters || {}).every(([key, items]) => {
+  const filledValues = items.map(i => i.value).filter(v => v.trim() !== '');
+  if (filledValues.length === 0) return true;
+  const cellValue = (row[key] ?? '').toString().toLowerCase();
+  return filledValues.some(v => cellValue.includes(v.toLowerCase().trim()));
+});
+
+    return matchFilters && matchDateFilters && matchNumericFilters && matchTextFilters;
+  });
+}
+
+isNumericColumn(column: string): boolean {
+  return this.dataToDisplay.some(row => typeof row[column] === 'number');
+}
 
 onFilterDropdownFocusOut(event: FocusEvent) {
   // On attend un peu que le focus soit mis à jour
@@ -287,10 +321,80 @@ onFilterDropdownFocusOut(event: FocusEvent) {
     this.filterData();
   }
 
+  onNumericFilterChange(event: Event, column: string, type: 'greaterThan' | 'lessThan') {
+  const input = event.target as HTMLInputElement;
+  const value = input.value;
+  this.setNumericFilter(column, value, type);
+}
+
+setNumericFilter(column: string, value: string, type: 'greaterThan' | 'lessThan') {
+  if (!this.numericFilters[column]) this.numericFilters[column] = {};
+  this.numericFilters[column][type] = value ? parseFloat(value) : undefined;
+
+  // Si aucun des deux filtres n’est défini, on supprime la clé
+  if (!this.numericFilters[column].greaterThan && !this.numericFilters[column].lessThan) {
+    delete this.numericFilters[column];
+  }
+
+  this.filterData();
+}
+
+clearNumericFilter(column: string) {
+  delete this.numericFilters[column];
+  this.filterData();
+}
+
+
   clearFilter(column: string) {
     delete this.activeFilters[column];
     this.filterData();
   }
+
+  // initialiser un premier champ (appelé par toggleFilterDropdown)
+  initTextFilter(column: string) {
+  if (!this.textFilters[column]) {
+    this.textFilters[column] = [ this.makeTextFilterItem() ];
+  }
+}
+
+onTextFilterChange(event: Event, column: string, index: number) {
+  const input = event.target as HTMLInputElement;
+  const value = input.value; // ne trim pas automatiquement : laisse utilisateur taper des espaces si besoin
+
+  // Met à jour la valeur *sur l'objet existant* (ne recrée pas l'objet)
+  const items = this.textFilters[column];
+  if (!items) return;
+  items[index].value = value;
+
+  // Si le dernier champ n'est plus vide, on ajoute un nouveau champ vide (push)
+  const last = items[items.length - 1];
+  if (last.value !== '') {
+    items.push(this.makeTextFilterItem(''));
+  }
+
+  // Supprimer les doublons vides consécutifs à la fin (ne supprime pas le focus si on ne recrée pas)
+  while (items.length > 1 && items.at(-1)?.value === '' && items.at(-2)?.value === '') {
+    items.pop();
+  }
+
+  // Si tous les champs sont vides -> supprimer complètement le filtre
+  const allEmpty = items.every(it => it.value.trim() === '');
+  if (allEmpty) {
+    delete this.textFilters[column];
+  }
+
+  this.filterData();
+}
+
+clearTextFilter(column: string) {
+  delete this.textFilters[column];
+  this.filterData();
+}
+
+// trackBy pour le ngFor
+trackByTextFilter(_index: number, item: { id: string; value: string }) {
+  return item.id;
+}
 
   getUniqueValuesForColumn(column: string): any[] {
     const rawValues = this.dataToDisplay.map(row => row[column]);

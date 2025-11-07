@@ -50,6 +50,53 @@
     />
     <button (click)="clearDateFilter(col); toggleFilterDropdown(null)">❌ Réinitialiser dates</button>
   </div>
+  <!-- Filtre pour les nombres -->
+<div *ngIf="isNumericColumn(col)">
+  <label>Plus grand que :</label>
+  <input
+    type="number"
+    [value]="numericFilters[col] ? numericFilters[col].greaterThan : ''"
+    (input)="onNumericFilterChange($event, col, 'greaterThan')"
+  />
+
+  <label>Plus petit que :</label>
+  <input
+    type="number"
+    [value]="numericFilters[col] ? numericFilters[col].lessThan : ''"
+    (input)="onNumericFilterChange($event, col, 'lessThan')"
+  />
+
+  <button (click)="clearNumericFilter(col)">✕</button>
+</div>
+<!-- Filtres texte dynamiques -->
+<div *ngIf="!isNumericColumn(col) && !isDateColumn(col)">
+  <label>Contient :</label>
+
+  <div
+    *ngFor="let item of textFilters[col] || []; let i = index; trackBy: trackByTextFilter"
+    class="flex items-center gap-2 mb-1"
+  >
+    <!-- Affiche "OU" seulement à partir du deuxième champ -->
+    <span *ngIf="i > 0" class="text-gray-500 font-semibold">ou </span>
+
+    <input
+      type="text"
+      class="border rounded px-2 py-1 flex-1"
+      [value]="item.value"
+      (input)="onTextFilterChange($event, col, i)"
+      placeholder="Saisir un texte..."
+    />
+  </div>
+
+  <button
+    type="button"
+    class="text-sm text-red-600 mt-1"
+    (click)="clearTextFilter(col)"
+    *ngIf="textFilters[col]?.length"
+  >
+    ✕ Réinitialiser
+  </button>
+</div>
   <div
     *ngFor="let val of getUniqueValuesForColumn(col)"
     (click)="applyFilter(col, val)"
