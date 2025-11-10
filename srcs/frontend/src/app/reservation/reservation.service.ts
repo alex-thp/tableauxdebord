@@ -29,6 +29,17 @@ export class ReservationService {
     return this.http.get(`${this.baseUrl}/availableSlots`, { params });
   }
 
+  getCdpEnrCand(candidat_nom: string, candidat_prenom: string, candidat_date_naissance: string): Observable<any> {
+    console.log("Fetching CDP Enr Cand with:", candidat_nom, candidat_prenom, candidat_date_naissance);
+    let params = new HttpParams().set('candidat_nom', candidat_nom).set('candidat_prenom', candidat_prenom).set('candidat_date_naissance', candidat_date_naissance);
+    return this.http.get(`${this.baseUrl}/cdpEnrCand`, { params });
+  }
+
+  getReservationSlots(reservation_record_id: string): Observable<any> {
+    let params = new HttpParams().set('reservation_record_id', reservation_record_id);
+    return this.http.get(`${this.baseUrl}/reservationSlots`, { params });
+  }
+
   eraseOldSlot(slotId: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/eraseOldSlot`, { slotId });
   }

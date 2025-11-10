@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ReservationService } from './reservation.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { expand, of, switchMap, takeWhile, timer } from 'rxjs';
 
 @Component({
   selector: 'app-reservation',
@@ -12,18 +13,63 @@ import { ActivatedRoute } from '@angular/router';
 export class ReservationComponent {
 
   record_id = "";
+  reservation_record_id = "";
+  candidat_nom = "";
+  candidat_prenom = "";
+  candidat_date_naissance = "";
   dispos: any[] = [];
-  loader: boolean = false;
+  loader_1: boolean = false;
+  loader_2: boolean = false;
   confirmationPanel: boolean = false;
   heure_rdv: string = "";
   constructor(private reservationService: ReservationService, private route: ActivatedRoute) {}
 
 ngOnInit() {
-  this.record_id = this.route.snapshot.queryParamMap.get('record_id') || '';
-  this.loader = true;
+  this.reservation_record_id = this.route.snapshot.queryParamMap.get('reservation_record_id') || '';
+  this.candidat_nom = this.route.snapshot.queryParamMap.get('candidat_nom') || '';
+  this.candidat_prenom = this.route.snapshot.queryParamMap.get('candidat_prenom') || '';
+  this.candidat_date_naissance = this.route.snapshot.queryParamMap.get('candidat_date_naissance') || '';
+  this.loader_1 = true;
+  this.loader_2 = true;
 
-  this.reservationService.getAvailableSlots(this.record_id).subscribe((slots: any[]) => {
-    this.loader = false;
+  this.reservationService
+  .getCdpEnrCand(this.candidat_nom, this.candidat_prenom, this.candidat_date_naissance)
+  .pipe(
+    expand((res: any) => {
+      // 🔁 Si pas de résultat, on réessaie après 100 ms
+      if (!res || !res.record_id) {
+        return timer(100).pipe(
+          switchMap(() =>
+            this.reservationService.getCdpEnrCand(
+              this.candidat_nom,
+              this.candidat_prenom,
+              this.candidat_date_naissance
+            )
+          )
+        );
+      } else {
+        return of(); // stop si trouvé
+      }
+    }),
+    takeWhile((res: any) => !res?.record_id, true) // continue tant que pas trouvé
+  )
+  .subscribe({
+    next: (res: any) => {
+      if (res?.record_id) {
+        this.record_id = res.record_id;
+        console.log("✅ Record trouvé :", this.record_id);
+        this.loader_1 = false;
+      } else {
+        console.log("⏳ Recherche en cours...");
+      }
+    },
+    error: (err) => {
+      console.error("❌ Erreur lors de la recherche :", err);
+      this.loader_1 = false;
+    }
+  });
+  this.reservationService.getReservationSlots(this.reservation_record_id).subscribe((slots: any[]) => {
+    this.loader_2 = false;
 
     this.dispos = slots.map(slot => {
       // on commence par formatter les créneaux
