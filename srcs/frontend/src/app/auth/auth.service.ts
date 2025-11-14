@@ -36,7 +36,7 @@ login(email: string, password: string, redirectTo?: string | null) {
     return !!this.getToken();
   }
 
-  signUp(email: string, password: string): Observable<any> {
+  /*signUp(email: string, password: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/signup`, { email, password }).pipe(
         tap(res => {
           console.log(res);
@@ -44,5 +44,5 @@ login(email: string, password: string, redirectTo?: string | null) {
         })
       );
 
-  }
+  }*/
 }

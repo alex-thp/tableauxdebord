@@ -1,7 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserService } from '../../user.service';
 import { CommonModule } from '@angular/common';
+
+export interface RoleOption {
+  id: number;
+  name: string;
+}
 
 @Component({
   standalone: true,
@@ -11,41 +15,39 @@ import { CommonModule } from '@angular/common';
 })
 export class UserRoleEditorComponent implements OnChanges {
   @Input() email: string = '';
-  @Input() role: string = '';
-  @Input() availableRoles: { id: number, name: string }[] = [];
+  @Input() userId!: number;
+  @Input() roleId: number | null = null;
+  @Input() availableRoles: RoleOption[] = [];
 
-  @Output() save = new EventEmitter<{ email: string; roleId: number }>();
+  @Output() save = new EventEmitter<{ userId: number; roleId: number }>();
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private userService: UserService) {
+  constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
-      role: ['', Validators.required],
+      roleId: [null, Validators.required],
     });
   }
 
-  ngOnChanges(): void {
-    this.form.patchValue({ email: this.email, role: this.role });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['email'] || changes['roleId']) {
+      this.form.patchValue({ email: this.email, roleId: this.roleId });
+    }
   }
 
   submit() {
     if (this.form.valid) {
-      const selectedRoleName = this.form.value.role;
-      const selectedRole = this.availableRoles.find(r => r.name === selectedRoleName);
+      const roleId = this.form.value.roleId;
 
-      if (!selectedRole) {
-        console.error('Rôle non trouvé');
+      if (roleId == null) {
+        console.error('Rôle non sélectionné');
         return;
       }
 
-      this.userService.getUserByEmail(this.email).subscribe(user => {
-        const userId = user.id;
-
-        this.userService.updateUserRoles(userId, selectedRole.id).subscribe({
-          next: () => this.save.emit({ email: this.email, roleId: selectedRole.id }),
-          error: err => console.error('Erreur de mise à jour du rôle :', err),
-        });
+      this.save.emit({
+        userId: this.userId,
+        roleId
       });
     }
   }

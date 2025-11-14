@@ -1,8 +1,38 @@
 <table>
+<h2>Créer un nouvel utilisateur</h2>
+
+<div class="create-user-form">
+  <input
+    type="email"
+    placeholder="Email"
+    [(ngModel)]="newUser.email"
+  />
+
+  <input
+    type="password"
+    placeholder="Mot de passe"
+    [(ngModel)]="newUser.password"
+  />
+
+  <select [(ngModel)]="newUser.roleId">
+    <option value="" disabled selected>Choisir un rôle</option>
+    <option *ngFor="let role of availableRoles" [value]="role.id">
+      {{ role.name }}
+    </option>
+  </select>
+
+  <button (click)="createUser()">Créer</button>
+</div>
+
+<hr />
+
+<h2>Liste des utilisateurs</h2>
+<table>
   <thead>
     <tr>
       <th>Email</th>
       <th>Rôles</th>
+      <th>Permissions</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -10,16 +40,21 @@
     <tr *ngFor="let user of users">
       <td>{{ user.email }}</td>
       <td>{{ user.roleNames }}</td>
-      <td><button (click)="editUser(user)">Modifier</button></td>
+      <td>{{ user.permissionNames }}</td>
+      <td>
+        <button (click)="editUser(user)">Modifier</button>
+      </td>
     </tr>
   </tbody>
 </table>
 
-<div *ngIf="edit">
-  <app-user-role-editor
-    [email]="selectedUser.email"
-    [role]="selectedUser.roleNames.split(', ')[0]"
-    [availableRoles]="availableRoles"
-    (save)="onRoleUpdate($event)">
-  </app-user-role-editor>
-</div>
+<app-user-role-editor
+  *ngIf="edit"
+  [email]="selectedUser.email"
+  [userId]="selectedUser.userId"
+  [roleId]="selectedUser.roleId"
+  [availableRoles]="availableRoles"
+  (save)="onRoleUpdate($event)"
+></app-user-role-editor>
+
+

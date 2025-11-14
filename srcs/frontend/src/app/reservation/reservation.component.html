@@ -5,7 +5,7 @@
   </h4>
 
   <!-- Loader -->
-  <div *ngIf="loader_1 || loader_2" class="loader-overlay">
+  <!--<div *ngIf="loader_1 || loader_2" class="loader-overlay">
     <div class="loader-container">
       <div class="loader-circle">
         <div class="loader-dot"></div>
@@ -13,7 +13,14 @@
       <div *ngIf="loader_1" class="loader-text">Création de la prescription...</div>
       <div *ngIf="loader_2" class="loader-text">Chargement des créneaux disponibles...</div>
     </div>
+  </div>-->
+
+<div *ngIf="loader_1 || loader_2" class="loader-overlay">
+  <div class="loader-container">
+    <img src="assets/images/loader.gif" alt="Chargement..." class="loader-gif" />
+    <div class="loader-text">{{ currentMessage }}</div>
   </div>
+</div>
 
   <!-- Résultats -->
   <div *ngIf="!loader_1 && !loader_2" class="dispos-wrapper">

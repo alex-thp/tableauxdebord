@@ -110,51 +110,84 @@
   transform: translateY(-2px);
 }
 
+/* === Nouveau loader stable === */
 .loader-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(28,37,68,0.8); /* bleu nuit transparent */
+  background: rgba(240, 245, 255, 0.95);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
+/* Ovale principal — taille fixe */
 .loader-container {
+  width: 600px;             /* largeur fixe */
+  height: 400px;            /* hauteur fixe */
+  background: white;
+  border: 10px solid #3a6ea5; /* bleu moyen foncé */
+  border-radius: 50% / 40%; /* ovale horizontal */
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  animation: pulseBorder 2.5s ease-in-out infinite;
+  overflow: hidden;
 }
 
-.loader-circle {
-  width: 50px;
-  height: 50px;
-  border: 4px solid #5499bf;
-  border-top: 4px solid #e61d72;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 16px;
+/* GIF centré et fixe */
+.loader-gif {
+  width: 250px;
+  height: 250px;
+  border: 3px solid #b11273; /* bleu moyen foncé */
+  border-radius: 50% / 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
 }
 
-.loader-dot {
-  width: 10px;
-  height: 10px;
-  background-color: #e61d72;
-  border-radius: 50%;
-  margin-top: -30px;
-}
-
+/* Texte sous le loader */
 .loader-text {
-  font-size: 16px;
-  color: #fff;
+  width: 100%;
   text-align: center;
-  font-weight: 500;
+  font-family: "Bubblegum Sans", "Comic Sans MS", cursive;
+  font-size: 1.3rem;
+  color: #b11273; /* rose foncé */
+  text-shadow: 1px 1px 4px rgba(58, 110, 165, 0.6);
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+  animation: fadeText 2s ease-in-out infinite;
+  padding: 0 20px; /* pour éviter que le texte touche les bords */
+  white-space: normal;
+  word-break: break-word;
 }
 
+/* === Animations === */
+@keyframes pulseBorder {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(58, 110, 165, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(58, 110, 165, 0.5);
+    transform: scale(1.03);
+  }
+}
+
+@keyframes fadeText {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
 @keyframes spin {
   to {
     transform: rotate(360deg);

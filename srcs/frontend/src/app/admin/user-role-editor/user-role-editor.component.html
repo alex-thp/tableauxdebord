@@ -1,13 +1,16 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <div>
     <label>Email :</label>
-    <input formControlName="email" />
+    <input formControlName="email" type="email" />
   </div>
 
   <div>
     <label>Rôle :</label>
-    <select formControlName="role">
-      <option *ngFor="let r of availableRoles" [value]="r.name">{{ r.name }}</option>
+    <select formControlName="roleId">
+      <option [ngValue]="null" disabled>-- Choisir un rôle --</option>
+      <option *ngFor="let role of availableRoles" [ngValue]="role.id">
+        {{ role.name }}
+      </option>
     </select>
   </div>
 

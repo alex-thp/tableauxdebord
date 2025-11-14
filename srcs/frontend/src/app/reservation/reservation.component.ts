@@ -22,6 +22,21 @@ export class ReservationComponent {
   loader_2: boolean = false;
   confirmationPanel: boolean = false;
   heure_rdv: string = "";
+
+  loaderMessages: string[] = [
+    "Dépoussiérage des miroirs...",
+    "Chargement du dressing...",
+    "Ajout d'une dose de bonne humeur...",
+    "Chargement de la bienveillance...",
+    "Réglage des projecteurs de réussite...",
+    "Synchronisation des ondes positives...",
+    "On y est presque...",
+  ];
+
+  currentMessage = this.loaderMessages[0];
+  private messageIndex = 0;
+  private messageInterval: any;
+
   constructor(private reservationService: ReservationService, private route: ActivatedRoute) {}
 
 ngOnInit() {
@@ -31,6 +46,7 @@ ngOnInit() {
   this.candidat_date_naissance = this.route.snapshot.queryParamMap.get('candidat_date_naissance') || '';
   this.loader_1 = true;
   this.loader_2 = true;
+  this.startLoaderCarousel();
 
   this.reservationService
   .getCdpEnrCand(this.candidat_nom, this.candidat_prenom, this.candidat_date_naissance)
@@ -94,7 +110,25 @@ ngOnInit() {
   });
 }
 
-  selectedSlot: any = null;
+ngOnDestroy() {
+  this.stopLoaderCarousel();
+}
+
+startLoaderCarousel() {
+  this.messageInterval = setInterval(() => {
+    this.messageIndex = (this.messageIndex + 1) % this.loaderMessages.length;
+    this.currentMessage = this.loaderMessages[this.messageIndex];
+  }, 2000); // change toutes les 2 secondes
+}
+
+stopLoaderCarousel() {
+  if (this.messageInterval) {
+    clearInterval(this.messageInterval);
+  }
+}
+
+
+selectedSlot: any = null;
 
 selectSlot(dispo: any, slot: any) {
   // Désélectionne tous les autres créneaux de toutes les dispos
@@ -122,7 +156,8 @@ reserverCreneau(date: Date, slot: any) {
       if(res.success) {
         alert(`Créneau du ${date.toLocaleDateString()} à ${slot.HEURE_RDV} réservé avec succès !`);
         this.reservationService.eraseOldSlot(slot.id).subscribe(() => {
-          window.location.reload();});
+          window.location.replace(`https://hook.eu2.make.com/ncxv24a5q8a3rvzvynqoml87nfvby95t?cdpenrcand=${this.record_id}&reservation_id=${this.reservation_record_id}`);//ENVOYER MAIL ET SMS
+        });
       } else {
         alert("Erreur lors de la réservation du créneau. Veuillez réessayer.");
         window.location.reload();

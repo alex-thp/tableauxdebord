@@ -15,12 +15,12 @@ export class AuthController {
     return this.authService.login(user);
   }
 
-  @Post('signup')
+  /*@Post('signup')
   async signup(@Body() dto: CreateUserDto) {
     const user = await this.authService.register(dto);
     return {
       message: 'User created successfully',
       user,
     };
-  }
+  }*/
 }

@@ -79,5 +79,30 @@ async updateUserRole(userId: number, roleId: number): Promise<User> {
   }*/
   return this.userRepository.save(user);
 }
+async createUser(email: string, password: string, roleId: number): Promise<User> {
+  // Vérifie si l'utilisateur existe déjà
+  const existingUser = await this.userRepository.findOne({ where: { email } });
+  if (existingUser) {
+    throw new Error('Un utilisateur avec cet email existe déjà');
+  }
+
+  // Hash du mot de passe
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  // Création de l'utilisateur
+  const user = this.userRepository.create({ email, passwordHash });
+
+  // Récupération du rôle
+  const role = await this.roleRepository.findOne({ where: { id: roleId }, relations: ['permissions'] });
+  if (!role) {
+    throw new NotFoundException('Rôle introuvable');
+  }
+
+  // Attribution du rôle à l'utilisateur
+  user.roles = [role];
+
+  // Sauvegarde en base
+  return await this.userRepository.save(user);
+}
 
 }

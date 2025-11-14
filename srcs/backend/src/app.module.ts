@@ -100,8 +100,8 @@ export class AppModule {
     }
     const userRepository = this.dataSource.getRepository(User);
     const userExists = await userRepository.findOne({ where: { email: process.env.EMAIL_ADMIN } });
-    const devExists = await userRepository.findOne({ where: { email: process.env.EMAIL_ADMIN } });
-    const jenniExists = await userRepository.findOne({ where: { email: process.env.EMAIL_ADMIN } });
+    const devExists = await userRepository.findOne({ where: { email: process.env.EMAIL_DEV } });
+    const jenniExists = await userRepository.findOne({ where: { email: process.env.EMAIL_JENNI } });
 
     if (!userExists) {
       const defaultUser = userRepository.create({
@@ -113,21 +113,21 @@ export class AppModule {
     }
 
     if (!devExists) {
-      const defaultUser = userRepository.create({
+      const defaultDevUser = userRepository.create({
         email: 'dev@lacravatesolidaire.org',
         passwordHash: process.env.MDP_DEV,
         roles: [(await roleRepository.findOne({ where: { name: 'admin' } }))!],
       });
-      await userRepository.save(defaultUser);
+      await userRepository.save(defaultDevUser);
     }
 
     if (!jenniExists) {
-      const defaultUser = userRepository.create({
-        email: 'Jennifer@lacravatesolidaire.org@lacravatesolidaire.org',
+      const defaultJennUser = userRepository.create({
+        email: 'Jennifer@lacravatesolidaire.org',
         passwordHash: process.env.MDP_JENNI,
         roles: [(await roleRepository.findOne({ where: { name: 'admin' } }))!],
       });
-      await userRepository.save(defaultUser);
+      await userRepository.save(defaultJennUser);
     }
 
   }
