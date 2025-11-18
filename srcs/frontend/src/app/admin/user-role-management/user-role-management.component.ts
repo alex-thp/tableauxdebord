@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // 🔹 AJOUT
-import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { UserRoleEditorComponent } from '../user-role-editor/user-role-editor.component';
+import { GatewayService } from '../../gateway.service';
 
 @Component({
   selector: 'app-user-role-management',
@@ -20,10 +20,14 @@ export class UserRoleManagementComponent implements OnInit {
   edit: boolean = false;
   selectedUser: any = null;
 
-  newUser = {
+  // Gestion du changement de mot de passe admin
+  adminPasswordEditUserId: number | null = null;
+  adminNewPassword: string = '';
+
+  newUser: { email: string; password: string; roleId: number } = {
     email: '',
     password: '',
-    roleId: null
+    roleId: 0
   };
 
   availableRoles = [
@@ -32,20 +36,20 @@ export class UserRoleManagementComponent implements OnInit {
     { id: 3, name: 'manager' }
   ];
 
-  constructor(private http: HttpClient) {}
+  constructor(private gateway: GatewayService) {}
 
   ngOnInit() {
     this.loadUsers();
   }
 
   loadUsers() {
-    this.http.get('/api/user/with-roles').subscribe((users: any) => {
-      this.users = users.map((user: { roles: any[] }) => ({
+    this.gateway.getUsersWithRoles().subscribe((users: any[]) => {
+      this.users = users.map(user => ({
         ...user,
-        roleNames: user.roles.map(r => r.name).join(', '),
+        roleNames: user.roles.map((r: { name: any; }) => r.name).join(', '),
         permissionNames: user.roles
-          .flatMap(r => r.permissions.map((p: { name: string }) => p.name))
-          .filter((value, index, self) => self.indexOf(value) === index)
+          .flatMap((r: { permissions: any[]; }) => r.permissions.map((p: any) => p.name))
+          .filter((v: any, i: any, self: string | any[]) => self.indexOf(v) === i)
           .join(', '),
       }));
     });
@@ -61,7 +65,7 @@ export class UserRoleManagementComponent implements OnInit {
   }
 
   onRoleUpdate(event: { userId: number; roleId: number }) {
-    this.http.put(`/api/user/${event.userId}/roles`, { roleId: event.roleId }).subscribe({
+    this.gateway.updateUserRole(event.userId, event.roleId).subscribe({
       next: () => {
         console.log('Rôle mis à jour !');
         this.edit = false;
@@ -74,7 +78,6 @@ export class UserRoleManagementComponent implements OnInit {
     });
   }
 
-
   createUser() {
     if (!this.newUser.email || !this.newUser.password || !this.newUser.roleId) {
       alert('Veuillez remplir tous les champs.');
@@ -86,16 +89,61 @@ export class UserRoleManagementComponent implements OnInit {
       return;
     }
 
-    this.http.post('/api/user/create', this.newUser).subscribe({
+    this.gateway.createUser(this.newUser).subscribe({
       next: () => {
         alert('Utilisateur créé avec succès !');
-        this.newUser = { email: '', password: '', roleId: null }; // réinitialisation
-        this.loadUsers(); // recharger la liste
+        this.newUser = { email: '', password: '', roleId: 0 };
+        this.loadUsers();
       },
       error: (err) => {
         console.error(err);
         alert('Erreur lors de la création de l’utilisateur.');
       }
     });
+  }
+
+  deleteUser(userId: number) {
+    const confirmDelete = confirm("Voulez-vous vraiment supprimer cet utilisateur ?");
+    if (!confirmDelete) return;
+
+    this.gateway.deleteUser(userId).subscribe({
+      next: () => {
+        alert("Utilisateur supprimé avec succès.");
+        this.loadUsers();
+      },
+      error: (err) => {
+        console.error(err);
+        alert("Erreur lors de la suppression du compte.");
+      }
+    });
+  }
+
+  openPasswordEditor(userId: number) {
+    this.adminPasswordEditUserId = userId;
+    this.adminNewPassword = '';
+  }
+
+  adminChangePassword() {
+    if (!this.adminNewPassword || this.adminNewPassword.length < 6) {
+      alert("Nouveau mot de passe trop court.");
+      return;
+    }
+
+    this.gateway.adminChangePassword(this.adminPasswordEditUserId!, this.adminNewPassword).subscribe({
+      next: () => {
+        alert("Mot de passe changé avec succès !");
+        this.adminPasswordEditUserId = null;
+        this.adminNewPassword = '';
+      },
+      error: (err) => {
+        console.error(err);
+        alert("Erreur lors du changement de mot de passe.");
+      }
+    });
+  }
+
+  cancelAdminPasswordEdit() {
+    this.adminPasswordEditUserId = null;
+    this.adminNewPassword = '';
   }
 }

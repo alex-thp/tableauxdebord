@@ -33,6 +33,7 @@ import { SharedViewController } from './controllers/shared_view/shared_view.cont
 import { BoussoleController } from './controllers/boussole/boussole.controller';
 import { BoussoleService } from './services/boussole/boussole.service';
 import { ReservationController } from './controllers/reservation/reservation.controller';
+import { AdminService } from './services/admin/admin.service';
 
 @Module({
   imports: [
@@ -79,6 +80,7 @@ import { ReservationController } from './controllers/reservation/reservation.con
     PdfMakerService,
     GeminiService,
     BoussoleService,
+    AdminService,
   ],
   exports: [ParseDatePipe],
 })

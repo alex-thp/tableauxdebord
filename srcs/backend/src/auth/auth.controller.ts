@@ -1,6 +1,8 @@
-import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, ForbiddenException, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { UserPermissionsInterceptor } from '../interceptors/user-permissions.interceptor';
+import { RolesAndPermissionsGuard } from '../guards/roles-and-permissions.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +16,7 @@ export class AuthController {
     }
     return this.authService.login(user);
   }
+}
 
   /*@Post('signup')
   async signup(@Body() dto: CreateUserDto) {
@@ -23,4 +26,3 @@ export class AuthController {
       user,
     };
   }*/
-}

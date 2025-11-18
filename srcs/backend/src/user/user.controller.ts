@@ -15,19 +15,19 @@ import { Roles } from '../decorators/roles.decorator';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // 🔹 Liste des utilisateurs avec leurs rôles et permissions
+  // Liste des utilisateurs avec leurs rôles et permissions
   @Get('with-roles')
   findAllWithRoles() {
     return this.userService.findAllWithRolesAndPermissions();
   }
 
-  // 🔹 Recherche d’un utilisateur par email
+  // Recherche d’un utilisateur par email
   @Get('by-email/:email')
   async getByEmail(@Param('email') email: string) {
     return this.userService.findByEmailWithRolesAndPermissions(email);
   }
 
-  // 🔹 Mise à jour du rôle d’un utilisateur
+  // Mise à jour du rôle d’un utilisateur
   @Put(':id/roles')
   @Roles('superAdmin')
   updateUserRole(
@@ -37,7 +37,7 @@ export class UserController {
     return this.userService.updateUserRole(userId, updateUserRoleDto.roleId);
   }
 
-  // ✅ Création d’un utilisateur
+  // Création d’un utilisateur
   @Post('create')
   @Roles('superAdmin')
   async createUser(
