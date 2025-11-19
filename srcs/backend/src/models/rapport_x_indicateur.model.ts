@@ -5,6 +5,7 @@ export interface IRapportXIndicateur extends Document {
   record_id: string;
   label?: string;
   rapport_id?: string;
+  rapport_record_id?: string;
   indicateur_id?: string;
   objectif_quality?: string;
   objectif_quantity?: number;
@@ -23,6 +24,7 @@ const RapportXIndicateurSchema: Schema<IRapportXIndicateur> = new Schema({
   record_id: { type: String, required: true },
   label: { type: String },
   rapport_id: { type: String },
+  rapport_record_id: { type: String },
   indicateur_id: { type: String },
   objectif_quality: { type: String },
   objectif_quantity: { type: Number },
