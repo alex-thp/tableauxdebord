@@ -86,14 +86,14 @@ export class DevController {
             action: action,
             action_localite: action_localite,
             sujet: sujet,
-            sujet_critere: sujet_critere,
+            sujet_critere: sujet_critere ? [sujet_critere] : [],
             sujet_localite: sujet_localite,
             sujet_indicateur: sujet_indicateur,
             date_debut: debutDate,
             date_fin: finDate,
             structure_beneficiaire: structure_beneficiaire,
         };
-        return await this.devService.calculate_function(item);
+        return await this.devService.calculate_function(item as any);
       }
 
     @UseGuards() // Aucune authentification ou permission requise
@@ -103,7 +103,7 @@ export class DevController {
         @Query('action') action: string,
         @Query('action_localite') action_localite: string[],
         @Query('sujet') sujet: string,
-        @Query('sujet_critere') sujet_critere: string,
+        @Query('sujet_critere') sujet_critere: string | string[],
         @Query('sujet_localite') sujet_localite: string[],
         @Query('sujet_indicateur') sujet_indicateur: string,
         @Query('date_debut') date_debut: string,
@@ -111,14 +111,14 @@ export class DevController {
         @Query('structure_beneficiaire') structure_beneficiaire: string[],
         @Query('fields') fields?: string[],
     ): Promise<any> {
-        const debutDate = date_debut ? new Date(date_debut) : null;
-        const finDate = date_fin ? new Date(date_fin) : null;
+        const debutDate = date_debut ? new Date(date_debut) : new Date(0);
+        const finDate = date_fin ? new Date(date_fin) : new Date();
 
         const item = {
             action,
             action_localite,
             sujet,
-            sujet_critere,
+            sujet_critere: sujet_critere ? (Array.isArray(sujet_critere) ? sujet_critere : [sujet_critere]) : [],
             sujet_localite,
             sujet_indicateur,
             date_debut: debutDate,
