@@ -15,7 +15,6 @@ import { Role } from './roles/role.entity';
 import { Permission } from './permissions/permission.entity';
 import { DataSource } from 'typeorm';
 import { MajQpvService } from './services/maj-qpv/maj-qpv.service';
-import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { AdminController } from './controllers/admin/admin.controller';
 import { UserController } from './user/user.controller';

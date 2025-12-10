@@ -43,7 +43,7 @@ export class SharedViewController {
             @Query('action') action: string,
             @Query('action_localite') action_localite: string[],
             @Query('sujet') sujet: string,
-            @Query('sujet_critere') sujet_critere: string,
+            @Query('sujet_critere') sujet_critere: string | string[],
             @Query('sujet_localite') sujet_localite: string[],
             @Query('sujet_indicateur') sujet_indicateur: string,
             @Query('date_debut') date_debut: string,
@@ -70,14 +70,14 @@ export class SharedViewController {
                 'secteur_recherche',
                 'droit_photo'
             ];
-            const debutDate = date_debut ? new Date(date_debut) : null;
-            const finDate = date_fin ? new Date(date_fin) : null;
+            const debutDate = date_debut ? new Date(date_debut) : new Date(0);
+            const finDate = date_fin ? new Date(date_fin) : new Date();
     
             const item = {
                 action,
                 action_localite,
                 sujet,
-                sujet_critere,
+                sujet_critere: Array.isArray(sujet_critere) ? sujet_critere : (sujet_critere ? [sujet_critere] : []),
                 sujet_localite,
                 sujet_indicateur,
                 date_debut: debutDate,
