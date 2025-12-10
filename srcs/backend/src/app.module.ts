@@ -42,8 +42,8 @@ import { AdminService } from './services/admin/admin.service';
       type: 'postgres',
       host: 'db',
       port: 5432,
-      username: 'myuser',
-      password: 'mypassword',
+      username: 'alex2t',
+      password: 'password2ouf',
       database: 'mydatabase',
       entities: [User, Role, Permission],
       synchronize: true, //TODO : à mettre à false en prod

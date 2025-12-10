@@ -44,7 +44,7 @@ services:
     container_name: db
     environment:
       POSTGRES_USER: alex2t
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: password2ouf
       POSTGRES_DB: mydatabase
     volumes:
       - db_data:/var/lib/postgresql/data
