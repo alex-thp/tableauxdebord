@@ -13,6 +13,7 @@ export interface IRapportXIndicateur extends Document {
   resultat_quality?: string;
   resultat_quantity?: number;
   resultat_commentaire?: string;
+  total_quantity?: number;
   date_debut?: Date;
   date_fin?: Date;
   structure_beneficiaire?: string[];
@@ -32,6 +33,7 @@ const RapportXIndicateurSchema: Schema<IRapportXIndicateur> = new Schema({
   resultat_quality: { type: String },
   resultat_quantity: { type: Number },
   resultat_commentaire: { type: String },
+  total_quantity: { type: Number },
   date_debut: { type: Date },
   date_fin: { type: Date },
   structure_beneficiaire: { type: [String] },
