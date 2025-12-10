@@ -31,7 +31,7 @@ services:
   backend:
     build:
       context: ./srcs/backend
-      dockerfile: ./Dev.dockerfile
+      dockerfile: ./Dockerfile
     environment:
       - NODE_ENV=production
     expose:
