@@ -22,6 +22,7 @@ export interface ViewData {
     nb_cand_bien_etre?: number,
     nb_cand_cdp_et_bien_etre?: number,
     nb_session_acc?: number,
+    nb_inscrits_session_acc: number,
     nv_benevole?: number,
     benev_en_atelier?: number,
     nb_sensi?: number,

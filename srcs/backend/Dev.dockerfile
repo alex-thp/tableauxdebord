@@ -1,8 +1,9 @@
 FROM node:20-slim
 
 ENV TZ=Europe/Paris
+ENV PUPPETEER_SKIP_DOWNLOAD=true
 
-# Puppeteer recommande ces dépendances pour Chromium
+# Dépendances système requises par Chromium
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -28,30 +29,13 @@ RUN apt-get update && \
     bash \
     && rm -rf /var/lib/apt/lists/*
 
-# Définir le répertoire de travail
 WORKDIR /usr/src/app
 
-# Installer Puppeteer (avec Chromium)
 COPY package*.json ./
-RUN npm install -g @nestjs/cli ts-node-dev && npm install
 
-# Ne copie PAS le code source ici (volume monté)
+RUN npm install -g @nestjs/cli ts-node-dev \
+    && npm install
+
 EXPOSE 3000
 
 CMD ["ts-node-dev", "--respawn", "--poll", "--transpile-only", "src/main.ts"]
-
-#FROM node:20-alpine
-
-#ENV TZ=Europe/Paris
-
-#RUN apk add --no-cache bash
-
-#WORKDIR /usr/src/app
-
-#COPY package*.json ./
-#RUN npm install -g @nestjs/cli ts-node-dev
-#RUN npm install
-
-#EXPOSE 3000
-
-#CMD ["ts-node-dev", "--respawn", "--poll", "--transpile-only", "src/main.ts"]

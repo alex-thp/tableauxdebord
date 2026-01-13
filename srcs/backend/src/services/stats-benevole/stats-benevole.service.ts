@@ -566,6 +566,87 @@ export class StatsBenevoleService {
     return result[0] ?? { total: 0, avec_date_premier_atelier: 0 };
   }
 
+  async get_nb_benev_inscrit_session_accueil(
+    evenement_benev_x_benev: any,
+    date_debut: Date,
+    date_fin: Date,
+  ): Promise<{ total: number; avec_date_premier_atelier: number }> {
+    const result = await evenement_benev_x_benev.aggregate([
+      {
+        $match: {
+      }
+    },
+      // Jointure avec les événements
+      {
+        $lookup: {
+          from: 'evenementbenevs',
+          localField: 'evenement_benevole_record_id',
+          foreignField: 'record_id',
+          as: 'evenement',
+        },
+      },
+      { $unwind: '$evenement' },
+  
+      // Filtrage sur la date de l’événement lié et statut Présent
+      {
+        $match: {
+          'evenement.date': { $gte: date_debut, $lt: date_fin },
+        },
+      },
+  
+      // Groupement par bénévole
+      {
+        $group: {
+          _id: '$benevole_record_id',
+        },
+      },
+  
+      // Jointure avec la collection des bénévoles
+      {
+        $lookup: {
+          from: 'benevs',
+          localField: '_id',
+          foreignField: 'record_id',
+          as: 'benevole',
+        },
+      },
+      { $unwind: '$benevole' },
+      // Ajout d’un champ booléen pour indiquer si la date existe
+      {
+        $addFields: {
+          a_date_premier_atelier: {
+            $cond: [
+              { $ne: ['$benevole.date_premier_atelier', null] },
+              true,
+              false,
+            ],
+          },
+        },
+      },
+  
+      // Résumé final
+      {
+        $group: {
+          _id: null,
+          total: { $sum: 1 },
+          avec_date_premier_atelier: {
+            $sum: {
+              $cond: ['$a_date_premier_atelier', 1, 0],
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          total: 1,
+          avec_date_premier_atelier: 1,
+        },
+      },
+    ]).toArray();  
+    return result[0] ?? { total: 0, avec_date_premier_atelier: 0 };
+  }
+
   async get_nb_presence_atelier_benev(cdpenrbenev, date_debut, date_fin) {
     const nb_presence_atelier_benev = await cdpenrbenev.aggregate([
       {
@@ -607,7 +688,11 @@ export class StatsBenevoleService {
   async getViewData(date_debut, date_fin) {
 
     date_debut = new Date(date_debut);
+    const today = new Date();
     date_fin = new Date(date_fin);
+    if(date_fin > today) {
+      date_fin = today;
+    }
     
     const connection = this.mongodb.client.db('test');
     const cdpenrbenev = connection.collection("cdpenrbenevs");
@@ -616,6 +701,7 @@ export class StatsBenevoleService {
     let result = {
       label: "Pôle Bénévole",
       nb_session_acc: 0,
+      nb_inscrits_session_acc: 0,
       nv_benevole: 0,
       benev_en_atelier: 0,
       nb_sensi: 0,
@@ -630,6 +716,7 @@ export class StatsBenevoleService {
 
     const nb_session_acc = await this.get_nb_session_acc(evenement_benev, date_debut, date_fin);
     const nb_benev_session_accueil = await this.get_nb_benev_session_accueil(evenement_benev_x_benev, date_debut, date_fin);
+    const nb_benev_inscrit_session_accueil = await this.get_nb_benev_inscrit_session_accueil(evenement_benev_x_benev, date_debut, date_fin);
     const nb_sensi = await this.get_nb_sensi(evenement_benev, date_debut, date_fin);
     const nb_present_sensi = await this.get_nb_present_sensi(evenement_benev, date_debut, date_fin);
     const nb_presence_atelier_benev = await this.get_nb_presence_atelier_benev(cdpenrbenev, date_debut, date_fin);
@@ -641,6 +728,7 @@ export class StatsBenevoleService {
     result.nb_session_acc = nb_session_acc[0]?.count || 0;
     result.nv_benevole = nb_benev_session_accueil?.total || 0;
     result.benev_en_atelier = nb_benev_session_accueil?.avec_date_premier_atelier || 0;
+    result.nb_inscrits_session_acc = nb_benev_inscrit_session_accueil?.total || 0;
     result.nb_sensi = nb_sensi?.total || 0;
     result.array_one = nb_sensi?.repartition || [];
     result.nb_present_sensi = nb_present_sensi[0]?.count || 0;

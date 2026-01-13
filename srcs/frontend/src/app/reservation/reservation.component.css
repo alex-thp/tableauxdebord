@@ -23,6 +23,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+  flex-direction: column;
   justify-content: center;
 }
 
@@ -125,21 +126,56 @@
   animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Ovale principal — taille fixe */
+/* Overlay : empilement vertical */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(240, 245, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px; /* espace entre logo et loader */
+  z-index: 9999;
+}
+
+/* Conteneur de l'image */
+.page-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+/* Conteneur du logo */
+.loader-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Image du logo */
+.loader-logo img {
+  width: 20%;
+  height: auto;
+  margin-bottom: 5px;
+}
+
+/* Loader existant inchangé */
 .loader-container {
-  width: 600px;             /* largeur fixe */
-  height: 400px;            /* hauteur fixe */
+  width: 600px;
+  height: 400px;
   background: white;
-  border: 10px solid #3a6ea5; /* bleu moyen foncé */
-  border-radius: 50% / 40%; /* ovale horizontal */
+  border: 10px solid #3a6ea5;
+  border-radius: 50% / 40%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-  animation: pulseBorder 2.5s ease-in-out infinite;
-  overflow: hidden;
 }
+
 
 /* GIF centré et fixe */
 .loader-gif {

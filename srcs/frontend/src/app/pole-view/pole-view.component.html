@@ -101,6 +101,10 @@
             <h3 class="main">Session d'acceuil</h3>
             <p>Nombre d'actions: <span>{{ (data.nb_session_acc || 0) }}</span></p>
             <p>Nouveaux bénévoles: <span>{{ data.nv_benevole || 0 }}</span></p>
+            <p>Nombre d'inscrits en session d'accueil: <span>{{ data.nb_inscrits_session_acc || 0 }}</span></p>
+            <p>Taux de présence: <span>{{ ((data.nv_benevole || 0) / (data.nb_inscrits_session_acc || 1) * 100).toFixed(2) }}%</span></p>
+            <p>Nouveaux bénévoles moyen par session d'accueil: <span>{{ ((data.nv_benevole || 0) / (data.nb_session_acc || 1) || 0).toFixed(2) }}</span></p>
+            <p>Nombre d'inscrits moyen en session d'accueil: <span>{{ ((data.nb_inscrits_session_acc || 0) / (data.nb_session_acc || 1)).toFixed(2) || 0 }}</span></p>
             <p>Taux de transformation: <span>{{ ((data.benev_en_atelier || 0) / (data.nv_benevole || 0) * 100 || 0).toFixed(2) }}%</span></p>
         </div>
         <div class="data-block" *ngIf="data.nb_action_benev !== undefined && data.nb_actions_93_95 !== undefined">

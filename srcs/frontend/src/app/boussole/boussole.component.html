@@ -83,13 +83,13 @@
             ({{ taux_qpv_fixe | number:'1.0-0' }}% fixe, {{ taux_qpv_mobile | number:'1.0-0' }}% mobile)
           </li>
           <li>% candidats fin de parcours : 
-            <strong>{{ pourcent_fin_parcours_string | number:'1.0-0' }}%</strong>
+            <strong>{{ pourcent_fin_parcours_string }}%</strong>
             <!--<span [style.color]="getDiffPercent(pourcent_fin_parcours_string, old_pourcent_fin_parcours_string).color">-->
               <!--({{ getDiffPercent(pourcent_fin_parcours_string, old_pourcent_fin_parcours_string).value }}%)-->
             <!--</span>-->
           </li>
           <li>% candidats remobilisation : 
-            <strong>{{ pourcent_remob_string | number:'1.0-0' }}%</strong>
+            <strong>{{ pourcent_remob_string }}%</strong>
             <!--<span [style.color]="getDiffPercent(pourcent_remob_string, old_pourcent_remob_string).color">-->
               <!--({{ getDiffPercent(pourcent_remob_string, old_pourcent_remob_string).value }}%)-->
             <!--</span>-->
@@ -281,6 +281,18 @@
             <strong>{{ boussoleData.benevoles.pourcent_be_vs_bc | number:'1.0-0' }}%</strong>
             <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.pourcent_be_vs_bc, old_boussoleData.benevoles.pourcent_be_vs_bc).color">-->
               <!--({{ getDiffPercent(boussoleData.benevoles.pourcent_be_vs_bc, old_boussoleData.benevoles.pourcent_be_vs_bc).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>bénévoles adhérents droit de vote : 
+            <strong>{{ boussoleData.benevoles.nombre_benevoles_adherents_droit_vote | number:'1.0-0' }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nombre_benevoles_adherents_droit_vote, old_boussoleData.benevoles.nombre_benevoles_adherents_droit_vote).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.nombre_benevoles_adherents_droit_vote, old_boussoleData.benevoles.nombre_benevoles_adherents_droit_vote).value }}%)-->
+            <!--</span>-->
+          </li>
+          <li>bénévoles adhérents : 
+            <strong>{{ boussoleData.benevoles.nombre_benevoles_adherents | number:'1.0-0' }}</strong>
+            <!--<span [style.color]="getDiffPercent(boussoleData.benevoles.nombre_benevoles_adherents, old_boussoleData.benevoles.nombre_benevoles_adherents).color">-->
+              <!--({{ getDiffPercent(boussoleData.benevoles.nombre_benevoles_adherents, old_boussoleData.benevoles.nombre_benevoles_adherents).value }}%)-->
             <!--</span>-->
           </li>
           <li>% bénévoles adhérents : 

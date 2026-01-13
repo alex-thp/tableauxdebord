@@ -48,7 +48,9 @@ export class BoussoleComponent implements OnInit {
       nb_participants_uniques_sensi_visites: 0,
       nb_venues_ateliers: { "1x": 0, "2x": 0, "3x": 0, "4x et plus": 0 },
       pourcent_be_vs_bc: 0,
+      nombre_benevoles_adherents: 0,
       pourcent_benevoles_adherents: 0,
+      nombre_benevoles_adherents_droit_vote: 0,
       taux_satisfaction_utilite_benevolat: 0,
     },
     pc: {
@@ -114,7 +116,9 @@ export class BoussoleComponent implements OnInit {
       nb_participants_uniques_sensi_visites: 0,
       nb_venues_ateliers: { "1x": 0, "2x": 0, "3x": 0, "4x et plus": 0 },
       pourcent_be_vs_bc: 0,
+      nombre_benevoles_adherents: 0,
       pourcent_benevoles_adherents: 0,
+      nombre_benevoles_adherents_droit_vote: 0,
       taux_satisfaction_utilite_benevolat: 0,
     },
     pc: {
@@ -252,6 +256,7 @@ loadBoussoleLastYearData() {
     this.chargement = true;
 
     this.boussoleService.getBoussoleData(dateDebut, dateFin).subscribe(data => {
+      console.log("Boussole data reçue :", data);
     this.boussoleData = data;
 
       // Calculs pour le HTML

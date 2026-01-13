@@ -11,6 +11,7 @@ export interface IBenev extends Document {
   nom?: string;
   prenom?: string;
   mail?: string;
+  tableau_date_adhesion?: [Date];
 }
 
 // Créer le schéma Mongoose basé sur l'interface
@@ -24,6 +25,7 @@ const BenevSchema: Schema<IBenev> = new Schema({
   nom: { type: String },
   prenom: { type: String },
   mail: { type: String },
+  tableau_date_adhesion: { type: [Date] },
 });
 
 // Créer et exporter le modèle

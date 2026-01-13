@@ -42,6 +42,7 @@ export class BoussoleService {
                         nb_participants_uniques_sensi_visites : 0,
                         nb_venues_ateliers : { "1x": 0, "2x": 0, "3x": 0, "4x et plus": 0 },
                         pourcent_be_vs_bc : 0,
+                        nombre_benevoles_adherents : 0,
                         pourcent_benevoles_adherents : 0,
                         taux_satisfaction_utilite_benevolat : 0,
                     },
@@ -81,8 +82,10 @@ export class BoussoleService {
                         nb_evenements_sensi_visites : 0,
                         nb_participants_uniques_sensi_visites : 0,
                         nb_venues_ateliers : { "1x": 0, "2x": 0, "3x": 0, "4x et plus": 0 },
+                        nombre_benevoles_adherents : 0,
                         pourcent_be_vs_bc : 0,
                         pourcent_benevoles_adherents : 0,
+                        nombre_benevoles_adherents_droit_vote : 0,
                         taux_satisfaction_utilite_benevolat : 0,
                     };
 
@@ -404,6 +407,71 @@ const result = await cdpenrbenev.aggregate([
   }
 ]).toArray();
 
+const nombre_benevoles_adherents = await benev.aggregate([
+  {
+    $match: {
+      tableau_date_adhesion: {
+        $elemMatch: { $gte: new Date(date_debut), $lte: new Date(date_fin) }
+      }
+    }
+  },
+  {
+    $count: "count"
+  }
+]).toArray();
+
+const nombre_benevoles_adherents_droit_vote = await benev.aggregate([
+  {
+    $match: {
+      tableau_date_adhesion: {
+        $elemMatch: { $gte: new Date(date_debut), $lte: new Date(date_fin) }
+      }
+    }
+  },
+  {
+    // Lookup pour récupérer les ateliers liés dans CdpEnrBenev
+    $lookup: {
+      from: "cdpenrbenevs",
+      localField: "record_id",
+      foreignField: "benevole_id",
+      as: "cdp_x_benev"
+    }
+  },
+  {
+    // Filtrer uniquement les ateliers "Présent" et dans la période
+    $addFields: {
+      ateliers_dans_periode: {
+        $filter: {
+          input: "$cdp_x_benev",
+          as: "cxb",
+          cond: {
+            $and: [
+              { $eq: ["$$cxb.statut", "Présent"] },
+              { $gte: ["$$cxb.date_atelier", new Date(date_debut)] },
+              { $lte: ["$$cxb.date_atelier", new Date(date_fin)] }
+            ]
+          }
+        }
+      }
+    }
+  },
+  {
+    // Garder uniquement ceux avec 4 ateliers ou plus
+    $match: {
+      "ateliers_dans_periode.3": { $exists: true }
+    }
+  },
+  {
+    $count: "count"
+  }
+]).toArray();
+
+console.log("nombre_benevoles_adherents_droit_vote:", nombre_benevoles_adherents_droit_vote[0]?.count);
+
+data.nombre_benevoles_adherents_droit_vote =
+  nombre_benevoles_adherents_droit_vote[0]?.count || 0;
+
+
         data.nb_actions_benevole_mobilisees = await nb_presence_atelier_benev[0]?.count || 0;
         data.nb_actions_benevole_mobilisees_93_95 = await nb_presence_atelier_benev_93_95[0]?.count || 0;
         data.nb_ateliers_par_benevole_unique = await repart_benev_nb_atelier.length > 0 ? parseFloat((data.nb_actions_benevole_mobilisees / repart_benev_nb_atelier.reduce((sum, item) => sum + item.count, 0)).toFixed(2)) : 0; // A checker
@@ -414,7 +482,9 @@ const result = await cdpenrbenev.aggregate([
         data.nb_nouveaux_benevoles_session_accueil = await nb_benev_session_accueil[0]?.total || 0;
         data.taux_transformation_session_accueil = await nb_benev_session_accueil[0] && nb_benev_session_accueil[0].total > 0 ? parseFloat(((nb_benev_session_accueil[0].avec_date_premier_atelier) / nb_benev_session_accueil[0].total * 100).toFixed(2)) : 0;
         data.nb_evenements_sensi_visites = await nb_evenement_sensi[0]?.count;
+        data.nombre_benevoles_adherents = await nombre_benevoles_adherents[0]?.count || 0;
         data.nb_participants_uniques_sensi_visites = nb_present_unique_sensi[0]?.count || 0;
+        data.nombre_benevoles_adherents_droit_vote = nombre_benevoles_adherents_droit_vote[0]?.count || 0;
 
         const ouiCount = await benevoles.find(r => r._id.est_be === "Oui")?.count || 0;
         const nonCount = await benevoles.find(r => r._id.est_be === "Non")?.count || 0;
