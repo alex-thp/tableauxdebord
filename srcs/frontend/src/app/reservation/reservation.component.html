@@ -4,28 +4,26 @@
     Sélectionnez l’heure de passage du/de la candidat.e. Celui/celle-ci recevra automatiquement un SMS de confirmation. Nous ne prendrons pas contact avec la personne.
   </h4>
 
-
-<div *ngIf="loader_1 || loader_2" class="loader-overlay">
-  <div class="loader-logo">
-    <img
-      src="assets/images/logo.jpg"
-      alt="Logo"
-      class="loader-logo"
-    />
+  <!-- Loader -->
+  <div *ngIf="loader_1 || loader_2" class="loader-overlay">
+    <div class="loader-logo">
+      <img src="assets/images/logo.jpg" alt="Logo" class="loader-logo" />
+    </div>
+    <div class="loader-container">
+      <img src="assets/images/loader.gif" alt="Chargement..." class="loader-gif" />
+      <div class="loader-text">{{ currentMessage }}</div>
+    </div>
   </div>
-  <div class="loader-container">
-    <img src="assets/images/loader.gif" alt="Chargement..." class="loader-gif" />
-    <div class="loader-text">{{ currentMessage }}</div>
-  </div>
-</div>
 
   <!-- Résultats -->
   <div *ngIf="!loader_1 && !loader_2" class="dispos-wrapper">
-    <img
-      src="assets/images/logo.jpg"
-      alt="Logo"
-      class="loader-logo"
-    />
+
+    <!-- Logo fixe au-dessus de la liste -->
+    <div class="logo-container">
+      <img src="assets/images/logo.jpg" alt="Logo" class="loader-logo" />
+    </div>
+
+    <!-- Liste des disponibilités -->
     <div *ngFor="let dispo of dispos" class="dispo-card">
       <div class="dispo-header">
         <div class="dispo-date">{{ dispo.date | date:'dd/MM/yyyy' }}</div>
@@ -39,8 +37,8 @@
           [class.selected]="dispo.selectedSlot === creneau"
           (click)="selectSlot(dispo, creneau)">
           {{ creneau.HEURE_RDV }}
-      </div>
         </div>
+      </div>
 
       <button
         *ngIf="dispo.selectedSlot"
@@ -48,17 +46,20 @@
         (click)="askForConfirmation(dispo)">
         Réserver
       </button>
-        <div class="overlay" *ngIf="confirmationPanel">
-          <div class="modal">
-            <h2>Confirmation</h2>
-            <h3>Es-tu sûr de vouloir réserver le créneau du {{ dispo.date | date:'dd/MM/yyyy' }} à {{ heure_rdv }} ?</h3>
-            <h3> L'atelier se déroulera au {{ dispo.lieu }}.</h3>
-            <div class="actions">
-              <button class="btn btn-cancel" (click)="onCancel()">Annuler</button>
-              <button class="btn btn-confirm" (click)="reserverCreneau(dispo.date, dispo.selectedSlot)">Confirmer</button>
-            </div>
-          </div>
+    </div>
+
+    <!-- Confirmation panel -->
+    <div class="overlay" *ngIf="confirmationPanel">
+      <div class="modal">
+        <h2>Confirmation</h2>
+        <h3>Es-tu sûr de vouloir réserver le créneau du {{ dispo.date | date:'dd/MM/yyyy' }} à {{ heure_rdv }} ?</h3>
+        <h3>L'atelier se déroulera au {{ dispo.lieu }}.</h3>
+        <div class="actions">
+          <button class="btn btn-cancel" (click)="onCancel()">Annuler</button>
+          <button class="btn btn-confirm" (click)="reserverCreneau(dispo.date, dispo.selectedSlot)">Confirmer</button>
         </div>
-</div>
+      </div>
+    </div>
+
   </div>
 </div>

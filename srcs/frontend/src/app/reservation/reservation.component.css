@@ -149,6 +149,11 @@
   margin-bottom: 10px;
 }
 
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 /* Conteneur du logo */
 .loader-logo {
   display: flex;
