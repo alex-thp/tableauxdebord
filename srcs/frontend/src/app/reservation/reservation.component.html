@@ -16,14 +16,15 @@
   </div>
 
   <!-- Résultats -->
-  <div *ngIf="!loader_1 && !loader_2" class="dispos-wrapper">
+  <div *ngIf="!loader_1 && !loader_2">
 
     <!-- Logo fixe au-dessus de la liste -->
     <div class="logo-container">
-      <img src="assets/images/logo.jpg" alt="Logo" class="loader-logo" />
+      <img src="assets/images/logo.jpg" alt="Logo" class="loader-logo-2" />
     </div>
 
     <!-- Liste des disponibilités -->
+     <div class="dispos-wrapper">
     <div *ngFor="let dispo of dispos" class="dispo-card">
       <div class="dispo-header">
         <div class="dispo-date">{{ dispo.date | date:'dd/MM/yyyy' }}</div>
@@ -58,6 +59,7 @@
           <button class="btn btn-confirm" (click)="reserverCreneau(dispo.date, dispo.selectedSlot)">Confirmer</button>
         </div>
       </div>
+    </div>
     </div>
     </div>
 

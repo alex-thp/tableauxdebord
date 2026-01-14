@@ -25,6 +25,7 @@
   gap: 16px;
   flex-direction: column;
   justify-content: center;
+  align-items: center
 }
 
 .dispo-card {
@@ -150,13 +151,24 @@
 }
 
 .logo-container {
+  display: flex;
   text-align: center;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 20px;
 }
 
 /* Conteneur du logo */
 .loader-logo {
   display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader-logo-2 {
+  display: flex;
+  width: 30%;
+  height: auto;
   justify-content: center;
   align-items: center;
 }
