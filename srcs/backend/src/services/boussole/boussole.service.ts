@@ -87,6 +87,7 @@ export class BoussoleService {
                         pourcent_benevoles_adherents : 0,
                         nombre_benevoles_adherents_droit_vote : 0,
                         taux_satisfaction_utilite_benevolat : 0,
+                        benevoles_actifs: 0,
                     };
 
         const nb_presence_atelier_benev = await cdpenrbenev.aggregate([
@@ -407,11 +408,14 @@ const result = await cdpenrbenev.aggregate([
   }
 ]).toArray();
 
+const adhesion_date_debut = new Date(date_fin);
+adhesion_date_debut.setDate(adhesion_date_debut.getDate() - 365);
+
 const nombre_benevoles_adherents = await benev.aggregate([
   {
     $match: {
       tableau_date_adhesion: {
-        $elemMatch: { $gte: new Date(date_debut), $lte: new Date(date_fin) }
+        $elemMatch: { $gte: adhesion_date_debut, $lte: new Date(date_fin) }
       }
     }
   },
@@ -424,7 +428,7 @@ const nombre_benevoles_adherents_droit_vote = await benev.aggregate([
   {
     $match: {
       tableau_date_adhesion: {
-        $elemMatch: { $gte: new Date(date_debut), $lte: new Date(date_fin) }
+        $elemMatch: { $gte: adhesion_date_debut, $lte: new Date(date_fin) }
       }
     }
   },
@@ -447,7 +451,7 @@ const nombre_benevoles_adherents_droit_vote = await benev.aggregate([
           cond: {
             $and: [
               { $eq: ["$$cxb.statut", "Présent"] },
-              { $gte: ["$$cxb.date_atelier", new Date(date_debut)] },
+              { $gte: ["$$cxb.date_atelier", adhesion_date_debut] },
               { $lte: ["$$cxb.date_atelier", new Date(date_fin)] }
             ]
           }
@@ -466,11 +470,38 @@ const nombre_benevoles_adherents_droit_vote = await benev.aggregate([
   }
 ]).toArray();
 
-console.log("nombre_benevoles_adherents_droit_vote:", nombre_benevoles_adherents_droit_vote[0]?.count);
 
 data.nombre_benevoles_adherents_droit_vote =
   nombre_benevoles_adherents_droit_vote[0]?.count || 0;
 
+  const benevoles_actifs = await cdpenrbenev.aggregate([
+  {
+    $match: {
+      benevole_id: { $ne: null },
+      date_atelier: { $gte: adhesion_date_debut, $lt: date_fin },
+      statut: { $in: ["Présent"] }
+    }
+  },
+  {
+    // un bénévole ne compte qu'une fois
+    $group: {
+      _id: "$benevole_id"
+    }
+  },
+  {
+    // récupération des infos du bénévole
+    $lookup: {
+      from: "benevs",
+      localField: "_id",
+      foreignField: "record_id",
+      as: "benevole"
+    }
+  },
+  { $unwind: "$benevole" },
+  {
+    $replaceRoot: { newRoot: "$benevole" }
+  }
+]).toArray();
 
         data.nb_actions_benevole_mobilisees = await nb_presence_atelier_benev[0]?.count || 0;
         data.nb_actions_benevole_mobilisees_93_95 = await nb_presence_atelier_benev_93_95[0]?.count || 0;
@@ -485,10 +516,13 @@ data.nombre_benevoles_adherents_droit_vote =
         data.nombre_benevoles_adherents = await nombre_benevoles_adherents[0]?.count || 0;
         data.nb_participants_uniques_sensi_visites = nb_present_unique_sensi[0]?.count || 0;
         data.nombre_benevoles_adherents_droit_vote = nombre_benevoles_adherents_droit_vote[0]?.count || 0;
+        data.benevoles_actifs = benevoles_actifs.length || 0;
+        data.pourcent_benevoles_adherents = benevoles_actifs.length > 0 ? parseFloat(((data.nombre_benevoles_adherents / benevoles_actifs.length) * 100).toFixed(2)) : 0;
 
         const ouiCount = await benevoles.find(r => r._id.est_be === "Oui")?.count || 0;
         const nonCount = await benevoles.find(r => r._id.est_be === "Non")?.count || 0;
         const total = ouiCount + nonCount;
+
         const pourcentBE = total > 0 ? (ouiCount / total) * 100 : 0;
 
         data.pourcent_be_vs_bc = parseFloat(pourcentBE.toFixed(2));
