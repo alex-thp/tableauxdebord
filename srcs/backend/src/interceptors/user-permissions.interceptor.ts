@@ -12,7 +12,10 @@ import { UserService } from '../user/user.service';
 export class UserPermissionsInterceptor implements NestInterceptor {
   constructor(private readonly userService: UserService) {}
 
-  async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
+  async intercept(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
     const url: string = request.url;
@@ -24,12 +27,14 @@ export class UserPermissionsInterceptor implements NestInterceptor {
     }
 
     if (user && user.id) {
-        const fullUser = await this.userService.findUserWithRolesAndPermissions(user.id);
-        if (!fullUser) {
-            throw new Error('User not found');
-        }
-        request.user.roles = fullUser.roles.map(r => r.name); // ['admin', 'editor']
-        request.user.permissions = fullUser.permissions; // ['user.read']
+      const fullUser = await this.userService.findUserWithRolesAndPermissions(
+        user.id,
+      );
+      if (!fullUser) {
+        throw new Error('User not found');
+      }
+      request.user.roles = fullUser.roles.map((r) => r.name); // ['admin', 'editor']
+      request.user.permissions = fullUser.permissions; // ['user.read']
     }
 
     return next.handle();

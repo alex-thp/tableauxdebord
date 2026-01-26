@@ -25,23 +25,26 @@ export class CardComponent implements OnChanges {
       switch (this.data.label) {
         case 'Pôle Accompagnement':
           this.i = 1;
-        break;
+          break;
         case 'Pôle Bénévole':
           this.i = 2;
-        break;
+          break;
         case 'Pôle Parcours Cravate':
           this.i = 3;
-        break;
+          break;
       }
     }
   }
 
   toggleFullScreen(): void {
-    console.log(this.i)
-    this.router.navigate(['/view', `${this.i}`]).then(nav => {
-      console.log(nav); // true if navigation is successful
-    }, err => {
-      console.log(err) // when there's an error
-    });
+    console.log(this.i);
+    this.router.navigate(['/view', `${this.i}`]).then(
+      (nav) => {
+        console.log(nav); // true if navigation is successful
+      },
+      (err) => {
+        console.log(err); // when there's an error
+      }
+    );
   }
 }

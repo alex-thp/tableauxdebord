@@ -1,5 +1,17 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 export interface RoleOption {
@@ -25,7 +37,10 @@ export class UserRoleEditorComponent implements OnChanges {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
+      email: [
+        { value: '', disabled: true },
+        [Validators.required, Validators.email],
+      ],
       roleId: [null, Validators.required],
     });
   }
@@ -47,7 +62,7 @@ export class UserRoleEditorComponent implements OnChanges {
 
       this.save.emit({
         userId: this.userId,
-        roleId
+        roleId,
       });
     }
   }

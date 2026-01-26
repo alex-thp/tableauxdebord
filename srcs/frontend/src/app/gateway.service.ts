@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GatewayService {
   private baseUrl = '/api';
@@ -17,7 +17,11 @@ export class GatewayService {
     return this.http.get(`${this.baseUrl}`);
   }
 
-  getViewData(mode: number, date_debut: Date | null, date_fin: Date | null): Observable<any> {
+  getViewData(
+    mode: number,
+    date_debut: Date | null,
+    date_fin: Date | null
+  ): Observable<any> {
     let params = new HttpParams().set('mode', mode.toString());
     if (date_debut) params = params.set('date_debut', date_debut.toISOString());
     if (date_fin) params = params.set('date_fin', date_fin.toISOString());
@@ -47,7 +51,11 @@ export class GatewayService {
     return this.http.get<any[]>(`${this.baseUrl}/user/with-roles`);
   }
 
-  createUser(newUser: { email: string; password: string; roleId: number }): Observable<any> {
+  createUser(newUser: {
+    email: string;
+    password: string;
+    roleId: number;
+  }): Observable<any> {
     return this.http.post(`${this.baseUrl}/user/create`, newUser);
   }
 
@@ -56,7 +64,10 @@ export class GatewayService {
   }
 
   adminChangePassword(userId: number, newPassword: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/admin/change-password`, { userId, newPassword });
+    return this.http.post(`${this.baseUrl}/admin/change-password`, {
+      userId,
+      newPassword,
+    });
   }
 
   deleteUser(userId: number): Observable<any> {
@@ -66,7 +77,7 @@ export class GatewayService {
   getAdminDashboardData(): Observable<any> {
     const token = localStorage.getItem('token');
     return this.http.get(`${this.baseUrl}/admin/dashboard`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
   }
 
@@ -84,7 +95,7 @@ export class GatewayService {
     const token = localStorage.getItem('token');
     return this.http.post(`${this.baseUrl}/pdf/merge`, formData, {
       headers: { Authorization: `Bearer ${token || ''}` },
-      responseType: 'blob'
+      responseType: 'blob',
     });
   }
 
@@ -92,24 +103,32 @@ export class GatewayService {
     const token = localStorage.getItem('token');
     return this.http.post(`${this.baseUrl}/pdf/mergeAtIndex`, formData, {
       headers: { Authorization: `Bearer ${token || ''}` },
-      responseType: 'blob'
+      responseType: 'blob',
     });
   }
 
   generatePdfFromHtml(html: string): Observable<Blob> {
     const token = localStorage.getItem('token');
-    return this.http.post(`${this.baseUrl}/pdf/generate`, { html }, {
-      headers: { Authorization: `Bearer ${token || ''}` },
-      responseType: 'blob'
-    });
+    return this.http.post(
+      `${this.baseUrl}/pdf/generate`,
+      { html },
+      {
+        headers: { Authorization: `Bearer ${token || ''}` },
+        responseType: 'blob',
+      }
+    );
   }
 
   downloadBoussolePdf(html: string): Observable<Blob> {
     const token = localStorage.getItem('token');
-    return this.http.post(`${this.baseUrl}/pdf/downloadBoussolePdf`, { html }, {
-      headers: { Authorization: `Bearer ${token || ''}` },
-      responseType: 'blob'
-    });
+    return this.http.post(
+      `${this.baseUrl}/pdf/downloadBoussolePdf`,
+      { html },
+      {
+        headers: { Authorization: `Bearer ${token || ''}` },
+        responseType: 'blob',
+      }
+    );
   }
 
   benevolePdf(): Observable<any[]> {

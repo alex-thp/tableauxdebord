@@ -25,11 +25,10 @@ import {
   EvenementPc,
   EvenementBenev,
   EvenementBenevXBenev,
-} from "../../models";
+} from '../../models';
 
 @Injectable()
 export class MongoDbService {
-
   uri = process.env.MONGODB_URL as string;
   client: MongoClient = new MongoClient(this.uri);
   BATCH_SIZE = 2000;
@@ -67,13 +66,13 @@ export class MongoDbService {
       EvenementPc.deleteMany({}),
     ]);
     await mongoose.connection.close();
-    return "ended";
+    return 'ended';
   }
 
   async copyBaseFunction(baseToInsert: any): Promise<string> {
     try {
       await mongoose.connect(this.uri);
-      console.log("Start of deletion");
+      console.log('Start of deletion');
 
       await Promise.all([
         DossierFi.deleteMany({}),
@@ -100,10 +99,10 @@ export class MongoDbService {
         EvenementBenev.deleteMany({}),
         EvenementBenevXBenev.deleteMany({}),
       ]);
-      console.log("End of deletion");
+      console.log('End of deletion');
 
       const tmp = baseToInsert;
-      console.log("End of getDatabase");
+      console.log('End of getDatabase');
 
       await Promise.all([
         this.insertInBatches(DossierFi, tmp[0]),
@@ -131,24 +130,24 @@ export class MongoDbService {
         this.insertInBatches(EvenementBenevXBenev, tmp[22]),
       ]);
 
-      console.log("End of copybase function");
-      return "ended";
+      console.log('End of copybase function');
+      return 'ended';
     } catch (error) {
-      console.error("An error occurred:", error);
-      return "error";
+      console.error('An error occurred:', error);
+      return 'error';
     } finally {
-      console.log("Copie de la BDD terminée");
+      console.log('Copie de la BDD terminée');
       await mongoose.connection.close();
     }
   }
 
   async getTable(tableName: string): Promise<any> {
     try {
-      const db = this.client.db("test");
+      const db = this.client.db('test');
       const table = db.collection(tableName);
       return table;
     } catch (error) {
-      console.error("Error fetching collections:", error);
+      console.error('Error fetching collections:', error);
       throw error;
     } finally {
       await mongoose.connection.close();

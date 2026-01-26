@@ -20,7 +20,7 @@ export class ProgressBarComponent implements OnChanges {
       this.percentage = 0;
       return;
     }
-    
+
     const rawPercentage = (this.realise / this.attendu) * 100;
     this.percentage = Math.min(Math.max(rawPercentage, 0), 100); // Borné entre 0-100%
   }

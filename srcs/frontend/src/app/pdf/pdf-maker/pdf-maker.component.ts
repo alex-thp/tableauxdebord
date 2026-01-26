@@ -50,8 +50,12 @@ export class PdfMakerComponent {
     this.gatewayService.benevolePdf().subscribe({
       next: (data: any[]) => {
         // 2️⃣ Chaîner les requêtes de génération de PDF dans la même exécution
-        const tasks = data.map((benev) => this.generateAndDownloadForBenev(benev));
-        Promise.all(tasks).then(() => console.log('Tous les PDFs ont été téléchargés'));
+        const tasks = data.map((benev) =>
+          this.generateAndDownloadForBenev(benev)
+        );
+        Promise.all(tasks).then(() =>
+          console.log('Tous les PDFs ont été téléchargés')
+        );
       },
       error: (err) => console.error('Erreur récupération bénévoles', err),
     });
@@ -83,7 +87,10 @@ export class PdfMakerComponent {
     // Remplacer les placeholders du template
     const htmlForBenev = this.htmlContent
       .replace('{{benev_prenom}}', prenom)
-      .replace('{{heure_coaching}}', `${((nb_coachings * 40) / 60).toFixed(0)}h`)
+      .replace(
+        '{{heure_coaching}}',
+        `${((nb_coachings * 40) / 60).toFixed(0)}h`
+      )
       .replace('{{nb_personnes_accompagnees}}', nb_coachings.toString())
       .replace('{{secteur 1}}', top_secteurs[0] || '')
       .replace('{{secteur 2}}', top_secteurs[1] || '')

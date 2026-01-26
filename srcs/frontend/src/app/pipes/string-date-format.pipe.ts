@@ -2,13 +2,15 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 @Pipe({
-  name: 'stringDateFormat'
+  name: 'stringDateFormat',
 })
 export class StringDateFormatPipe implements PipeTransform {
-
   private datePipe = new DatePipe('fr-FR');
 
-  transform(value: string | null | undefined, format = 'dd/MM/yyyy'): string | null {
+  transform(
+    value: string | null | undefined,
+    format = 'dd/MM/yyyy'
+  ): string | null {
     if (!value) return null;
 
     const date = new Date(value);

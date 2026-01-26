@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-localite-card',
   templateUrl: './localite-card.component.html',
   styleUrls: ['./localite-card.component.css'],
-  standalone: true
+  standalone: true,
 })
 export class LocaliteCardComponent {
   @Input() localite!: string | number;
@@ -14,6 +14,11 @@ export class LocaliteCardComponent {
   @Input() nextDeadline: string | null = null;
 
   get progress(): number {
-    return this.objectifs === 0 ? 0 : Math.min(100, Math.round((this.objectifsRealises / this.objectifs) * 100));
+    return this.objectifs === 0
+      ? 0
+      : Math.min(
+          100,
+          Math.round((this.objectifsRealises / this.objectifs) * 100)
+        );
   }
 }

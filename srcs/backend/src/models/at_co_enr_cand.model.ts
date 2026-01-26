@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Model } from "mongoose";
+import mongoose, { Document, Schema, Model } from 'mongoose';
 
 // Définir l'interface Mongoose en étendant Document
 export interface IAtCoEnrCand extends Document {
@@ -49,6 +49,9 @@ const AtCoEnrCandSchema: Schema<IAtCoEnrCand> = new Schema({
 });
 
 // Créer et exporter le modèle
-const AtCoEnrCand: Model<IAtCoEnrCand> = mongoose.model<IAtCoEnrCand>("AtCoEnrCand", AtCoEnrCandSchema);
+const AtCoEnrCand: Model<IAtCoEnrCand> = mongoose.model<IAtCoEnrCand>(
+  'AtCoEnrCand',
+  AtCoEnrCandSchema,
+);
 
 export default AtCoEnrCand;

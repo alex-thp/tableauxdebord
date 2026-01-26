@@ -10,27 +10,28 @@ import { UserRoleManagementComponent } from '../user-role-management/user-role-m
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css'],
   imports: [CommonModule, UserRoleManagementComponent],
-  standalone: true
+  standalone: true,
 })
 export class AdminDashboardComponent implements OnInit {
   message: string = '';
   secureData: number[] = [];
   error: string | null = null;
 
-  constructor(private gatewayService: GatewayService,) {}
+  constructor(private gatewayService: GatewayService) {}
 
   ngOnInit(): void {
-        this.gatewayService.getAdminDashboardData().subscribe({
+    this.gatewayService.getAdminDashboardData().subscribe({
       next: (data) => {
-          this.message = data.message;
-          this.secureData = data.secureData;
+        this.message = data.message;
+        this.secureData = data.secureData;
       },
       error: (err) => {
-        this.error = err.status === 403 ? 'Accès refusé (403)' : 'Erreur serveur';
+        this.error =
+          err.status === 403 ? 'Accès refusé (403)' : 'Erreur serveur';
       },
       complete: () => {
         console.log('Requête terminée');
-      }
+      },
     });
   }
 }

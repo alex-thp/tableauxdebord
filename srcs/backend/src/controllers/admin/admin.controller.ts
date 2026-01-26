@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, ForbiddenException, Get, Param, Post, Req, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
+  Param,
+  Post,
+  Req,
+  UnauthorizedException,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Roles } from '../../decorators/roles.decorator';
 import { RolesAndPermissionsGuard } from '../../guards/roles-and-permissions.guard';
 import { AuthGuard } from '@nestjs/passport';
@@ -42,18 +54,12 @@ export class AdminController {
       throw new UnauthorizedException('userId and newPassword are required');
     }
 
-    return this.adminService.adminChangePassword(
-      body.userId,
-      body.newPassword,
-    );
+    return this.adminService.adminChangePassword(body.userId, body.newPassword);
   }
 
   @Roles('superAdmin')
   @Delete('delete-user/:id')
-  async deleteUser(
-    @Req() req: any,
-    @Param('id') userId: number
-  ) {
+  async deleteUser(@Req() req: any, @Param('id') userId: number) {
     const roles = req.user.roles ?? [];
 
     if (!roles.includes('admin')) {

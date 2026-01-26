@@ -6,14 +6,12 @@ import { RolesAndPermissionsGuard } from '../../guards/roles-and-permissions.gua
 
 @Controller('dashboard')
 export class DashboardController {
-    constructor(private readonly dashboardService: DashboardService) {}
+  constructor(private readonly dashboardService: DashboardService) {}
 
-    @UseGuards(AuthGuard('jwt'), RolesAndPermissionsGuard)
-    @Roles('admin')
-    @Get('data')
-    async getDashboardData(
-        @Query('today') today?: Date,
-    ): Promise<any> {
-        return this.dashboardService.getDashboardData(today);
-    }
+  @UseGuards(AuthGuard('jwt'), RolesAndPermissionsGuard)
+  @Roles('admin')
+  @Get('data')
+  async getDashboardData(@Query('today') today?: Date): Promise<any> {
+    return this.dashboardService.getDashboardData(today);
+  }
 }

@@ -9,16 +9,19 @@ import * as featherIcons from '@ng-icons/feather-icons';
   imports: [CommonModule, NgIcon],
   templateUrl: './pole-dev.component.html',
   styleUrl: './pole-dev.component.css',
-  viewProviders: [provideIcons(featherIcons)]
+  viewProviders: [provideIcons(featherIcons)],
 })
 export class PoleDevComponent {
   constructor(private route: ActivatedRoute, private router: Router) {}
 
   toggleFullScreen(): void {
-    this.router.navigate(['/dev']).then(nav => {
-      console.log(nav); // true if navigation is successful
-    }, err => {
-      console.log(err) // when there's an error
-    });
+    this.router.navigate(['/dev']).then(
+      (nav) => {
+        console.log(nav); // true if navigation is successful
+      },
+      (err) => {
+        console.log(err); // when there's an error
+      }
+    );
   }
 }

@@ -19,7 +19,8 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<User | null> {
-    const user = await this.userService.findByEmailWithRolesAndPermissions(email);
+    const user =
+      await this.userService.findByEmailWithRolesAndPermissions(email);
     if (!user) return null;
 
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
@@ -30,8 +31,8 @@ export class AuthService {
     const payload = {
       sub: user.id,
       email: user.email,
-      roles: user.roles.map(r => r.name),
-      permissions: user.roles.flatMap(r => r.permissions.map(p => p.name)),
+      roles: user.roles.map((r) => r.name),
+      permissions: user.roles.flatMap((r) => r.permissions.map((p) => p.name)),
     };
 
     return {
@@ -39,13 +40,20 @@ export class AuthService {
     };
   }
 
-  async register(dto: { email: string; password: string }): Promise<Omit<User, 'passwordHash'>> {
-    const existingUser = await this.userRepository.findOne({ where: { email: dto.email } });
+  async register(dto: {
+    email: string;
+    password: string;
+  }): Promise<Omit<User, 'passwordHash'>> {
+    const existingUser = await this.userRepository.findOne({
+      where: { email: dto.email },
+    });
     if (existingUser) {
       throw new Error('User already exists');
     }
 
-    const userRole = await this.roleRepository.findOne({ where: { name: 'user' } });
+    const userRole = await this.roleRepository.findOne({
+      where: { name: 'user' },
+    });
     if (!userRole) {
       throw new Error('Default role "user" not found');
     }

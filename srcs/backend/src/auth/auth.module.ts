@@ -15,10 +15,10 @@ import { UserModule } from '../user/user.module';
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: 'SECRET_KEY_EXEMPLE',   // TODO : Changer en variable d'env plus tard
+      secret: 'SECRET_KEY_EXEMPLE', // TODO : Changer en variable d'env plus tard
       signOptions: { expiresIn: '8h' },
     }),
-  TypeOrmModule.forFeature([User, Role, Permission]),
+    TypeOrmModule.forFeature([User, Role, Permission]),
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

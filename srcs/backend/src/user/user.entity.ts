@@ -18,7 +18,7 @@ export class User {
   @Column()
   passwordHash: string;
 
-  @ManyToMany(() => Role, role => role.users, { eager: true }) // ← ou { cascade: true } si besoin
+  @ManyToMany(() => Role, (role) => role.users, { eager: true }) // ← ou { cascade: true } si besoin
   @JoinTable()
   roles: Role[];
 }

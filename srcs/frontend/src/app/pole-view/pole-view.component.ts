@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GatewayService } from '../gateway.service';
 import { ViewData } from '../models/view.model';
@@ -11,17 +18,16 @@ import { DateSearchComponent } from '../date-search/date-search.component';
 import { MonthlyComparisonComponent } from '../graphs/monthly-comparison/monthly-comparison.component';
 import { MultiYearLineChartComponent } from '../multi-year-line-chart/multi-year-line-chart.component';
 
-
 @Component({
   selector: 'app-pole-view',
   imports: [
-    CommonModule, 
-    ProgressBarComponent, 
-    PieChartComponent, 
-    NgIcon, 
-    DateSearchComponent, 
-    MonthlyComparisonComponent, 
-    MultiYearLineChartComponent
+    CommonModule,
+    ProgressBarComponent,
+    PieChartComponent,
+    NgIcon,
+    DateSearchComponent,
+    MonthlyComparisonComponent,
+    MultiYearLineChartComponent,
   ],
   templateUrl: './pole-view.component.html',
   styleUrl: './pole-view.component.css',
@@ -29,7 +35,6 @@ import { MultiYearLineChartComponent } from '../multi-year-line-chart/multi-year
   standalone: true,
 })
 export class PoleViewComponent implements OnInit, OnChanges {
-
   data!: ViewData;
   old_data!: ViewData;
   i!: string | null;
@@ -52,14 +57,16 @@ export class PoleViewComponent implements OnInit, OnChanges {
   old_values_two?: any;
   old_colors_two?: any;
   old_currentYear = new Date().getFullYear() - 1;
-  old_date_debut: string = this.formatDate(new Date(this.old_currentYear, 0, 1));
-  old_date_fin: string = this.formatDate(new Date(this.old_currentYear, 11, 31));
-;
-
+  old_date_debut: string = this.formatDate(
+    new Date(this.old_currentYear, 0, 1)
+  );
+  old_date_fin: string = this.formatDate(
+    new Date(this.old_currentYear, 11, 31)
+  );
   constructor(
-    private route: ActivatedRoute, 
+    private route: ActivatedRoute,
     private gatewayService: GatewayService,
-    private cdr: ChangeDetectorRef, 
+    private cdr: ChangeDetectorRef,
     private router: Router
   ) {}
 
@@ -79,7 +86,11 @@ export class PoleViewComponent implements OnInit, OnChanges {
   generateColors(n: number): string[] {
     const colors = [];
     for (let i = 0; i < n; i++) {
-      const color = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+      const color =
+        '#' +
+        Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, '0');
       colors.push(color);
     }
     return colors;
@@ -87,80 +98,137 @@ export class PoleViewComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.i = this.route.snapshot.paramMap.get('i');
-    console.log(this.i)
-    this.gatewayService.getViewData(Number(this.i), new Date(this.date_debut), new Date(this.date_fin)).subscribe({
-      next: (response) => {
-        console.log('Données reçues (requête HTTP) :', response);
-        this.data = response;
-        console.log(this.data.array_one);
-        console.log('Data mise à jour:', this.data);
-        if (this.data.array_one !== undefined && Array.isArray(this.data.array_one)) {
-          this.labels = this.data.array_one.map((item: { type: string }) => item.type);
-          this.values = this.data.array_one.map((item: { count: number }) => item.count);
-          this.colors = this.generateColors(this.data.array_one.length);
-        }
-        if (this.data.array_two !== undefined && Array.isArray(this.data.array_two)) {
-          this.labels_two = this.data.array_two.map((item: { type: string }) => item.type);
-          this.values_two = this.data.array_two.map((item: { count: number }) => item.count);
-          this.colors_two = this.generateColors(this.data.array_two.length);
-        }
-        if (this.data.array_three !== undefined && Array.isArray(this.data.array_three)) {
-          this.labels_three = this.data.array_three.map((item: { type: string }) => item.type);
-          this.values_three = this.data.array_three.map((item: { count: number }) => item.count);
-          this.colors_three = this.generateColors(this.data.array_three.length);
-        }
-  
-        // Force Angular à détecter les changements après la mise à jour de `data`
-        this.cdr.detectChanges();
-      },
-      error: (error) => {
-        console.error('Erreur lors de la requête HTTP:', error);
-      }
-    });
-    this.gatewayService.getViewData(Number(this.i), new Date(this.old_date_debut), new Date(this.old_date_fin)).subscribe({
-      next: (response) => {
-        console.log('Données reçues (requête HTTP) :', response);
-        this.old_data = response;
-        console.log(this.data.array_one);
-        console.log('Data mise à jour:', this.data);
-        if (this.data.array_one !== undefined && Array.isArray(this.data.array_one)) {
-          this.old_labels = this.data.array_one.map((item: { type: string }) => item.type);
-          this.old_values = this.data.array_one.map((item: { count: number }) => item.count);
-          this.old_colors = this.generateColors(this.data.array_one.length);
-        }
-        if (this.data.array_two !== undefined && Array.isArray(this.data.array_two)) {
-          this.old_labels_two = this.data.array_two.map((item: { type: string }) => item.type);
-          this.old_values_two = this.data.array_two.map((item: { count: number }) => item.count);
-          this.old_colors_two = this.generateColors(this.data.array_two.length);
-        }
-  
-        // Force Angular à détecter les changements après la mise à jour de `data`
-        this.cdr.detectChanges();
-      },
-      error: (error) => {
-        console.error('Erreur lors de la requête HTTP:', error);
-      }
-    });
+    console.log(this.i);
+    this.gatewayService
+      .getViewData(
+        Number(this.i),
+        new Date(this.date_debut),
+        new Date(this.date_fin)
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Données reçues (requête HTTP) :', response);
+          this.data = response;
+          console.log(this.data.array_one);
+          console.log('Data mise à jour:', this.data);
+          if (
+            this.data.array_one !== undefined &&
+            Array.isArray(this.data.array_one)
+          ) {
+            this.labels = this.data.array_one.map(
+              (item: { type: string }) => item.type
+            );
+            this.values = this.data.array_one.map(
+              (item: { count: number }) => item.count
+            );
+            this.colors = this.generateColors(this.data.array_one.length);
+          }
+          if (
+            this.data.array_two !== undefined &&
+            Array.isArray(this.data.array_two)
+          ) {
+            this.labels_two = this.data.array_two.map(
+              (item: { type: string }) => item.type
+            );
+            this.values_two = this.data.array_two.map(
+              (item: { count: number }) => item.count
+            );
+            this.colors_two = this.generateColors(this.data.array_two.length);
+          }
+          if (
+            this.data.array_three !== undefined &&
+            Array.isArray(this.data.array_three)
+          ) {
+            this.labels_three = this.data.array_three.map(
+              (item: { type: string }) => item.type
+            );
+            this.values_three = this.data.array_three.map(
+              (item: { count: number }) => item.count
+            );
+            this.colors_three = this.generateColors(
+              this.data.array_three.length
+            );
+          }
+
+          // Force Angular à détecter les changements après la mise à jour de `data`
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Erreur lors de la requête HTTP:', error);
+        },
+      });
+    this.gatewayService
+      .getViewData(
+        Number(this.i),
+        new Date(this.old_date_debut),
+        new Date(this.old_date_fin)
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Données reçues (requête HTTP) :', response);
+          this.old_data = response;
+          console.log(this.data.array_one);
+          console.log('Data mise à jour:', this.data);
+          if (
+            this.data.array_one !== undefined &&
+            Array.isArray(this.data.array_one)
+          ) {
+            this.old_labels = this.data.array_one.map(
+              (item: { type: string }) => item.type
+            );
+            this.old_values = this.data.array_one.map(
+              (item: { count: number }) => item.count
+            );
+            this.old_colors = this.generateColors(this.data.array_one.length);
+          }
+          if (
+            this.data.array_two !== undefined &&
+            Array.isArray(this.data.array_two)
+          ) {
+            this.old_labels_two = this.data.array_two.map(
+              (item: { type: string }) => item.type
+            );
+            this.old_values_two = this.data.array_two.map(
+              (item: { count: number }) => item.count
+            );
+            this.old_colors_two = this.generateColors(
+              this.data.array_two.length
+            );
+          }
+
+          // Force Angular à détecter les changements après la mise à jour de `data`
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Erreur lors de la requête HTTP:', error);
+        },
+      });
   }
 
   toggleBack(): void {
-    console.log(this.i)
-    this.router.navigate(['/home']).then(nav => {
-    }, err => {
-      console.log(err)
-    });
+    console.log(this.i);
+    this.router.navigate(['/home']).then(
+      (nav) => {},
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 
-  handleDates(dates: { start: string, end: string }): void {
+  handleDates(dates: { start: string; end: string }): void {
     this.date_debut = dates.start;
     this.date_fin = dates.end;
 
     this.refreshData();
   }
   private refreshData(): void {
-    const startDate = this.date_debut ? new Date(this.date_debut) : new Date(this.currentYear, 0, 1);
-    const endDate = this.date_fin ? new Date(this.date_fin) : new Date(this.currentYear, 11, 31);
-    this.data.label = "";
+    const startDate = this.date_debut
+      ? new Date(this.date_debut)
+      : new Date(this.currentYear, 0, 1);
+    const endDate = this.date_fin
+      ? new Date(this.date_fin)
+      : new Date(this.currentYear, 11, 31);
+    this.data.label = '';
     this.ngOnInit();
   }
 }

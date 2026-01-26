@@ -4,7 +4,13 @@ import { DevGatewayService } from '../dev-gateway.service';
 import { CommonModule } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import * as featherIcons from '@ng-icons/feather-icons';
-import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-main-dev-view',
@@ -14,7 +20,6 @@ import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } fr
   viewProviders: [provideIcons(featherIcons)],
 })
 export class MainDevViewComponent {
-
   missRole: boolean = false;
   dataToDisplay: any[] = [];
   columns: string[] = [];
@@ -26,46 +31,39 @@ export class MainDevViewComponent {
   Array = Array;
   formulaire: FormGroup;
   criteresOptions: string[] = [
-    'EPA', 
+    'EPA',
     'RSA',
     'PPSMJ',
     'QPV',
     'RQTH',
     'Orphelin',
-    'Femmes', 
+    'Femmes',
     'Hommes',
     '< 20 ans',
     '< 26 ans',
     '< 30 ans',
     '> 49 ans',
   ];
-  localitesOptions = [
-    '75', 
-    '77', 
-    '91', 
-    '93', 
-    '94', 
-    '95'
-  ];
+  localitesOptions = ['75', '77', '91', '93', '94', '95'];
   actionOptions = [
-    'Accompagnement - CDP Fixe', 
-    'Accompagnement - CDP Mobile', 
-    'Accompagnement - CDP Fixe ou Mobile', 
+    'Accompagnement - CDP Fixe',
+    'Accompagnement - CDP Mobile',
+    'Accompagnement - CDP Fixe ou Mobile',
     'Accompagnement - Atelier Collectif',
     'Accompagnement - CDP + Atelier collectif',
     'Accompagnement - Atelier Bien-être',
     'Accompagnement - CDP Feminin',
     'Accompagnement - Atelier Un temps pour elle',
-    'PC - Bénévole'
+    'PC - Bénévole',
   ];
-  sujetOptions = [
-    'Candidat', 
-    'Atelier',
-    'Bénévole'
-  ];
+  sujetOptions = ['Candidat', 'Atelier', 'Bénévole'];
   sujetIndicateurOptions = ['Nb Présents'];
 
-  constructor(private devGatewayService: DevGatewayService, private fb: FormBuilder, private router: Router) {
+  constructor(
+    private devGatewayService: DevGatewayService,
+    private fb: FormBuilder,
+    private router: Router
+  ) {
     this.formulaire = this.fb.group({
       action: '',
       action_localite: [[]],
@@ -74,7 +72,7 @@ export class MainDevViewComponent {
       sujet_localite: [[]],
       sujet_indicateur: [''],
       date_debut: [null],
-      date_fin: [null]
+      date_fin: [null],
     });
   }
 
@@ -82,20 +80,22 @@ export class MainDevViewComponent {
     this.searchData();
   }
 
-    toggleBack(): void {
-    this.router.navigate(['/home']).then(nav => {
-    }, err => {
-      console.log(err)
-    });
+  toggleBack(): void {
+    this.router.navigate(['/home']).then(
+      (nav) => {},
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 
   toggleSelection(controlName: string, value: string): void {
     const ctrl = this.formulaire.get(controlName);
     if (!ctrl) return;
-  
+
     const currentValues: string[] = ctrl.value || [];
     const index = currentValues.indexOf(value);
-  
+
     if (index > -1) {
       // Retirer la valeur
       currentValues.splice(index, 1);
@@ -103,11 +103,11 @@ export class MainDevViewComponent {
       // Ajouter la valeur
       currentValues.push(value);
     }
-  
+
     // Set avec nouvelle référence pour Angular
     ctrl.setValue([...currentValues]);
   }
-  
+
   isSelected(controlName: string, value: string): boolean {
     const ctrl = this.formulaire.get(controlName);
     if (!ctrl) return false;
@@ -116,7 +116,9 @@ export class MainDevViewComponent {
 
   onMultiSelectChange(event: Event, controlName: string): void {
     const selectElement = event.target as HTMLSelectElement;
-    const selectedValues = Array.from(selectElement.selectedOptions).map(option => option.value);
+    const selectedValues = Array.from(selectElement.selectedOptions).map(
+      (option) => option.value
+    );
     this.formulaire.get(controlName)?.setValue(selectedValues);
   }
 
@@ -132,13 +134,13 @@ export class MainDevViewComponent {
     } else {
       ctrl.setValue(value);
     }
-}
+  }
 
-isSelectedSingle(controlName: string, value: string): boolean {
-  const ctrl = this.formulaire.get(controlName);
-  if (!ctrl) return false;
-  return ctrl.value === value;
-}
+  isSelectedSingle(controlName: string, value: string): boolean {
+    const ctrl = this.formulaire.get(controlName);
+    if (!ctrl) return false;
+    return ctrl.value === value;
+  }
 
   get action_localite() {
     return this.formulaire.get('action_localite') as FormArray;
@@ -171,28 +173,33 @@ isSelectedSingle(controlName: string, value: string): boolean {
       console.warn('Formulaire invalide');
     }
   }
-  
-searchData() {
-  this.devGatewayService.getIndicateurValue(this.formulaire).subscribe({
-    next: (data2) => {
-      console.log('Réponse :', data2);
-      this.dataToDisplay = data2 || [];
-      this.columns = this.dataToDisplay.length > 0 ? Object.keys(this.dataToDisplay[0]) : [];
-      this.filteredData = [...this.dataToDisplay];
-      this.visibleColumns = {};
-      this.columns.forEach(col => this.visibleColumns[col] = true);
-    },
-    error: (err) => {
-      console.error('Erreur lors de la récupération des données :', err);
-      if (err.status === 403) {
-        alert("Accès interdit. Veuillez vérifier vos droits ou votre authentification.");
-      }
-    }
-  });
-}
+
+  searchData() {
+    this.devGatewayService.getIndicateurValue(this.formulaire).subscribe({
+      next: (data2) => {
+        console.log('Réponse :', data2);
+        this.dataToDisplay = data2 || [];
+        this.columns =
+          this.dataToDisplay.length > 0
+            ? Object.keys(this.dataToDisplay[0])
+            : [];
+        this.filteredData = [...this.dataToDisplay];
+        this.visibleColumns = {};
+        this.columns.forEach((col) => (this.visibleColumns[col] = true));
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération des données :', err);
+        if (err.status === 403) {
+          alert(
+            'Accès interdit. Veuillez vérifier vos droits ou votre authentification.'
+          );
+        }
+      },
+    });
+  }
 
   resetColumnVisibility() {
-    this.columns.forEach(col => this.visibleColumns[col] = true);
+    this.columns.forEach((col) => (this.visibleColumns[col] = true));
   }
 
   toggleColumnVisibility(col: string) {
@@ -205,25 +212,25 @@ searchData() {
     return value !== null && value !== undefined ? value.toString() : '';
   }
 
-applyFilter(column: string, value: any) {
-  if (!this.activeFilters[column]) {
-    this.activeFilters[column] = [value];
-  } else {
-    const index = this.activeFilters[column].indexOf(value);
-    if (index > -1) {
-      this.activeFilters[column].splice(index, 1);
-      if (this.activeFilters[column].length === 0) {
-        delete this.activeFilters[column];
-      }
+  applyFilter(column: string, value: any) {
+    if (!this.activeFilters[column]) {
+      this.activeFilters[column] = [value];
     } else {
-      this.activeFilters[column].push(value);
+      const index = this.activeFilters[column].indexOf(value);
+      if (index > -1) {
+        this.activeFilters[column].splice(index, 1);
+        if (this.activeFilters[column].length === 0) {
+          delete this.activeFilters[column];
+        }
+      } else {
+        this.activeFilters[column].push(value);
+      }
     }
-  }
     this.filterData();
   }
 
   filterData() {
-    this.filteredData = this.dataToDisplay.filter(row => {
+    this.filteredData = this.dataToDisplay.filter((row) => {
       return Object.entries(this.activeFilters).every(([key, values]) =>
         values.includes(this.formatValue(row[key]))
       );
@@ -231,15 +238,18 @@ applyFilter(column: string, value: any) {
   }
   clearFilter(column: string) {
     delete this.activeFilters[column];
-      this.filterData();
+    this.filterData();
   }
 
   toggleFilterDropdown(column: string | null) {
-  this.filterDropdownOpenFor = this.filterDropdownOpenFor === column ? null : column;
-}
+    this.filterDropdownOpenFor =
+      this.filterDropdownOpenFor === column ? null : column;
+  }
 
-getUniqueValuesForColumn(column: string): any[] {
-  const values = this.dataToDisplay.map(row => this.formatValue(row[column]));
-  return Array.from(new Set(values));
-}
+  getUniqueValuesForColumn(column: string): any[] {
+    const values = this.dataToDisplay.map((row) =>
+      this.formatValue(row[column])
+    );
+    return Array.from(new Set(values));
+  }
 }

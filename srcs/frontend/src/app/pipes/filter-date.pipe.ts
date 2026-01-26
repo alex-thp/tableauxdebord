@@ -8,7 +8,7 @@ export class FilterDatePipe implements PipeTransform {
     const dateDebut = dateDebutStr ? new Date(dateDebutStr) : null;
     const dateFin = dateFinStr ? new Date(dateFinStr) : null;
 
-    return values.filter(val => {
+    return values.filter((val) => {
       const dDebut = new Date(val.date_debut);
       const dFin = new Date(val.date_fin);
 

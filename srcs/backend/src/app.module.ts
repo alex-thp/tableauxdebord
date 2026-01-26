@@ -52,12 +52,12 @@ import { AdminService } from './services/admin/admin.service';
     PdfMakerModule,
   ],
   controllers: [
-    AppController, 
-    AdminController, 
-    UserController, 
-    DevController, 
-    DashboardController, 
-    PdfMakerController, 
+    AppController,
+    AdminController,
+    UserController,
+    DevController,
+    DashboardController,
+    PdfMakerController,
     GeminiController,
     SharedViewController,
     BoussoleController,
@@ -88,7 +88,9 @@ export class AppModule {
 
   async onModuleInit() {
     const roleRepository = this.dataSource.getRepository(Role);
-    const roleExists = await roleRepository.findOne({ where: { name: 'user' } });
+    const roleExists = await roleRepository.findOne({
+      where: { name: 'user' },
+    });
     if (!roleExists) {
       const defaultRole = roleRepository.create({ name: 'user' });
       await roleRepository.save(defaultRole);
@@ -100,16 +102,27 @@ export class AppModule {
       console.log('Rôle "admin" créé.');
     }
     const userRepository = this.dataSource.getRepository(User);
-    const userExists = await userRepository.findOne({ where: { email: process.env.EMAIL_ADMIN } });
-    const devExists = await userRepository.findOne({ where: { email: process.env.EMAIL_DEV } });
-    const jenniExists = await userRepository.findOne({ where: { email: process.env.EMAIL_JENNI } });
-    const paulineExists = await userRepository.findOne({ where: { email: process.env.EMAIL_PAULINE } });
+    const userExists = await userRepository.findOne({
+      where: { email: process.env.EMAIL_ADMIN },
+    });
+    const devExists = await userRepository.findOne({
+      where: { email: process.env.EMAIL_DEV },
+    });
+    const jenniExists = await userRepository.findOne({
+      where: { email: process.env.EMAIL_JENNI },
+    });
+    const paulineExists = await userRepository.findOne({
+      where: { email: process.env.EMAIL_PAULINE },
+    });
 
     if (!userExists) {
       const defaultUser = userRepository.create({
         email: 'admin.numerique@lacravatesolidaire.org',
         passwordHash: process.env.MDP_ADMIN,
-        roles: [(await roleRepository.findOne({ where: { name: 'superAdmin' } }))!, (await roleRepository.findOne({ where: { name: 'admin' } }))!],
+        roles: [
+          (await roleRepository.findOne({ where: { name: 'superAdmin' } }))!,
+          (await roleRepository.findOne({ where: { name: 'admin' } }))!,
+        ],
       });
       await userRepository.save(defaultUser);
     }
@@ -140,6 +153,5 @@ export class AppModule {
       });
       await userRepository.save(defaultPaulineUser);
     }
-
   }
 }

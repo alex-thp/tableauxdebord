@@ -1,15 +1,23 @@
-import { Component, Input, ElementRef, ViewChild, OnChanges, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  ElementRef,
+  ViewChild,
+  OnChanges,
+  AfterViewInit,
+} from '@angular/core';
 
 @Component({
   selector: 'app-multi-year-line-chart',
   template: `<canvas #chartCanvas width="800" height="400"></canvas>`,
-  styles: [':host { display:block; }']
+  styles: [':host { display:block; }'],
 })
 export class MultiYearLineChartComponent implements OnChanges, AfterViewInit {
   @Input() datasetA: { year: number; month: number; count: number }[] = [];
   @Input() datasetB: { year: number; month: number; count: number }[] = [];
 
-  @ViewChild('chartCanvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('chartCanvas', { static: true })
+  canvasRef!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D;
 
   ngAfterViewInit() {
@@ -36,7 +44,7 @@ export class MultiYearLineChartComponent implements OnChanges, AfterViewInit {
     if (all.length === 0) return;
 
     // bornes
-    const maxY = Math.max(...all.map(d => d.count));
+    const maxY = Math.max(...all.map((d) => d.count));
     const minY = 0;
     const minX = 1;
     const maxX = 12;
@@ -56,8 +64,20 @@ export class MultiYearLineChartComponent implements OnChanges, AfterViewInit {
     ctx.stroke();
 
     // Mois (axe X)
-    const mois = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin',
-                  'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+    const mois = [
+      'Jan',
+      'Fév',
+      'Mar',
+      'Avr',
+      'Mai',
+      'Juin',
+      'Juil',
+      'Août',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Déc',
+    ];
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     for (let m = 1; m <= 12; m++) {
@@ -80,19 +100,26 @@ export class MultiYearLineChartComponent implements OnChanges, AfterViewInit {
     }
 
     // ---- Groupement par année ----
-    const years = Array.from(new Set(all.map(d => d.year))).sort();
+    const years = Array.from(new Set(all.map((d) => d.year))).sort();
     const palette = [
-      '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
-      '#9467bd', '#8c564b', '#e377c2', '#7f7f7f',
-      '#bcbd22', '#17becf'
+      '#1f77b4',
+      '#ff7f0e',
+      '#2ca02c',
+      '#d62728',
+      '#9467bd',
+      '#8c564b',
+      '#e377c2',
+      '#7f7f7f',
+      '#bcbd22',
+      '#17becf',
     ];
     const colorForYear: Record<number, string> = {};
-    years.forEach((y, i) => colorForYear[y] = palette[i % palette.length]);
+    years.forEach((y, i) => (colorForYear[y] = palette[i % palette.length]));
 
     // Dessin des courbes
-    years.forEach(y => {
+    years.forEach((y) => {
       const points = all
-        .filter(d => d.year === y)
+        .filter((d) => d.year === y)
         .sort((a, b) => a.month - b.month);
 
       ctx.beginPath();
@@ -110,7 +137,7 @@ export class MultiYearLineChartComponent implements OnChanges, AfterViewInit {
 
       // (optionnel) petits cercles aux points
       ctx.fillStyle = colorForYear[y];
-      points.forEach(d => {
+      points.forEach((d) => {
         ctx.beginPath();
         ctx.arc(xScale(d.month), yScale(d.count), 3, 0, Math.PI * 2);
         ctx.fill();
@@ -128,7 +155,7 @@ export class MultiYearLineChartComponent implements OnChanges, AfterViewInit {
     ctx.fillText('Années', legendX, legendY);
     legendY += 20;
 
-    years.forEach(y => {
+    years.forEach((y) => {
       ctx.fillStyle = colorForYear[y];
       ctx.fillRect(legendX, legendY - 6, 12, 12);
       ctx.fillStyle = '#000';

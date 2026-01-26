@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { LocaliteCardComponent } from '../localite-card/localite-card.component';
 import { GatewayService } from '../../gateway.service';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';;
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-accompagnement',
   standalone: true,
   imports: [CommonModule, LocaliteCardComponent],
   templateUrl: './accompagnement.component.html',
-  styleUrl: './accompagnement.component.css'
+  styleUrl: './accompagnement.component.css',
 })
 export class AccompagnementComponent implements OnInit {
   data: any[] = [];
@@ -33,7 +33,7 @@ export class AccompagnementComponent implements OnInit {
   constructor(private router: Router, private gatewayService: GatewayService) {}
 
   ngOnInit(): void {
-    this.gatewayService.getdashboardData(new Date()).subscribe(res => {
+    this.gatewayService.getdashboardData(new Date()).subscribe((res) => {
       this.data = res;
       this.syntheseLocalites = this.getSyntheseParLocaliteEnCours(this.data);
 
@@ -42,7 +42,10 @@ export class AccompagnementComponent implements OnInit {
         if (!a.date_prochaine_echeance) return 1;
         if (!b.date_prochaine_echeance) return -1;
 
-        return this.parseDate(a.date_prochaine_echeance).getTime() - this.parseDate(b.date_prochaine_echeance).getTime();
+        return (
+          this.parseDate(a.date_prochaine_echeance).getTime() -
+          this.parseDate(b.date_prochaine_echeance).getTime()
+        );
       });
 
       // Regroupement par département
@@ -80,7 +83,7 @@ export class AccompagnementComponent implements OnInit {
   }[] {
     const today = new Date();
 
-    return data.map(loc => {
+    return data.map((loc) => {
       let objectifsCount = 0;
       let objectifsRealisesCount = 0;
       const echeances: { date: string; dateParsed: Date }[] = [];
@@ -114,7 +117,7 @@ export class AccompagnementComponent implements OnInit {
         action_localite: loc.label,
         objectifs: objectifsCount,
         objectifs_realises: objectifsRealisesCount,
-        date_prochaine_echeance: echeances[0]?.date || null
+        date_prochaine_echeance: echeances[0]?.date || null,
       };
     });
   }
@@ -136,7 +139,7 @@ export class AccompagnementComponent implements OnInit {
   }[] {
     const groupes: Record<string, typeof this.syntheseLocalites> = {};
 
-    this.syntheseLocalites.forEach(item => {
+    this.syntheseLocalites.forEach((item) => {
       const dep = this.extractDepartement(item.action_localite) || 'Autres';
       if (!groupes[dep]) groupes[dep] = [];
       groupes[dep].push(item);
@@ -144,14 +147,20 @@ export class AccompagnementComponent implements OnInit {
 
     return Object.entries(groupes).map(([departement, items]) => ({
       departement,
-      items
+      items,
     }));
   }
 
   // Retourne la date la plus proche (la plus petite) parmi les items du groupe
-  getClosestDateInGroup(group: { items: { date_prochaine_echeance: string | null }[] }): Date | null {
+  getClosestDateInGroup(group: {
+    items: { date_prochaine_echeance: string | null }[];
+  }): Date | null {
     const dates = group.items
-      .map(item => item.date_prochaine_echeance ? this.parseDate(item.date_prochaine_echeance) : null)
+      .map((item) =>
+        item.date_prochaine_echeance
+          ? this.parseDate(item.date_prochaine_echeance)
+          : null
+      )
       .filter((d): d is Date => d !== null);
 
     if (dates.length === 0) return null;

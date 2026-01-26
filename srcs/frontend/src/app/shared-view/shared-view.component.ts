@@ -9,7 +9,7 @@ import { DevGatewayService } from '../pole-dev/dev-gateway.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './shared-view.component.html',
-  styleUrls: ['./shared-view.component.css']
+  styleUrls: ['./shared-view.component.css'],
 })
 export class SharedViewComponent implements OnInit {
   rapportXIndicateurId: string = '';
@@ -39,7 +39,7 @@ export class SharedViewComponent implements OnInit {
   ngOnInit(): void {
     this.formulaire = this.fb.group({});
 
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       this.rapportXIndicateurId = params.get('rapport_x_indicateur') || '';
 
       if (!this.rapportXIndicateurId) {
@@ -47,23 +47,25 @@ export class SharedViewComponent implements OnInit {
         return;
       }
 
-      this.devGatewayService.getRapportXIndicateurPublic(this.rapportXIndicateurId).subscribe({
-        next: data => {
-          if (data?.message) {
-            this.router.navigate(['/not_found']);
-          } else {
-            this.buildForm(data);
-            this.searchData();
-          }
-        },
-        error: err => {
-          if (err.status === 401) {
-            this.router.navigate(['/login']);
-          } else {
-            this.router.navigate(['/not_found']);
-          }
-        }
-      });
+      this.devGatewayService
+        .getRapportXIndicateurPublic(this.rapportXIndicateurId)
+        .subscribe({
+          next: (data) => {
+            if (data?.message) {
+              this.router.navigate(['/not_found']);
+            } else {
+              this.buildForm(data);
+              this.searchData();
+            }
+          },
+          error: (err) => {
+            if (err.status === 401) {
+              this.router.navigate(['/login']);
+            } else {
+              this.router.navigate(['/not_found']);
+            }
+          },
+        });
     });
   }
 
@@ -88,7 +90,7 @@ export class SharedViewComponent implements OnInit {
     }
 
     this.devGatewayService.getIndicateurValuePublic(this.formulaire).subscribe({
-      next: res => {
+      next: (res) => {
         this.result = res || [];
         this.error = null;
 
@@ -97,10 +99,10 @@ export class SharedViewComponent implements OnInit {
         this.detectDateFields();
         this.buildFilterValues();
       },
-      error: err => {
+      error: (err) => {
         this.error = 'Erreur lors du chargement des données.';
         console.error(err);
-      }
+      },
     });
   }
 
@@ -115,7 +117,7 @@ export class SharedViewComponent implements OnInit {
     const keys = this.getKeys(this.result[0]);
 
     for (const key of keys) {
-      const allDates = this.result.every(row => {
+      const allDates = this.result.every((row) => {
         const val = row[key];
         return val != null && !isNaN(Date.parse(val));
       });
@@ -126,42 +128,44 @@ export class SharedViewComponent implements OnInit {
     }
   }
 
-buildFilterValues(): void {
-  this.filterValues = {};
-  if (!this.result.length) return;
+  buildFilterValues(): void {
+    this.filterValues = {};
+    if (!this.result.length) return;
 
-  const keys = this.getKeys(this.result[0]);
+    const keys = this.getKeys(this.result[0]);
 
-  for (const key of keys) {
-    if (this.dateFields.has(key)) {
-      this.filterValues[key] = [];
-    } else {
-      let uniqueValues = Array.from(new Set(this.result.map(r => r[key]).filter(v => v != null)));
+    for (const key of keys) {
+      if (this.dateFields.has(key)) {
+        this.filterValues[key] = [];
+      } else {
+        let uniqueValues = Array.from(
+          new Set(this.result.map((r) => r[key]).filter((v) => v != null))
+        );
 
-      // Tri des valeurs selon type
-      uniqueValues.sort((a, b) => {
-        const aNum = Number(a);
-        const bNum = Number(b);
+        // Tri des valeurs selon type
+        uniqueValues.sort((a, b) => {
+          const aNum = Number(a);
+          const bNum = Number(b);
 
-        if (!isNaN(aNum) && !isNaN(bNum)) {
-          return aNum - bNum;
-        }
-        return a.toString().localeCompare(b.toString());
-      });
+          if (!isNaN(aNum) && !isNaN(bNum)) {
+            return aNum - bNum;
+          }
+          return a.toString().localeCompare(b.toString());
+        });
 
-      // Pour les nombres, on arrondit à 0 décimale avec toFixed(0) et on garde les strings
-      uniqueValues = uniqueValues.map(val => {
-        const numVal = Number(val);
-        if (!isNaN(numVal)) {
-          return numVal.toFixed(0);
-        }
-        return val;
-      });
+        // Pour les nombres, on arrondit à 0 décimale avec toFixed(0) et on garde les strings
+        uniqueValues = uniqueValues.map((val) => {
+          const numVal = Number(val);
+          if (!isNaN(numVal)) {
+            return numVal.toFixed(0);
+          }
+          return val;
+        });
 
-      this.filterValues[key] = uniqueValues;
+        this.filterValues[key] = uniqueValues;
+      }
     }
   }
-}
 
   toggleFilter(key: string): void {
     if (this.filterOpenForKey === key) {
@@ -213,11 +217,15 @@ buildFilterValues(): void {
 
   isDateString(value: string): boolean {
     const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
-    return typeof value === 'string' && isoDateRegex.test(value) && !isNaN(Date.parse(value));
+    return (
+      typeof value === 'string' &&
+      isoDateRegex.test(value) &&
+      !isNaN(Date.parse(value))
+    );
   }
 
   applyFilters(): void {
-    this.filteredResult = this.result.filter(row => {
+    this.filteredResult = this.result.filter((row) => {
       for (const key in this.selectedFilters) {
         const filterVal = this.selectedFilters[key];
 

@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   imports: [LoginComponent, CommonModule],
   standalone: true,
   templateUrl: './connection.component.html',
-  styleUrl: './connection.component.css'
+  styleUrl: './connection.component.css',
 })
 export class ConnectionComponent {
   activeTab: 'login' | 'signup' = 'login';

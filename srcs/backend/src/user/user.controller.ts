@@ -41,9 +41,13 @@ export class UserController {
   @Post('create')
   @Roles('superAdmin')
   async createUser(
-  @Body() body: { email: string; password: string; roleId: number },
+    @Body() body: { email: string; password: string; roleId: number },
   ) {
-    const user = await this.userService.createUser(body.email, body.password, body.roleId);
+    const user = await this.userService.createUser(
+      body.email,
+      body.password,
+      body.roleId,
+    );
     return { message: 'Utilisateur créé avec succès', user };
   }
 }

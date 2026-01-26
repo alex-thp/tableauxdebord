@@ -6,7 +6,7 @@ import { AuthService } from '../../auth/auth.service';
   selector: 'app-deconnection',
   imports: [], // Ensure this is correctly placed within the @Component decorator
   templateUrl: './deconnection.component.html',
-  styleUrl: './deconnection.component.css'
+  styleUrl: './deconnection.component.css',
 })
 export class DeconnectionComponent {
   constructor(private authService: AuthService, private router: Router) {}

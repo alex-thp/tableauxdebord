@@ -14,9 +14,8 @@ import { FilterDatePipe } from './pipes/filter-date.pipe';
 import { SortByDateFinPipe } from './pipes/sort-by-date-fin.pipe';
 import { StringDateFormatPipe } from './pipes/string-date-format.pipe';
 
-
 @NgModule({
-declarations: [
+  declarations: [
     AppComponent,
     GraphCandidatsComponent,
     DateSearchComponent,
@@ -35,6 +34,6 @@ declarations: [
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

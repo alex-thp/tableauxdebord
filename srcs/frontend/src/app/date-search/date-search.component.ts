@@ -7,17 +7,17 @@ import { FormsModule, NgForm } from '@angular/forms';
   standalone: true,
   imports: [
     CommonModule, // Nécessaire pour *ngIf
-    FormsModule // Nécessaire pour ngForm et ngModel
+    FormsModule, // Nécessaire pour ngForm et ngModel
   ],
   templateUrl: './date-search.component.html',
-  styleUrls: ['./date-search.component.css']
+  styleUrls: ['./date-search.component.css'],
 })
 export class DateSearchComponent implements OnInit {
   @Input() startDate: string = '';
   @Input() endDate: string = '';
   errorMessage: string | null = null;
 
-  @Output() datesSubmitted = new EventEmitter<{ start: string, end: string }>();
+  @Output() datesSubmitted = new EventEmitter<{ start: string; end: string }>();
 
   ngOnInit() {
     if (!this.startDate || !this.endDate) {
@@ -27,13 +27,13 @@ export class DateSearchComponent implements OnInit {
     }
   }
 
-  private getDefaultDates(): { start: string, end: string } {
+  private getDefaultDates(): { start: string; end: string } {
     const end = new Date();
     const start = new Date();
     start.setDate(end.getDate() - 7);
     return {
       start: this.formatDate(start),
-      end: this.formatDate(end)
+      end: this.formatDate(end),
     };
   }
 
@@ -58,7 +58,8 @@ export class DateSearchComponent implements OnInit {
     const end = new Date(this.endDate);
 
     if (start > end) {
-      this.errorMessage = 'La date de fin doit être postérieure à la date de début';
+      this.errorMessage =
+        'La date de fin doit être postérieure à la date de début';
     } else {
       this.errorMessage = null;
     }
@@ -69,7 +70,7 @@ export class DateSearchComponent implements OnInit {
 
     this.datesSubmitted.emit({
       start: this.startDate ?? null,
-      end: this.endDate ?? null
+      end: this.endDate ?? null,
     });
 
     // Réinitialisation du formulaire

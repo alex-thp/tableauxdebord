@@ -3,10 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AskGeminiService {
-
   private baseUrl = '/api';
 
   constructor(private http: HttpClient) {}
@@ -15,6 +14,8 @@ export class AskGeminiService {
   }
 
   askGeminiToSelect(question: string[]): Observable<any> {
-    return this.http.post(`${this.baseUrl}/gemini/rapport_activite`, { question });
+    return this.http.post(`${this.baseUrl}/gemini/rapport_activite`, {
+      question,
+    });
   }
 }

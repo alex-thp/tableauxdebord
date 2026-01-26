@@ -63,7 +63,9 @@ export class DevService {
     }
     const db = this.client.db('test');
     const rapportxindicateur = db.collection('rapportxindicateurs');
-    return await rapportxindicateur.findOne({ record_id: rapport_x_indicateur });
+    return await rapportxindicateur.findOne({
+      record_id: rapport_x_indicateur,
+    });
   }
 
   async getIndicateur(indicateur: string): Promise<any> {
@@ -110,7 +112,11 @@ export class DevService {
     return currentQuery;
   }
 
-  add_localite_to_query(currentQuery: QueryCondition, field: string, values: string[]): QueryCondition {
+  add_localite_to_query(
+    currentQuery: QueryCondition,
+    field: string,
+    values: string[],
+  ): QueryCondition {
     if (!currentQuery) currentQuery = {};
     if (!Array.isArray(values)) values = [values];
 
@@ -135,7 +141,10 @@ export class DevService {
     return currentQuery;
   }
 
-  forge_request_sujet_critere(sujet_critere: string[], structure_beneficiaire: string[] = []): QueryCondition {
+  forge_request_sujet_critere(
+    sujet_critere: string[],
+    structure_beneficiaire: string[] = [],
+  ): QueryCondition {
     if (!sujet_critere || sujet_critere.length === 0) {
       return {};
     }
@@ -184,7 +193,10 @@ export class DevService {
     if (ouCriteres.length > 0) {
       if (ouCriteres.length === 1) {
         // Un seul critère OU -> le traiter comme un ET
-        const ouCondition = this.buildConditionFromToken(ouCriteres[0], structure_beneficiaire);
+        const ouCondition = this.buildConditionFromToken(
+          ouCriteres[0],
+          structure_beneficiaire,
+        );
         Object.assign(query, ouCondition);
       } else {
         // Plusieurs critères OU -> créer un $or
@@ -200,15 +212,25 @@ export class DevService {
     return query;
   }
 
-  private buildAndQuery(criteres: string[], structure_beneficiaire: string[]): QueryCondition {
+  private buildAndQuery(
+    criteres: string[],
+    structure_beneficiaire: string[],
+  ): QueryCondition {
     let query: QueryCondition = {};
     for (const s_critere of criteres) {
-      query = this.applyCritereToQuery(query, s_critere, structure_beneficiaire);
+      query = this.applyCritereToQuery(
+        query,
+        s_critere,
+        structure_beneficiaire,
+      );
     }
     return query;
   }
 
-  private buildConditionFromToken(token: string, structure_beneficiaire: string[]): QueryCondition {
+  private buildConditionFromToken(
+    token: string,
+    structure_beneficiaire: string[],
+  ): QueryCondition {
     const condition: QueryCondition = {};
 
     if (token === '< 30 ans' || token === ' < 30 ans') {
@@ -227,7 +249,10 @@ export class DevService {
       condition.candidat_genre = { $eq: 'Homme' };
     } else if (token === 'Femmes' || token === ' Femmes') {
       condition.candidat_genre = { $eq: 'Femme' };
-    } else if (token === 'Femme - 16-20 ans' || token === ' Femme - 16-20 ans') {
+    } else if (
+      token === 'Femme - 16-20 ans' ||
+      token === ' Femme - 16-20 ans'
+    ) {
       condition.$and = [
         { candidat_genre: { $eq: 'Femme' } },
         { candidat_age: { $gte: 16, $lt: 21 } },
@@ -248,8 +273,14 @@ export class DevService {
       condition.rqth = { $eq: 'Oui' };
     } else if (token === 'Orphelin' || token === ' Orphelin') {
       condition.orphelin = { $eq: 'Oui' };
-    } else if (token === 'structure prescriptrice' || token === ' structure prescriptrice') {
-      if (Array.isArray(structure_beneficiaire) && structure_beneficiaire.length > 0) {
+    } else if (
+      token === 'structure prescriptrice' ||
+      token === ' structure prescriptrice'
+    ) {
+      if (
+        Array.isArray(structure_beneficiaire) &&
+        structure_beneficiaire.length > 0
+      ) {
         condition.structure_prescriptrice = { $in: structure_beneficiaire };
       }
     } else if (token !== '') {
@@ -258,7 +289,10 @@ export class DevService {
         condition.metier_recherche = { $eq: tmp[1] };
       } else if (tmp[0] === 'secteur' || tmp[0] === ' secteur') {
         condition.secteur_recherche = { $eq: tmp[1] };
-      } else if (tmp[0] === 'ressources mensuelle' || tmp[0] === ' ressources mensuelle') {
+      } else if (
+        tmp[0] === 'ressources mensuelle' ||
+        tmp[0] === ' ressources mensuelle'
+      ) {
         condition.ressources_mensuelle = { $lt: Number(tmp[1]) };
       } else if (tmp[0] === 'type contrat' || tmp[0] === ' type contrat') {
         condition.type_contrat = { $eq: tmp[1] };
@@ -275,7 +309,10 @@ export class DevService {
     s_critere: string,
     structure_beneficiaire: string[],
   ): QueryCondition {
-    const condition = this.buildConditionFromToken(s_critere, structure_beneficiaire);
+    const condition = this.buildConditionFromToken(
+      s_critere,
+      structure_beneficiaire,
+    );
     // Fusion simple
     return { ...currentQuery, ...condition };
   }
@@ -352,24 +389,42 @@ export class DevService {
     item.sujet_critere = this.normalizeToArray(item.sujet_critere);
     item.action_localite = this.normalizeToArray(item.action_localite);
     item.sujet_localite = this.normalizeToArray(item.sujet_localite);
-    item.structure_beneficiaire = this.normalizeToArray(item.structure_beneficiaire);
+    item.structure_beneficiaire = this.normalizeToArray(
+      item.structure_beneficiaire,
+    );
     if (
       item.action == 'Accompagnement - CDP Fixe' ||
       item.action == 'Accompagnement - CDP Fixe (Global)'
     ) {
       if (item.sujet === 'Candidat') {
-        data = await this.forge_request_nb_prescriptions_present_cdp(item, 'CDP FIXE', database);
+        data = await this.forge_request_nb_prescriptions_present_cdp(
+          item,
+          'CDP FIXE',
+          database,
+        );
       } else if (item.sujet === 'Atelier') {
-        data = await this.forge_request_nb_atelier_cdp(item, 'CDP FIXE', database);
+        data = await this.forge_request_nb_atelier_cdp(
+          item,
+          'CDP FIXE',
+          database,
+        );
       }
     } else if (
       item.action == 'Accompagnement - CDP Mobile' ||
       item.action == 'Accompagnement - CDP Mobile (Global)'
     ) {
       if (item.sujet === 'Candidat') {
-        data = await this.forge_request_nb_prescriptions_present_cdp(item, 'CDP MOBILE', database);
+        data = await this.forge_request_nb_prescriptions_present_cdp(
+          item,
+          'CDP MOBILE',
+          database,
+        );
       } else if (item.sujet === 'Atelier') {
-        data = await this.forge_request_nb_atelier_cdp(item, 'CDP MOBILE', database);
+        data = await this.forge_request_nb_atelier_cdp(
+          item,
+          'CDP MOBILE',
+          database,
+        );
       }
     } else if (
       item.action == 'Accompagnement - CDP Fixe ou Mobile' ||
@@ -382,14 +437,21 @@ export class DevService {
           database,
         );
       } else if (item.sujet === 'Atelier') {
-        data = await this.forge_request_nb_atelier_cdp(item, 'CDP FIXE, CDP MOBILE', database);
+        data = await this.forge_request_nb_atelier_cdp(
+          item,
+          'CDP FIXE, CDP MOBILE',
+          database,
+        );
       }
     } else if (
       item.action == 'Accompagnement - Atelier Collectif' ||
       item.action == 'Accompagnement - Atelier Collectif (Global)'
     ) {
       if (item.sujet === 'Candidat') {
-        data = await this.forge_request_nb_prescriptions_present_at_co(item, database);
+        data = await this.forge_request_nb_prescriptions_present_at_co(
+          item,
+          database,
+        );
       } else if (item.sujet === 'Atelier') {
         data = await this.forge_request_nb_atelier_at_co(item, database);
       }
@@ -398,7 +460,10 @@ export class DevService {
       item.action == 'Accompagnement - Atelier Bien-être (Global)'
     ) {
       if (item.sujet === 'Candidat') {
-        data = await this.forge_request_nb_prescriptions_present_bien_etre(item, database);
+        data = await this.forge_request_nb_prescriptions_present_bien_etre(
+          item,
+          database,
+        );
       } else if (item.sujet === 'Atelier') {
         data = await this.forge_request_nb_atelier_bien_etre(item, database);
       }
@@ -407,19 +472,32 @@ export class DevService {
       item.action == 'Accompagnement - CDP + Atelier Collectif (Global)'
     ) {
       if (item.sujet === 'Candidat') {
-        data = await this.forge_request_nb_prescriptions_present_cdp_at_co(item, database);
+        data = await this.forge_request_nb_prescriptions_present_cdp_at_co(
+          item,
+          database,
+        );
       } else if (item.sujet === 'Atelier') {
       }
     } else if (item.action == 'Accompagnement - CDP Feminin') {
       if (item.sujet === 'Candidat') {
-        data = await this.forge_request_nb_prescriptions_present_cdp_bien_etre(item, database);
+        data = await this.forge_request_nb_prescriptions_present_cdp_bien_etre(
+          item,
+          database,
+        );
       } else if (item.sujet === 'Atelier') {
       }
     } else if (item.action == 'Accompagnement - Atelier Un temps pour elle') {
       if (item.sujet === 'Candidat') {
-        data = await this.forge_request_nb_prescriptions_present_un_temps_pour_elle(item, database);
+        data =
+          await this.forge_request_nb_prescriptions_present_un_temps_pour_elle(
+            item,
+            database,
+          );
       } else if (item.sujet === 'Atelier') {
-        data = await this.forge_request_nb_atelier_un_temps_pour_elle(item, database);
+        data = await this.forge_request_nb_atelier_un_temps_pour_elle(
+          item,
+          database,
+        );
       }
     } else if (item.action == 'PC - Bénévole') {
       if (item.sujet === 'Bénévole') {
@@ -434,7 +512,10 @@ export class DevService {
     database: DatabaseCollections,
   ): Promise<any> {
     let customQuery: QueryCondition = {};
-    customQuery = this.forge_request_sujet_critere(item.sujet_critere, item.structure_beneficiaire);
+    customQuery = this.forge_request_sujet_critere(
+      item.sujet_critere,
+      item.structure_beneficiaire,
+    );
     customQuery = this.updateQuery(
       customQuery,
       'type_prestation',
@@ -475,11 +556,19 @@ export class DevService {
     }
 
     if (sujet_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'code_postal', item.sujet_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'code_postal',
+        item.sujet_localite,
+      );
     }
 
     if (action_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'atelier_lieu', item.action_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'atelier_lieu',
+        item.action_localite,
+      );
     }
 
     const data = await database.bienetreenrcand
@@ -497,7 +586,10 @@ export class DevService {
     item: IndicateurItem,
     database: DatabaseCollections,
   ): Promise<any> {
-    let customQuery = this.forge_request_sujet_critere(item.sujet_critere, item.structure_beneficiaire);
+    let customQuery = this.forge_request_sujet_critere(
+      item.sujet_critere,
+      item.structure_beneficiaire,
+    );
     customQuery = this.updateQuery(customQuery, 'statut', 'Présent', '$eq');
     customQuery = this.updateQuery(
       customQuery,
@@ -531,11 +623,19 @@ export class DevService {
     }
 
     if (sujet_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'candidat_residence', item.sujet_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'candidat_residence',
+        item.sujet_localite,
+      );
     }
 
     if (action_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'atelier_lieu', item.action_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'atelier_lieu',
+        item.action_localite,
+      );
     }
 
     const data = await database.bienetreenrcand
@@ -581,7 +681,10 @@ export class DevService {
     item: IndicateurItem,
     database: DatabaseCollections,
   ): Promise<any> {
-    let customQuery = this.forge_request_sujet_critere(item.sujet_critere, item.structure_beneficiaire);
+    let customQuery = this.forge_request_sujet_critere(
+      item.sujet_critere,
+      item.structure_beneficiaire,
+    );
     customQuery = this.updateQuery(customQuery, 'statut', 'Présent', '$eq');
     customQuery = this.updateQuery(
       customQuery,
@@ -616,11 +719,19 @@ export class DevService {
     }
 
     if (sujet_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'candidat_residence', item.sujet_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'candidat_residence',
+        item.sujet_localite,
+      );
     }
 
     if (action_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'atelier_lieu', item.action_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'atelier_lieu',
+        item.action_localite,
+      );
     }
 
     const data = await database.atcoenrcand
@@ -662,9 +773,18 @@ export class DevService {
     return data;
   }
 
-  async forge_request_nb_atelier_bien_etre(item: IndicateurItem, database: DatabaseCollections): Promise<any> {
+  async forge_request_nb_atelier_bien_etre(
+    item: IndicateurItem,
+    database: DatabaseCollections,
+  ): Promise<any> {
     let customQuery: QueryCondition = {};
-    customQuery = this.updateQuery(customQuery, 'date', item.date_debut, '$gte-$lt', item.date_fin);
+    customQuery = this.updateQuery(
+      customQuery,
+      'date',
+      item.date_debut,
+      '$gte-$lt',
+      item.date_fin,
+    );
     customQuery = this.updateQuery(customQuery, 'statut', 'Validé', '$eq');
 
     let action_loc_check = 0;
@@ -681,9 +801,15 @@ export class DevService {
     }
 
     if (action_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'atelier_lieu', item.action_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'atelier_lieu',
+        item.action_localite,
+      );
     }
-    const data = await database.bienetre.aggregate([{ $match: customQuery }]).toArray();
+    const data = await database.bienetre
+      .aggregate([{ $match: customQuery }])
+      .toArray();
     return data;
   }
 
@@ -698,7 +824,13 @@ export class DevService {
       ['SOIN DES MAINS', 'SOIN DU VISAGE', 'COIFFURE'],
       '$in-tab',
     );
-    customQuery = this.updateQuery(customQuery, 'date', item.date_debut, '$gte-$lt', item.date_fin);
+    customQuery = this.updateQuery(
+      customQuery,
+      'date',
+      item.date_debut,
+      '$gte-$lt',
+      item.date_fin,
+    );
     customQuery = this.updateQuery(customQuery, 'statut', 'Validé', '$eq');
 
     let action_loc_check = 0;
@@ -715,7 +847,11 @@ export class DevService {
     }
 
     if (action_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'atelier_lieu', item.action_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'atelier_lieu',
+        item.action_localite,
+      );
     }
 
     let sujet_loc_check = 0;
@@ -732,10 +868,16 @@ export class DevService {
     }
 
     if (sujet_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'candidat_residence', item.sujet_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'candidat_residence',
+        item.sujet_localite,
+      );
     }
 
-    const data = await database.bienetre.aggregate([{ $match: customQuery }]).toArray();
+    const data = await database.bienetre
+      .aggregate([{ $match: customQuery }])
+      .toArray();
     return data;
   }
 
@@ -743,7 +885,10 @@ export class DevService {
     item: IndicateurItem,
     database: DatabaseCollections,
   ): Promise<any> {
-    let customQuery = this.forge_request_sujet_critere(item.sujet_critere, item.structure_beneficiaire);
+    let customQuery = this.forge_request_sujet_critere(
+      item.sujet_critere,
+      item.structure_beneficiaire,
+    );
     customQuery = this.updateQuery(customQuery, 'statut', 'Présent', '$eq');
     customQuery = this.updateQuery(
       customQuery,
@@ -778,11 +923,19 @@ export class DevService {
     }
 
     if (sujet_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'candidat_residence', item.sujet_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'candidat_residence',
+        item.sujet_localite,
+      );
     }
 
     if (action_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'atelier_lieu', item.action_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'atelier_lieu',
+        item.action_localite,
+      );
     }
 
     const data = await database.bienetreenrcand
@@ -810,9 +963,18 @@ export class DevService {
     return data;
   }
 
-  async forge_request_nb_atelier_at_co(item: IndicateurItem, database: DatabaseCollections): Promise<any> {
+  async forge_request_nb_atelier_at_co(
+    item: IndicateurItem,
+    database: DatabaseCollections,
+  ): Promise<any> {
     let customQuery: QueryCondition = {};
-    customQuery = this.updateQuery(customQuery, 'date', item.date_debut, '$gte-$lt', item.date_fin);
+    customQuery = this.updateQuery(
+      customQuery,
+      'date',
+      item.date_debut,
+      '$gte-$lt',
+      item.date_fin,
+    );
     customQuery = this.updateQuery(customQuery, 'statut', 'Validé', '$eq');
 
     let action_loc_check = 0;
@@ -829,9 +991,15 @@ export class DevService {
     }
 
     if (action_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'commune', item.action_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'commune',
+        item.action_localite,
+      );
     }
-    const data = await database.atco.aggregate([{ $match: customQuery }]).toArray();
+    const data = await database.atco
+      .aggregate([{ $match: customQuery }])
+      .toArray();
     return data;
   }
 
@@ -842,7 +1010,10 @@ export class DevService {
     let sujet_loc_check = 0;
     let action_loc_check = 0;
 
-    let customQuery = this.forge_request_sujet_critere(item.sujet_critere, item.structure_beneficiaire);
+    let customQuery = this.forge_request_sujet_critere(
+      item.sujet_critere,
+      item.structure_beneficiaire,
+    );
     customQuery = this.updateQuery(
       customQuery,
       'date_atelier',
@@ -876,11 +1047,19 @@ export class DevService {
     }
 
     if (sujet_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'candidat_residence', sujetLocalite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'candidat_residence',
+        sujetLocalite,
+      );
     }
 
     if (action_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'atelier_lieu', actionLocalite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'atelier_lieu',
+        actionLocalite,
+      );
     }
 
     const response = await database.atcoenrcand
@@ -916,16 +1095,33 @@ export class DevService {
     let customQuery: QueryCondition = {};
     switch (type_cdp) {
       case 'CDP FIXE, CDP MOBILE':
-        customQuery = this.updateQuery(customQuery, 'type', 'CDP MOBILE', '$in', 'CDP FIXE');
+        customQuery = this.updateQuery(
+          customQuery,
+          'type',
+          'CDP MOBILE',
+          '$in',
+          'CDP FIXE',
+        );
         break;
       case 'CDP FIXE':
         customQuery = this.updateQuery(customQuery, 'type', 'CDP FIXE', '$eq');
         break;
       case 'CDP MOBILE':
-        customQuery = this.updateQuery(customQuery, 'type', 'CDP MOBILE', '$eq');
+        customQuery = this.updateQuery(
+          customQuery,
+          'type',
+          'CDP MOBILE',
+          '$eq',
+        );
         break;
     }
-    customQuery = this.updateQuery(customQuery, 'date', item.date_debut, '$gte-$lt', item.date_fin);
+    customQuery = this.updateQuery(
+      customQuery,
+      'date',
+      item.date_debut,
+      '$gte-$lt',
+      item.date_fin,
+    );
     customQuery = this.updateQuery(customQuery, 'statut', 'Validé', '$eq');
 
     let action_loc_check = 0;
@@ -941,9 +1137,15 @@ export class DevService {
     }
 
     if (action_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'lieu', item.action_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'lieu',
+        item.action_localite,
+      );
     }
-    const response = await database.cdp.aggregate([{ $match: customQuery }]).toArray();
+    const response = await database.cdp
+      .aggregate([{ $match: customQuery }])
+      .toArray();
     return response;
   }
 
@@ -952,9 +1154,18 @@ export class DevService {
     type_cdp: string,
     database: DatabaseCollections,
   ): Promise<any> {
-    let customQuery = this.forge_request_sujet_critere(item.sujet_critere, item.structure_beneficiaire);
+    let customQuery = this.forge_request_sujet_critere(
+      item.sujet_critere,
+      item.structure_beneficiaire,
+    );
 
-    customQuery = this.updateQuery(customQuery, 'date_atelier', item.date_debut, '$gte-$lt', item.date_fin);
+    customQuery = this.updateQuery(
+      customQuery,
+      'date_atelier',
+      item.date_debut,
+      '$gte-$lt',
+      item.date_fin,
+    );
     customQuery = this.updateQuery(customQuery, 'statut', 'Présent', '$eq');
 
     let action_loc_check = 0;
@@ -980,11 +1191,19 @@ export class DevService {
       }
     }
     if (sujet_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'candidat_residence', item.sujet_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'candidat_residence',
+        item.sujet_localite,
+      );
     }
 
     if (action_loc_check == 1) {
-      customQuery = this.add_localite_to_query(customQuery, 'atelier_lieu', item.action_localite);
+      customQuery = this.add_localite_to_query(
+        customQuery,
+        'atelier_lieu',
+        item.action_localite,
+      );
     }
     const response = await database.cdpenrcand
       .aggregate([
@@ -1047,7 +1266,10 @@ export class DevService {
     return response;
   }
 
-  async forge_request_nb_be_atelier(item: IndicateurItem, database: DatabaseCollections): Promise<any> {
+  async forge_request_nb_be_atelier(
+    item: IndicateurItem,
+    database: DatabaseCollections,
+  ): Promise<any> {
     let customQuery: QueryCondition = {};
     customQuery = this.updateQuery(
       customQuery,

@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { AuthService } from '../../auth/auth.service';
 import { CommonModule } from '@angular/common';
 
@@ -22,13 +27,5 @@ export class SignupComponent {
     });
   }
 
-  onSubmit(): void {
-    /*if (this.signupForm.valid) {
-      const { email, password } = this.signupForm.value;
-      this.authService.signUp(email, password).subscribe({
-        next: () => alert('Vous pouvez à présent vous connecter avec ces identifiants'),
-        error: () => alert('Identifiants invalides'),
-      });
-    }*/
-  }
+  onSubmit(): void {}
 }
