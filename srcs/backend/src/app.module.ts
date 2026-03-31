@@ -5,7 +5,7 @@ import { AirtableService } from './services/airtable/airtable.service';
 import { UpdateBaseService } from './services/update-base/update-base.service';
 import { MongoDbService } from './services/mongo-db/mongo-db.service';
 import { StatsAccompagnementService } from './services/stats-accompagnement/stats-accompagnement.service';
-import { StatsBenevoleService } from './services/stats-benevole/stats-benevole.service';
+import { StatsBenevoleService } from './services/stats-benevole (old)/stats-benevole.service';
 import { StatsVetementService } from './services/stats-vetement/stats-vetement.service';
 import { ParseDatePipe } from './pipes/parse-date.pipe';
 import { AuthModule } from './auth/auth.module';
@@ -33,6 +33,7 @@ import { BoussoleController } from './controllers/boussole/boussole.controller';
 import { BoussoleService } from './services/boussole/boussole.service';
 import { ReservationController } from './controllers/reservation/reservation.controller';
 import { AdminService } from './services/admin/admin.service';
+import { StatsBenevoleModule } from './stats_benevole/stats_benevole.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { AdminService } from './services/admin/admin.service';
     TypeOrmModule.forFeature([User, Role, Permission]),
     UserModule,
     PdfMakerModule,
+    StatsBenevoleModule,
   ],
   controllers: [
     AppController,

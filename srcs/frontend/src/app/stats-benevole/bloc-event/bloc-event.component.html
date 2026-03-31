@@ -1,0 +1,37 @@
+<div class="bloc-card" *ngIf="stat">
+      <h2 class="theme-title">
+        {{ stat.theme || 'Tous les thèmes' }}
+      </h2>
+
+      <div class="stat-content">
+        <div class="stat-row">
+          <span>Événements</span>
+          <span>{{ stat.totalEvents }}</span>
+        </div>
+
+        <div class="stat-row">
+          <span>Participants</span>
+          <span>{{ stat.totalParticipants }}</span>
+        </div>
+
+        <div class="stat-row">
+          <span>Participants uniques</span>
+          <span>{{ stat.uniqueParticipants }}</span>
+        </div>
+
+        <div class="stat-row">
+          <span>Taux de présence</span>
+          <span>{{ (stat.averageAttendanceRate) * 100 | number:'1.0-0' }}%</span>
+        </div>
+
+        <div class="stat-row">
+          <span>total inscrits unique (tous statuts)</span>
+          <span>{{ stat.totalInscritsUnique }}</span>
+        </div>
+
+        <div class="stat-row highlight">
+          <span>Participants 2+ événements</span>
+          <span>{{ stat.participantsWithMultipleEvents }}</span>
+        </div>
+      </div>
+    </div>

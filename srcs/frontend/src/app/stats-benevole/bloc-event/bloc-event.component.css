@@ -1,0 +1,54 @@
+.bloc-card {
+  background: #ffffffee;          
+  border-radius: 16px;
+  padding: 0;                     
+  height: 300px;                  
+  display: flex;
+  flex-direction: column;
+  color: #1466b8;                 
+  border: 1px solid rgba(11, 79, 163, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+/* Title */
+.theme-title {
+  background-color: #1466b8;      
+  color: #ffffff;                 
+  font-weight: 700;               
+  font-size: 1.2rem;
+  margin: 0;
+  padding: 16px;
+  text-align: center;
+  height: 60px;                   
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Content / stats */
+.stat-content {
+  flex: 1;                        
+  padding: 16px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;  
+}
+
+/* Rows */
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+}
+
+.stat-row span:last-child {
+  font-weight: 600;
+}
+
+/* Highlight bottom */
+.stat-row.highlight {
+  padding-top: 8px;
+  border-top: 1px dashed rgba(11, 79, 163, 0.25);
+  font-weight: 600;
+}

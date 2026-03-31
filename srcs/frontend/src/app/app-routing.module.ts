@@ -10,13 +10,10 @@ import { ConnectionComponent } from './connection/connection.component';
 import { MainDevViewComponent } from './pole-dev/main-dev-view/main-dev-view.component';
 import { VisualisationComponent } from './pole-dev/visualisation/visualisation.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { DashboardHierarchyComponent } from './dashboard-hierarchy/dashboard-hierarchy.component';
-import { AccompagnementComponent } from './objectifs/accompagnement/accompagnement.component';
-import { PdfMakerComponent } from './pdf/pdf-maker/pdf-maker.component';
-import { AskGeminiComponent } from './ask-gemini/ask-gemini.component';
 import { SharedViewComponent } from './shared-view/shared-view.component';
 import { BoussoleComponent } from './boussole/boussole.component';
 import { ReservationComponent } from './reservation/reservation.component';
+import { StatsBenevoleComponent } from './stats-benevole/stats-benevole.component';
 
 export const appRouteList: Routes = [
   { path: '', component: GlobalViewComponent, canActivate: [AuthGuard] },
@@ -41,16 +38,10 @@ export const appRouteList: Routes = [
     canActivate: [AuthGuard],
   },
   { path: 'not_found', component: NotFoundComponent },
-  //{ path: 'generateCustomPDF', component: PdfMakerComponent, canActivate: [AuthGuard] },
   { path: 'shared_link/:rapport_x_indicateur', component: SharedViewComponent },
   { path: 'boussole', component: BoussoleComponent },
   { path: 'reservation', component: ReservationComponent },
-  //{ path: 'gemini', component: AskGeminiComponent },
-  //{ path: 'display_card_content:localite', component: DashboardHierarchyComponent },
-  //{ path: 'test', component: DashboardHierarchyComponent},
-  //{ path: 'test2', component: AccompagnementComponent},
-  //{ path: 'visualisation', redirectTo: '/home', pathMatch: 'full' },
-  //{ path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
+  { path: 'stats_benevole', component: StatsBenevoleComponent },
   { path: '**', redirectTo: 'not_found' },
 ];
 

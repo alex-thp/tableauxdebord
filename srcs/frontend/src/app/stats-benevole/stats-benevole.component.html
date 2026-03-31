@@ -1,0 +1,14 @@
+<div class="stats-page">
+  <ng-container *ngIf="!loading; else loadingTpl">
+    <div class="stats-grid">
+      <app-bloc-event-group
+        *ngFor="let group of groupedStats"
+        [group]="group">
+      </app-bloc-event-group>
+    </div>
+  </ng-container>
+
+  <ng-template #loadingTpl>
+    <p class="loading">Chargement des statistiques…</p>
+  </ng-template>
+</div>

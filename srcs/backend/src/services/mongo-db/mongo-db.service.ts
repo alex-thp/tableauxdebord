@@ -143,8 +143,11 @@ export class MongoDbService {
 
   async getTable(tableName: string): Promise<any> {
     try {
+      await this.client.connect();
       const db = this.client.db('test');
       const table = db.collection(tableName);
+      console.log(`Fetched collection: ${tableName}`);
+      console.log(table);
       return table;
     } catch (error) {
       console.error('Error fetching collections:', error);

@@ -1,0 +1,19 @@
+.stats-page {
+  background-color: #f2f4f8;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+/* Grid layout */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  color: #0b4fa3;
+  font-weight: 500;
+}

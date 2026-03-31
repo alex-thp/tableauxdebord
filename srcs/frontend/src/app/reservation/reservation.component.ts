@@ -83,7 +83,6 @@ export class ReservationComponent {
         next: (res: any) => {
           if (res?.record_id) {
             this.record_id = res.record_id;
-            console.log('✅ Record trouvé :', this.record_id);
             this.loader_1 = false;
           } else {
             console.log('⏳ Recherche en cours...');
@@ -97,7 +96,6 @@ export class ReservationComponent {
     this.reservationService
       .getReservationSlots(this.reservation_record_id)
       .subscribe((slots: any[]) => {
-        console.log('Slots reçus :', slots);
         this.loader_2 = false;
 
         this.dispos = slots.map((slot) => {
@@ -163,12 +161,10 @@ export class ReservationComponent {
   }
 
   reserverCreneau(date: Date, slot: any) {
-    console.log('slot sélectionné pour réservation :', slot);
     this.reservationService
       .verifyPrescriptionAvailability(this.record_id)
       .subscribe((response) => {
         if (response[0].available === true) {
-          console.log(response);
           this.reservationService
             .setPrescriptionOnSlot(
               this.record_id,

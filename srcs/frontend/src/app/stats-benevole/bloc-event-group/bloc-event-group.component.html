@@ -1,0 +1,21 @@
+<div class="bloc-group-card">
+  <h2 class="group-title">{{ group.groupName }}</h2>
+
+  <!-- Select uniquement si plusieurs options -->
+  <div *ngIf="group.themes.length > 1" class="select-wrapper">
+    <select
+      class="theme-select"
+      [value]="group.selectedTheme?.theme"
+      (change)="onSelectTheme($event)">
+      <option *ngFor="let t of group.themes" [value]="t.theme">
+        {{ t.theme }}
+      </option>
+    <span class="select-arrow">▼</span>
+    </select>
+  </div>
+
+  <app-bloc-event
+    *ngIf="group.selectedTheme"
+    [stat]="group.selectedTheme">
+  </app-bloc-event>
+</div>

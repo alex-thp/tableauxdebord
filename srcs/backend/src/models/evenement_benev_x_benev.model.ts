@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Model } from "mongoose";
+import mongoose, { Document, Schema, Model } from 'mongoose';
 
 // Définir l'interface Mongoose en étendant Document
 export interface IEvenementBenevXBenev extends Document {
@@ -8,8 +8,7 @@ export interface IEvenementBenevXBenev extends Document {
   evenement_benevole_record_id?: string;
 }
 
-// Créer le schéma Mongoose basé sur l'interface
-const EvenementBenevXBenevSchema: Schema<IEvenementBenevXBenev> = new Schema({
+export const EvenementBenevXBenevSchema = new Schema<IEvenementBenevXBenev>({
   record_id: { type: String, required: true },
   benevole_record_id: { type: String },
   statut: { type: String },
@@ -17,6 +16,10 @@ const EvenementBenevXBenevSchema: Schema<IEvenementBenevXBenev> = new Schema({
 });
 
 // Créer et exporter le modèle
-const EvenementBenevXBenev: Model<IEvenementBenevXBenev> = mongoose.model<IEvenementBenevXBenev>("EvenementBenevXBenev", EvenementBenevXBenevSchema);
+const EvenementBenevXBenev: Model<IEvenementBenevXBenev> =
+  mongoose.model<IEvenementBenevXBenev>(
+    'EvenementBenevXBenev',
+    EvenementBenevXBenevSchema,
+  );
 
 export default EvenementBenevXBenev;

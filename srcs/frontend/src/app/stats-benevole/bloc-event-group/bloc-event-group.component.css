@@ -1,0 +1,52 @@
+.bloc-group-card {
+  background: #f9f9f9;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.bloc-group-card h2 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #1e3a8a;
+  margin-bottom: 12px;
+}
+
+.select-wrapper {
+  position: relative;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+/* Select custom */
+.theme-select {
+  width: 100%;
+  padding: 8px 36px 8px 12px; /* espace pour flèche */
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.theme-select:focus {
+  border-color: #1e3a8a;
+  box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2);
+  outline: none;
+}
+
+/* Flèche */
+.select-arrow {
+  pointer-events: none;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  color: #555;
+}

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MongoDbService } from './services/mongo-db/mongo-db.service';
 import { StatsAccompagnementService } from './services/stats-accompagnement/stats-accompagnement.service';
-import { StatsBenevoleService } from './services/stats-benevole/stats-benevole.service';
+import { StatsBenevoleService } from './services/stats-benevole (old)/stats-benevole.service';
 import { StatsVetementService } from './services/stats-vetement/stats-vetement.service';
 
 @Injectable()
