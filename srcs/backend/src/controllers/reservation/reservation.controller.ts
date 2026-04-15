@@ -38,7 +38,7 @@ export class ReservationController {
       CDP_ID: [cdp_record_id],
       STATUT: 'Positionné',
       HEURE_RDV: heure_rdv,
-      PRESCRIPTION_DOCTOLIB: true, // pour indiquer que la prescription a été positionnée via ce code
+      PRESCRIPTION_DOCTOLIB: 'Oui', // pour indiquer que la prescription a été positionnée via ce code
     });
 
     return {
