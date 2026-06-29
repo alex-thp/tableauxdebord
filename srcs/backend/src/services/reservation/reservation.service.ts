@@ -45,7 +45,7 @@ export class ReservationService {
     } else if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(input)) {
       const [day, month, year] = input.split('/');
       dateObj = new Date(
-        `${year}-${day.padStart(2, '0')}-${month.padStart(2, '0')}T00:00:00Z`,
+        `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T00:00:00Z`,
       );
     } else {
       throw new Error(`Format de date non reconnu : ${input}`);
