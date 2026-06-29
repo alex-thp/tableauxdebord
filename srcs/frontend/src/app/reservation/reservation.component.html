@@ -47,7 +47,7 @@
       <div class="modal">
         <h2>Confirmation</h2>
         <h3>Es-tu sûr de vouloir réserver le créneau du {{ dispo.date | date:'dd/MM/yyyy' }} à {{ heure_rdv }} ?</h3>
-        <h3>L'atelier se déroulera au {{ dispo.lieu }}.</h3>
+        <h3>Adresse de l'atelier : {{ dispo.lieu }}</h3>
         <div class="actions">
           <button class="btn btn-cancel" (click)="onCancel()">Annuler</button>
           <button class="btn btn-confirm" (click)="reserverCreneau(dispo.date, dispo.selectedSlot)">Confirmer</button>

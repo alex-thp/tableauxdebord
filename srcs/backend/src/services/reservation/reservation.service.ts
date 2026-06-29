@@ -279,9 +279,15 @@ export class ReservationService {
     tableLieux: string,
   ): Promise<string> {
     const fixeLieu = cdp.fields['FIXE - LIEU_ATELIER'];
-    if (!Array.isArray(fixeLieu) || fixeLieu.length === 0) return '';
+    const mobileLieu = cdp.fields['MOBILE - LIEU_ATELIER'];
+    const lieuId = Array.isArray(fixeLieu) && fixeLieu.length > 0
+      ? fixeLieu[0]
+      : Array.isArray(mobileLieu) && mobileLieu.length > 0
+        ? mobileLieu[0]
+        : null;
+    if (!lieuId) return '';
     try {
-      const lieuRecord = await this.base(tableLieux).find(fixeLieu[0]);
+      const lieuRecord = await this.base(tableLieux).find(lieuId);
       return (lieuRecord.fields?.['LABEL'] as string) ?? '';
     } catch {
       return '';
