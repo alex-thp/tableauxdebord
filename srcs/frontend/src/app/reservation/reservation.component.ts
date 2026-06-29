@@ -161,6 +161,10 @@ export class ReservationComponent {
   }
 
   reserverCreneau(date: Date, slot: any) {
+    if (!this.record_id) {
+      alert('Votre dossier est introuvable. Veuillez contacter l\'équipe.');
+      return;
+    }
     this.reservationService
       .verifyPrescriptionAvailability(this.record_id)
       .subscribe((response) => {

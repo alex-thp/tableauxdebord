@@ -81,6 +81,7 @@ export class ReservationService {
   async verifyPrescriptionAvailability(
     record_id: string,
   ): Promise<{ available: boolean }[]> {
+    if (!record_id) return [{ available: false }];
     const record = await this.base(process.env.TABLE_CDP_ENR_CAND).find(
       record_id,
     );
