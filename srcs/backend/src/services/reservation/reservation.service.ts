@@ -92,15 +92,34 @@ export class ReservationService {
     record_id: string,
     cdp_record_id: string,
     heure_rdv: string,
+    slot_id?: string,
   ): Promise<{ success: boolean; message: string }> {
     await this.base(process.env.TABLE_CDP_ENR_CAND).find(record_id);
 
-    await this.base(process.env.TABLE_CDP_ENR_CAND).update(record_id, {
+    const updateFields: Record<string, any> = {
       CDP_ID: [cdp_record_id],
       STATUT: 'Positionné',
       HEURE_RDV: heure_rdv,
       PRESCRIPTION_DOCTOLIB: 'Oui',
-    });
+    };
+
+    // Le créneau libre porte la structure à l'origine de la réservation.
+    // On la reporte sur la prescription avant que le créneau ne soit supprimé.
+    if (slot_id) {
+      const slotRecord = await this.base(process.env.TABLE_CDP_ENR_CAND).find(
+        slot_id,
+      );
+      const structureId =
+        slotRecord.fields['CRENEAU - RESERVATION_STRUCTURE_ID'];
+      if (structureId) {
+        updateFields['CRENEAU - RESERVATION_STRUCTURE_ID'] = structureId;
+      }
+    }
+
+    await this.base(process.env.TABLE_CDP_ENR_CAND).update(
+      record_id,
+      updateFields,
+    );
 
     return {
       success: true,

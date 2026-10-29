@@ -21,8 +21,9 @@ export class ReservationService {
     prescriptionId: string,
     cdpId: string,
     heure_rdv: string,
+    slotId: string,
   ): Observable<any> {
-    const body = { prescriptionId, cdpId, heure_rdv };
+    const body = { prescriptionId, cdpId, heure_rdv, slotId };
 
     return this.http.post(`${this.baseUrl}/setPrescriptionOnSlot`, body);
   }

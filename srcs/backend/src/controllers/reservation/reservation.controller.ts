@@ -19,11 +19,13 @@ export class ReservationController {
     @Body('prescriptionId') prescriptionId: string,
     @Body('cdpId') cdpId: string,
     @Body('heure_rdv') heure_rdv: string,
+    @Body('slotId') slotId: string,
   ) {
     return this.reservationService.setPrescriptionOnSlot(
       prescriptionId,
       cdpId,
       heure_rdv,
+      slotId,
     );
   }
 

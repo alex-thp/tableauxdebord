@@ -174,6 +174,7 @@ export class ReservationComponent {
               this.record_id,
               slot.CDP_ID[0],
               slot.HEURE_RDV,
+              slot.id,
             )
             .subscribe((res) => {
               if (res.success) {
