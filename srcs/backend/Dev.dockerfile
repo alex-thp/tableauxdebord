@@ -1,7 +1,6 @@
 FROM node:20-slim
 
 ENV TZ=Europe/Paris
-ENV PUPPETEER_SKIP_DOWNLOAD=true
 
 # Dépendances système requises par Chromium
 RUN apt-get update && \

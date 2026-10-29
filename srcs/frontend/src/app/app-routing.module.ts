@@ -14,6 +14,7 @@ import { SharedViewComponent } from './shared-view/shared-view.component';
 import { BoussoleComponent } from './boussole/boussole.component';
 import { ReservationComponent } from './reservation/reservation.component';
 import { StatsBenevoleComponent } from './stats-benevole/stats-benevole.component';
+import { PdfMakerComponent } from './pdf/pdf-maker/pdf-maker.component';
 
 export const appRouteList: Routes = [
   { path: '', component: GlobalViewComponent, canActivate: [AuthGuard] },
@@ -42,6 +43,11 @@ export const appRouteList: Routes = [
   { path: 'boussole', component: BoussoleComponent },
   { path: 'reservation', component: ReservationComponent },
   { path: 'stats_benevole', component: StatsBenevoleComponent },
+  {
+    path: 'pdf-maker',
+    component: PdfMakerComponent,
+    canActivate: [AuthGuard],
+  },
   { path: '**', redirectTo: 'not_found' },
 ];
 

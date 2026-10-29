@@ -26,6 +26,7 @@ import { DashboardService } from './services/dashboard/dashboard.service';
 import { PdfMakerService } from './services/pdf-maker/pdf-maker.service';
 import { PdfMakerController } from './controllers/pdf-maker/pdf-maker.controller';
 import { PdfMakerModule } from './controllers/pdf-maker/pdf-maker.module';
+import { EmailService } from './services/email/email.service';
 import { GeminiService } from './services/gemini/gemini.service';
 import { GeminiController } from './controllers/gemini/gemini.controller';
 import { SharedViewController } from './controllers/shared_view/shared_view.controller';
@@ -80,6 +81,7 @@ import { StatsBenevoleModule } from './stats_benevole/stats_benevole.module';
     EptService,
     DashboardService,
     PdfMakerService,
+    EmailService,
     GeminiService,
     BoussoleService,
     ReservationService,

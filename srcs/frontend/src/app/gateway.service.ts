@@ -134,4 +134,22 @@ export class GatewayService {
   benevolePdf(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/pdf/benevolePdf`);
   }
+
+  getMailStatus(): Observable<{ mode: 'dry-run' | 'live' }> {
+    return this.http.get<{ mode: 'dry-run' | 'live' }>(
+      `${this.baseUrl}/pdf/mail-status`
+    );
+  }
+
+  sendPdfByMail(formData: FormData): Observable<any> {
+    return this.http.post(`${this.baseUrl}/pdf/send`, formData);
+  }
+
+  getRaInfo(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/pdf/ra-info`);
+  }
+
+  updateRa(formData: FormData): Observable<any> {
+    return this.http.post(`${this.baseUrl}/pdf/update-ra`, formData);
+  }
 }
