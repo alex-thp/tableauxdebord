@@ -1,15 +1,18 @@
 import {
   Controller,
   Post,
+  UploadedFile,
   UploadedFiles,
   Body,
   UseInterceptors,
   Res,
   Get,
+  Query,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { PdfMakerService } from '../../services/pdf-maker/pdf-maker.service';
+import { EmailService } from '../../services/email/email.service';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -43,12 +46,79 @@ export class PdfMakerController {
     'RA_benevole',
   );
   private readonly STATIC_PDF_PATH = path.join(this.BASE_PATH, 'LCS_RA.pdf');
-  private readonly STATIC_PDF_INSERT_PAGE = 29;
+  private readonly RA_CONFIG_PATH = path.join(this.BASE_PATH, 'ra-config.json');
+  private readonly DEFAULT_INSERT_PAGE = 29;
 
   private candidatIndex = 0;
   private retoursAtelier: RetourAtelier[] = [];
 
-  constructor(private readonly pdfMakerService: PdfMakerService) {}
+  constructor(
+    private readonly pdfMakerService: PdfMakerService,
+    private readonly emailService: EmailService,
+  ) {
+    this.retoursAtelier = this.loadRetoursAtelier();
+    console.log(
+      `PdfMakerController: ${this.retoursAtelier.length} retour(s) d'atelier chargé(s).`,
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // Chargement des données
+  // ─────────────────────────────────────────────
+
+  /**
+   * Charge les témoignages candidats (nom, prénom, verbatim) depuis
+   * uploads/RA_benevole/retours-atelier.ts, un fichier de données déposé
+   * manuellement (pas du code source compilé) contenant un simple littéral
+   * `let retoursAtelier = [...]`.
+   */
+  private loadRetoursAtelier(): RetourAtelier[] {
+    const filePath = path.join(this.BASE_PATH, 'retours-atelier.ts');
+    if (!fs.existsSync(filePath)) {
+      console.error(`retours-atelier.ts introuvable à ${filePath}`);
+      return [];
+    }
+    try {
+      const content = fs.readFileSync(filePath, 'utf8');
+      const match = content.match(/=\s*(\[[\s\S]*\])\s*;?\s*$/);
+      if (!match) {
+        console.error(
+          'retours-atelier.ts : impossible de trouver le littéral de tableau',
+        );
+        return [];
+      }
+      // eslint-disable-next-line no-new-func
+      return new Function(`return (${match[1]});`)();
+    } catch (e) {
+      console.error('Erreur lecture retours-atelier.ts', e);
+      return [];
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // Configuration du RA (page d'insertion de la partie dynamique)
+  // ─────────────────────────────────────────────
+
+  private getInsertPage(): number {
+    if (!fs.existsSync(this.RA_CONFIG_PATH)) return this.DEFAULT_INSERT_PAGE;
+    try {
+      const raw = fs.readFileSync(this.RA_CONFIG_PATH, 'utf8');
+      const parsed = JSON.parse(raw);
+      return Number.isInteger(parsed.insertPage)
+        ? parsed.insertPage
+        : this.DEFAULT_INSERT_PAGE;
+    } catch (e) {
+      console.error('Erreur lecture ra-config.json', e);
+      return this.DEFAULT_INSERT_PAGE;
+    }
+  }
+
+  private saveInsertPage(insertPage: number): void {
+    fs.writeFileSync(
+      this.RA_CONFIG_PATH,
+      JSON.stringify({ insertPage, updatedAt: new Date().toISOString() }, null, 2),
+    );
+  }
 
   // ─────────────────────────────────────────────
   // Utilitaires privés
@@ -108,7 +178,7 @@ export class PdfMakerController {
         candidat,
         photoDataUrl,
         verbatim: candidat.verbatim ?? '',
-        signature: `${candidat.prenom.toUpperCase()} - ${candidat.date_et_lieu ?? ''}`,
+        signature: `${candidat.prenom.toUpperCase()}`,
       };
     }
 
@@ -157,7 +227,7 @@ export class PdfMakerController {
     return this.pdfMakerService.mergePdfAtPosition(
       staticPdf,
       buffer,
-      this.STATIC_PDF_INSERT_PAGE,
+      this.getInsertPage(),
     );
   }
 
@@ -173,8 +243,10 @@ export class PdfMakerController {
       const candidatData = this.resolveCandidatPdfData(this.candidatIndex);
       if (!candidatData) return res.status(404).send('Aucun candidat trouvé');
 
-      this.candidatIndex =
-        (this.candidatIndex + 1) % this.retoursAtelier.length;
+      if (this.retoursAtelier.length > 0) {
+        this.candidatIndex =
+          (this.candidatIndex + 1) % this.retoursAtelier.length;
+      }
 
       const htmlContent = this.replacePlaceholders(
         html,
@@ -200,8 +272,16 @@ export class PdfMakerController {
   }
 
   @Get('benevolePdf')
-  async generateBenevolePdf() {
-    return this.pdfMakerService.getDataToGeneratePdf();
+  async generateBenevolePdf(
+    @Query('year') year?: string,
+    @Query('minAteliers') minAteliers?: string,
+  ) {
+    const parsedYear = year ? parseInt(year, 10) : 2025;
+    const parsedMinAteliers = minAteliers ? parseInt(minAteliers, 10) : 3;
+    return this.pdfMakerService.getDataToGeneratePdf(
+      parsedYear,
+      parsedMinAteliers,
+    );
   }
 
   @Post('merge')
@@ -226,6 +306,129 @@ export class PdfMakerController {
     } catch (err) {
       console.error('❌ Erreur fusion PDF :', err);
       res.status(500).send('Erreur lors de la fusion des PDF.');
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // Envoi par email (voir EmailService pour le garde-fou dry-run)
+  // ─────────────────────────────────────────────
+
+  @Get('mail-status')
+  getMailStatus() {
+    return { mode: this.emailService.getMode() };
+  }
+
+  @Post('send')
+  @UseInterceptors(FileInterceptor('pdf'))
+  async sendPdfByMail(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('to') to: string,
+    @Body('benevNom') benevNom: string,
+    @Body('benevPrenom') benevPrenom: string,
+    @Body('year') year: string,
+    @Res() res: Response,
+  ) {
+    try {
+      if (!file) return res.status(400).send({ error: 'Le PDF est requis.' });
+      if (!to) return res.status(400).send({ error: 'Le destinataire ("to") est requis.' });
+
+      const prenom = benevPrenom || '';
+      const nom = benevNom || '';
+      // Année du rapport d'activité contenu dans le PDF (pas l'année calendaire d'envoi)
+      const annee = year ? parseInt(year, 10) : 2025;
+      const subject = `Votre rapport d'activité bénévole ${annee} - La Cravate Solidaire`;
+      const html = `<p>Bonjour ${prenom},</p>
+<p>Merci pour votre engagement à nos côtés cette année !</p>
+<p>Vous trouverez ci-joint votre rapport d'activité personnalisé.</p>
+<p>Toute l'équipe de La Cravate Solidaire vous remercie chaleureusement.</p>`;
+
+      const fileName = `RA_${nom.toUpperCase() || 'BENEVOLE'}_${prenom.toUpperCase()}.pdf`;
+
+      const result = await this.emailService.sendMail({
+        to,
+        subject,
+        html,
+        attachmentFilename: fileName,
+        attachmentBuffer: file.buffer,
+      });
+
+      res.status(200).send(result);
+    } catch (err) {
+      console.error('❌ Erreur envoi email PDF bénévole :', err);
+      res.status(500).send({ error: "Erreur lors de l'envoi de l'email." });
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // Gestion du RA de base (document dans lequel la partie dynamique est insérée)
+  // ─────────────────────────────────────────────
+
+  @Get('ra-info')
+  async getRaInfo() {
+    if (!fs.existsSync(this.STATIC_PDF_PATH)) {
+      return { exists: false, insertPage: this.getInsertPage() };
+    }
+    try {
+      const stats = fs.statSync(this.STATIC_PDF_PATH);
+      const bytes = fs.readFileSync(this.STATIC_PDF_PATH);
+      const pageCount = await this.pdfMakerService.validateRaPdf(bytes);
+      return {
+        exists: true,
+        pageCount,
+        insertPage: this.getInsertPage(),
+        sizeBytes: stats.size,
+        updatedAt: stats.mtime,
+      };
+    } catch (err) {
+      console.error('❌ Erreur lecture info RA :', err);
+      return { exists: true, error: 'Le fichier RA actuel est illisible.', insertPage: this.getInsertPage() };
+    }
+  }
+
+  @Post('update-ra')
+  @UseInterceptors(FileInterceptor('ra'))
+  async updateRa(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('insertPage') insertPageRaw: string,
+    @Res() res: Response,
+  ) {
+    try {
+      if (!file) return res.status(400).send({ error: 'Le fichier RA (PDF) est requis.' });
+
+      let pageCount: number;
+      try {
+        pageCount = await this.pdfMakerService.validateRaPdf(file.buffer);
+      } catch (e) {
+        return res.status(400).send({ error: "Le fichier fourni n'est pas un PDF valide." });
+      }
+
+      const insertPage = insertPageRaw
+        ? parseInt(insertPageRaw, 10)
+        : this.getInsertPage();
+      if (!Number.isInteger(insertPage) || insertPage < 0 || insertPage > pageCount) {
+        return res.status(400).send({
+          error: `La page d'insertion doit être un entier entre 0 et ${pageCount} (nombre de pages du nouveau RA).`,
+        });
+      }
+
+      // Sauvegarde de l'ancien RA avant remplacement
+      if (fs.existsSync(this.STATIC_PDF_PATH)) {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const backupPath = path.join(this.BASE_PATH, `LCS_RA_backup_${timestamp}.pdf`);
+        fs.copyFileSync(this.STATIC_PDF_PATH, backupPath);
+      }
+
+      fs.writeFileSync(this.STATIC_PDF_PATH, file.buffer);
+      this.saveInsertPage(insertPage);
+
+      console.log(
+        `RA mis à jour : ${pageCount} page(s), insertion après la page ${insertPage}.`,
+      );
+
+      res.status(200).send({ success: true, pageCount, insertPage });
+    } catch (err) {
+      console.error('❌ Erreur mise à jour du RA :', err);
+      res.status(500).send({ error: 'Erreur lors de la mise à jour du RA.' });
     }
   }
 }

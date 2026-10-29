@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PDFDocument } from 'pdf-lib';
 import puppeteer from 'puppeteer';
-import { MongoDbService } from '../mongo-db/mongo-db.service';
 import { AirtableService } from '../airtable/airtable.service';
 import * as fs from 'fs/promises';
 import * as path from 'path';
@@ -11,112 +10,103 @@ type MulterFile = {
   mimetype: string;
 };
 
+const TABLE_CACHE_TTL_MS = 5 * 60 * 1000;
+
 @Injectable()
 export class PdfMakerService {
-  constructor(
-    private mongodbService: MongoDbService,
-    private airtableService: AirtableService,
-  ) {}
+  constructor(private airtableService: AirtableService) {}
 
-  async getDataToGeneratePdf() {
-    const benev = await this.mongodbService.getTable('benevs');
+  // ✅ Cache court (5 min) pour éviter de retélécharger les 4 tables Airtable
+  // à chaque appel (chaque table peut représenter plusieurs milliers de lignes).
+  private tableCache = new Map<string, { data: any[]; expiresAt: number }>();
 
-    const pipeline = [
-      {
-        $lookup: {
-          from: 'cdpenrbenevs',
-          let: { cdpIds: '$cdp_x_benev' }, // tableau de record_id (strings)
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $in: ['$record_id', '$$cdpIds'] },
-                    { $gte: ['$date_atelier', new Date('2024-01-01')] },
-                    { $lte: ['$date_atelier', new Date('2024-12-31')] },
-                    { $eq: ['$statut', 'Présent'] },
-                  ],
-                },
-              },
-            },
-            {
-              $lookup: {
-                from: 'cdpenrcandxcdpenrbenevs',
-                let: { matchingIds: '$matchings' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $in: ['$record_id', '$$matchingIds'],
-                      },
-                    },
-                  },
-                ],
-                as: 'matchings_docs',
-              },
-            },
-            {
-              $unwind: {
-                path: '$matchings_docs',
-                preserveNullAndEmptyArrays: true,
-              },
-            },
-            {
-              $lookup: {
-                from: 'cdpenrcands',
-                localField: 'matchings_docs.cdp_enr_cand_record_id',
-                foreignField: 'record_id',
-                as: 'cand',
-              },
-            },
-            {
-              $unwind: {
-                path: '$cand',
-                preserveNullAndEmptyArrays: true,
-              },
-            },
-            {
-              $lookup: {
-                from: 'cdpsuivis',
-                localField: 'cand.candidat_record_id',
-                foreignField: 'candidat_record_id',
-                as: 'cdp_suivis',
-              },
-            },
-            {
-              $addFields: {
-                'cand.cdp_suivi': '$cdp_suivis',
-              },
-            },
-            {
-              $project: {
-                cdp_suivis: 0,
-              },
-            },
-          ],
-          as: 'cdp_x_benev', // champ enrichi dans benevs
-        },
-      },
-      {
-        // ✅ Ne garde que les benevs ayant au moins un lien avec un cdpenrbenev
-        $match: {
-          'cdp_x_benev.0': { $exists: true },
-        },
-      },
-      {
-        $project: {
-          record_id: 1,
-          benev_structure: 1,
-          cdp_x_benev: 1,
-          nom: 1,
-          prenom: 1,
-          mail: 1,
-        },
-      },
-    ];
-    const result = await benev.aggregate(pipeline).toArray();
-    console.log('ready to return');
+  private async getCachedTable(tableId: string | undefined, tableName: string): Promise<any[]> {
+    const cached = this.tableCache.get(tableName);
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.data;
+    }
+    const data = (await this.airtableService.getJsonFromTable(tableId, tableName)) || [];
+    this.tableCache.set(tableName, { data, expiresAt: Date.now() + TABLE_CACHE_TTL_MS });
+    return data;
+  }
+
+  /**
+   * Recherche directement sur Airtable les bénévoles ayant réalisé au moins
+   * `minAteliers` ateliers "Présent" sur l'année `year`, et reconstruit pour
+   * chacun un `cdp_x_benev` minimal (uniquement les candidats matchés, avec leur
+   * secteur de recherche) pour alimenter les stats du RA côté frontend.
+   */
+  async getDataToGeneratePdf(year = 2025, minAteliers = 3) {
+    const [benevoles, cdpEnrBenevs, matchings, cdpEnrCands] = await Promise.all([
+      this.getCachedTable(process.env.TABLE_BENEVOLE, 'BENEVOLE'),
+      this.getCachedTable(process.env.TABLE_CDP_ENR_BENEV, 'CDP_ENR_BENEV'),
+      this.getCachedTable(process.env.TABLE_CDP_ENR_CAND_X_CDP_ENR_BENEV, 'CDP_ENR_CAND_X_CDP_ENR_BENEV'),
+      this.getCachedTable(process.env.TABLE_CDP_ENR_CAND, 'CDP_ENR_CAND'),
+    ]);
+
+    const matchingById = new Map<string, any>(matchings.map((m: any) => [m.record_id, m]));
+    const candById = new Map<string, any>(cdpEnrCands.map((c: any) => [c.record_id, c]));
+    const benevoleById = new Map<string, any>(benevoles.map((b: any) => [b.record_id, b]));
+
+    // ✅ Ne garde que les ateliers "Présent" de l'année demandée, groupés par bénévole
+    const ateliersParBenevole = new Map<string, any[]>();
+    for (const atelier of cdpEnrBenevs) {
+      if (atelier.statut !== 'Présent') continue;
+      if (!atelier.date_atelier) continue;
+      if (new Date(atelier.date_atelier).getFullYear() !== year) continue;
+      if (!atelier.benevole_id) continue;
+
+      if (!ateliersParBenevole.has(atelier.benevole_id)) {
+        ateliersParBenevole.set(atelier.benevole_id, []);
+      }
+      ateliersParBenevole.get(atelier.benevole_id)!.push(atelier);
+    }
+
+    const result: any[] = [];
+    for (const [benevoleId, ateliers] of ateliersParBenevole.entries()) {
+      // ✅ Seuil : au moins `minAteliers` ateliers distincts sur l'année
+      if (ateliers.length < minAteliers) continue;
+
+      const benevole = benevoleById.get(benevoleId);
+      if (!benevole) continue;
+
+      // Seules les entrées avec un candidat matché comptent pour les stats du RA
+      // (heure_coaching, nb_personnes_accompagnees, secteurs) côté frontend.
+      const cdp_x_benev: any[] = [];
+      for (const atelier of ateliers) {
+        for (const matchingId of atelier.matchings || []) {
+          const matching = matchingById.get(matchingId);
+          const cand = matching ? candById.get(matching.cdp_enr_cand_record_id) : undefined;
+          if (cand) {
+            cdp_x_benev.push({ cand: { secteur_recherche: cand.secteur_recherche } });
+          }
+        }
+      }
+
+      result.push({
+        record_id: benevole.record_id,
+        benev_structure: benevole.benev_structure,
+        nom: benevole.nom,
+        prenom: benevole.prenom,
+        mail: benevole.mail,
+        nb_ateliers: ateliers.length,
+        cdp_x_benev,
+      });
+    }
+
+    console.log(
+      `RA ${year} : ${result.length} bénévole(s) avec au moins ${minAteliers} ateliers.`,
+    );
     return result;
+  }
+
+  /**
+   * Charge le buffer comme un PDF pour valider qu'il est bien formé et
+   * retourne son nombre de pages. Lève une erreur si ce n'est pas un PDF valide.
+   */
+  async validateRaPdf(buffer: Buffer): Promise<number> {
+    const doc = await PDFDocument.load(buffer);
+    return doc.getPageCount();
   }
 
   private getRange(from: number, to: number, max: number): number[] {
@@ -290,7 +280,7 @@ export class PdfMakerService {
 
     // 2️⃣ Pages de pdf2 avec adaptation de taille
     const pdf2Pages = await mergedPdf.copyPages(pdf2, pdf2.getPageIndices());
-    pdf2Pages.forEach((page) => {
+    for (const page of pdf2Pages) {
       const { width, height } = page.getSize();
       const scaleX = targetWidth / width;
       const scaleY = targetHeight / height;
@@ -303,16 +293,16 @@ export class PdfMakerService {
       const offsetX = (targetWidth - width * scale) / 2;
       const offsetY = (targetHeight - height * scale) / 2;
 
-      // Embed the page before drawing
-      mergedPdf.embedPage(page).then((embeddedPage) => {
-        newPage.drawPage(embeddedPage, {
-          x: offsetX,
-          y: offsetY,
-          xScale: scale,
-          yScale: scale,
-        });
+      // Embed the page before drawing — attendu, sinon save() peut s'exécuter
+      // avant que le contenu ne soit dessiné et la page ressort vide.
+      const embeddedPage = await mergedPdf.embedPage(page);
+      newPage.drawPage(embeddedPage, {
+        x: offsetX,
+        y: offsetY,
+        xScale: scale,
+        yScale: scale,
       });
-    });
+    }
 
     // 3️⃣ Pages restantes de pdf1
     const afterPages = await mergedPdf.copyPages(

@@ -1,1 +1,144 @@
-<button (click)="benevolePdfSimplified()">Génération PDF pour tous les bénévoles</button>
+<div class="pdf-maker-page">
+  <div
+    class="mail-mode-banner"
+    [class.mail-mode-banner--dry-run]="mailMode === 'dry-run'"
+    [class.mail-mode-banner--live]="mailMode === 'live'"
+    *ngIf="mailMode"
+  >
+    <ng-container *ngIf="mailMode === 'dry-run'">
+      🧪 Mode TEST (dry-run) — aucun email ne sera réellement envoyé, les envois
+      sont uniquement simulés et loggés côté serveur.
+    </ng-container>
+    <ng-container *ngIf="mailMode === 'live'">
+      🚨 Mode RÉEL — les emails envoyés seront réellement reçus par les
+      bénévoles.
+    </ng-container>
+  </div>
+
+  <div class="form-section">
+    <label for="footerLeftText">
+      Pied de page — texte de gauche (page personnalisée)
+    </label>
+    <input
+      type="text"
+      id="footerLeftText"
+      [(ngModel)]="footerLeftText"
+      placeholder="La Cravate Solidaire Paris"
+    />
+  </div>
+
+  <div class="form-section">
+    <label for="footerRightText">
+      Pied de page — texte de droite (page personnalisée)
+    </label>
+    <input
+      type="text"
+      id="footerRightText"
+      [(ngModel)]="footerRightText"
+      placeholder="Rapport d'activité 2025"
+    />
+  </div>
+
+  <button (click)="benevolePdfSimplified()">
+    Génération PDF pour tous les bénévoles (téléchargement)
+  </button>
+
+  <button (click)="previewFirstPdf()" [disabled]="previewing">
+    {{ previewing ? "Génération de l'aperçu..." : "👁️ Prévisualiser un PDF" }}
+  </button>
+
+  <div class="preview-panel" *ngIf="previewUrl">
+    <div class="preview-panel__header">
+      <span>Aperçu (premier bénévole éligible)</span>
+      <button class="preview-panel__close" (click)="closePreview()">
+        Fermer l'aperçu
+      </button>
+    </div>
+    <iframe class="preview-panel__frame" [src]="previewUrl"></iframe>
+  </div>
+
+  <button (click)="sendAllEmails()" [disabled]="sendingAll">
+    {{
+      sendingAll
+        ? "Envoi en cours (" + sendProgress.sent + "/" + sendProgress.total + ")..."
+        : "✉️ Envoyer le rapport par email à tous les bénévoles"
+    }}
+  </button>
+
+  <div class="send-summary" *ngIf="sendSummary">
+    <p *ngIf="sendSummary.dryRun > 0">
+      🧪 {{ sendSummary.dryRun }} envoi(s) simulé(s) (dry-run) — aucun email
+      réellement parti.
+    </p>
+    <p *ngIf="sendSummary.live > 0">
+      ✅ {{ sendSummary.live }} email(s) réellement envoyé(s).
+    </p>
+    <p *ngIf="sendSummary.errors > 0">
+      ❌ {{ sendSummary.errors }} erreur(s) (email manquant ou échec).
+    </p>
+  </div>
+
+  <hr class="section-separator" />
+
+  <div class="ra-admin">
+    <h2>📄 Administration du RA</h2>
+    <p class="ra-admin__hint">
+      Le RA est le document de base dans lequel la page personnalisée de
+      chaque bénévole est insérée automatiquement.
+    </p>
+
+    <div class="ra-admin__current" *ngIf="raInfo">
+      <ng-container *ngIf="raInfo.exists && raInfo.pageCount">
+        RA actuel : <strong>{{ raInfo.pageCount }} page(s)</strong> —
+        insertion de la partie dynamique après la page
+        <strong>{{ raInfo.insertPage }}</strong>
+        <span *ngIf="raInfo.updatedAt">
+          (mis à jour le {{ raInfo.updatedAt | date: 'dd/MM/yyyy à HH:mm' }})
+        </span>
+      </ng-container>
+      <ng-container *ngIf="!raInfo.exists">
+        ⚠️ Aucun RA n'est actuellement configuré.
+      </ng-container>
+      <ng-container *ngIf="raInfo.error">
+        ⚠️ {{ raInfo.error }}
+      </ng-container>
+    </div>
+
+    <div class="form-section">
+      <label for="raFile">Nouveau fichier RA (PDF)</label>
+      <input
+        type="file"
+        id="raFile"
+        accept="application/pdf"
+        (change)="onRaFileSelected($event)"
+      />
+    </div>
+
+    <div class="form-section">
+      <label for="raInsertPage">
+        Page après laquelle insérer la partie dynamique
+      </label>
+      <input
+        type="number"
+        id="raInsertPage"
+        min="0"
+        [(ngModel)]="raInsertPage"
+      />
+    </div>
+
+    <button
+      (click)="updateRaDocument()"
+      [disabled]="!selectedRaFile || updatingRa"
+    >
+      {{ updatingRa ? 'Mise à jour en cours...' : 'Mettre à jour le RA' }}
+    </button>
+
+    <div
+      class="ra-update-result"
+      *ngIf="raUpdateResult"
+      [class.ra-update-result--error]="!raUpdateResult.success"
+    >
+      {{ raUpdateResult.message }}
+    </div>
+  </div>
+</div>
